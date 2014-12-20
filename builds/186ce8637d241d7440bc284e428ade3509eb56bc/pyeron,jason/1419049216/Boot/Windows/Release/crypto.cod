@@ -1,0 +1,4030 @@
+;	Static Name Aliases
+;
+;	$S1034_CryptoInfoBufferInUse	EQU	CryptoInfoBufferInUse
+;	$S803_Ciphers	EQU	Ciphers
+;	$S807_EncryptionAlgorithms	EQU	EncryptionAlgorithms
+;	$S808_Hashes	EQU	Hashes
+	TITLE   ..\..\..\common\crypto.c
+	.MODEL  SMALL
+	.386p
+	.387
+_TEXT	SEGMENT  WORD USE16 PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD USE16 PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD USE16 PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD USE16 PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+PUBLIC  ??_C@_03MCBA@AES?$AA@
+PUBLIC  ??_C@_07FAMF@Serpent?$AA@
+PUBLIC  ??_C@_07FNOL@Twofish?$AA@
+PUBLIC  ??_C@_0L@FEML@RIPEMD?9160?$AA@
+EXTRN	_twofish_decrypt:NEAR
+EXTRN	__aNlshl:NEAR
+EXTRN	_strcmp:NEAR
+EXTRN	_aes_decrypt:NEAR
+EXTRN	_DecryptBufferXTS:NEAR
+EXTRN	_serpent_set_key:NEAR
+EXTRN	_EncryptBufferXTS:NEAR
+EXTRN	_serpent_encrypt:NEAR
+EXTRN	_serpent_decrypt:NEAR
+EXTRN	_ThrowFatalException:NEAR
+EXTRN	_twofish_set_key:NEAR
+EXTRN	_EraseMemory:NEAR
+EXTRN	_aes_set_key:NEAR
+EXTRN	_twofish_encrypt:NEAR
+EXTRN	_memcpy:NEAR
+EXTRN	_aes_encrypt:NEAR
+_BSS      SEGMENT
+COMM NEAR	_CryptoInfoBuffer:	BYTE:	 1996
+_BSS      ENDS
+_DATA      SEGMENT
+??_C@_03MCBA@AES?$AA@	DB	'AES',  00H
+	ORG	$-4
+??_C@_07FAMF@Serpent?$AA@	DB	'Serpent',  00H
+	ORG	$-8
+??_C@_07FNOL@Twofish?$AA@	DB	'Twofish',  00H
+	ORG	$-8
+$S803_Ciphers	DW	01H
+	DW	DGROUP:??_C@_03MCBA@AES?$AA@
+	DW	010H
+	DW	020H
+	DW	0f1H
+	DW	02H
+	DW	DGROUP:??_C@_07FAMF@Serpent?$AA@
+	DW	010H
+	DW	020H
+	DW	0230H
+	DW	03H
+	DW	DGROUP:??_C@_07FNOL@Twofish?$AA@
+	DW	010H
+	DW	020H
+	DW	0b4H
+	DW	00H
+	DW	00H
+	DW	00H
+	DW	00H
+	DW	00H
+$S807_EncryptionAlgorithms	DW	00H
+	DW	00H
+ 	DB	4 DUP(0)
+
+	DW	00H
+	DW	00H
+	DW	00H
+	DW	01H
+	DW	00H
+ 	DB	4 DUP(0)
+
+	DW	01H
+	DW	00H
+	DW	01H
+	DW	02H
+	DW	00H
+ 	DB	4 DUP(0)
+
+	DW	01H
+	DW	00H
+	DW	01H
+	DW	03H
+	DW	00H
+ 	DB	4 DUP(0)
+
+	DW	01H
+	DW	00H
+	DW	01H
+	DW	03H
+	DW	01H
+	DW	00H
+ 	DB	2 DUP(0)
+
+	DW	01H
+	DW	00H
+	DW	01H
+	DW	02H
+	DW	03H
+	DW	01H
+	DW	00H
+	DW	01H
+	DW	00H
+	DW	01H
+	DW	01H
+	DW	02H
+	DW	00H
+ 	DB	2 DUP(0)
+
+	DW	01H
+	DW	00H
+	DW	01H
+	DW	01H
+	DW	03H
+	DW	02H
+	DW	00H
+	DW	01H
+	DW	00H
+	DW	01H
+	DW	02H
+	DW	03H
+	DW	00H
+ 	DB	2 DUP(0)
+
+	DW	01H
+	DW	00H
+	DW	01H
+	DW	00H
+	DW	00H
+ 	DB	4 DUP(0)
+
+	DW	00H
+	DW	00H
+	DW	00H
+	ORG	$-180
+??_C@_0L@FEML@RIPEMD?9160?$AA@	DB	'RIPEMD-160',  00H
+	ORG	$+169
+$S808_Hashes	DW	01H
+	DW	DGROUP:??_C@_0L@FEML@RIPEMD?9160?$AA@
+	DB	00H
+	DB	01H
+	DW	00H
+	DW	00H
+	DB	00H
+ 	DB	1 DUP(0)
+
+$S1034_CryptoInfoBufferInUse	DB	00H
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+	PUBLIC	_CipherInit
+_CipherInit	PROC NEAR	;  COMDAT
+;|*** /*
+;|***  Legal Notice: Some portions of the source code contained in this file were
+;|***  derived from the source code of Encryption for the Masses 2.02a, which is
+;|***  Copyright (c) 1998-2000 Paul Le Roux and which is governed by the 'License
+;|***  Agreement for Encryption for the Masses'. Modifications and additions to
+;|***  the original source code (contained in this file) and all other portions
+;|***  of this file are Copyright (c) 2003-2010 TrueCrypt Developers Association
+;|***  and are governed by the TrueCrypt License 3.0 the full text of which is
+;|***  contained in the file License.txt included in TrueCrypt binary and source
+;|***  code distribution packages. */
+;|*** 
+;|*** #include "Tcdefs.h"
+;|*** #include "Crypto.h"
+;|*** #include "Xts.h"
+;|*** #include "Crc.h"
+;|*** #include "Common/Endian.h"
+;|*** #include <string.h>
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** #include "EncryptionThreadPool.h"
+;|*** #endif
+;|*** #include "Volumes.h"
+;|*** 
+;|*** /* Update the following when adding a new cipher or EA:
+;|*** 
+;|***    Crypto.h:
+;|***      ID #define
+;|***      MAX_EXPANDED_KEY #define
+;|*** 
+;|***    Crypto.c:
+;|***      Ciphers[]
+;|***      EncryptionAlgorithms[]
+;|***      CipherInit()
+;|***      EncipherBlock()
+;|***      DecipherBlock()
+;|*** 
+;|*** */
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT_SINGLE_CIPHER_MODE
+;|*** 
+;|*** // Cipher configuration
+;|*** static Cipher Ciphers[] =
+;|*** {
+;|*** //								Block Size	Key Size	Key Schedule Size
+;|*** //	  ID		Name			(Bytes)		(Bytes)		(Bytes)
+;|*** 	{ AES,		"AES",			16,			32,			AES_KS				},
+;|*** 	{ SERPENT,	"Serpent",		16,			32,			140*4				},
+;|*** 	{ TWOFISH,	"Twofish",		16,			32,			TWOFISH_KS			},
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 	{ BLOWFISH,	"Blowfish",		8,			56,			sizeof (BF_KEY)		},	// Deprecated/legacy
+;|*** 	{ CAST,		"CAST5",		8,			16,			sizeof (CAST_KEY)	},	// Deprecated/legacy
+;|*** 	{ TRIPLEDES,"Triple DES",	8,			8*3,		sizeof (TDES_KEY)	},	// Deprecated/legacy
+;|*** #endif
+;|*** 	{ 0,		0,				0,			0,			0					}
+;|*** };
+;|*** 
+;|*** 
+;|*** // Encryption algorithm configuration
+;|*** // The following modes have been deprecated (legacy): LRW, CBC, INNER_CBC, OUTER_CBC
+;|*** static EncryptionAlgorithm EncryptionAlgorithms[] =
+;|*** {
+;|*** 	//  Cipher(s)                     Modes						FormatEnabled
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 
+;|*** 	{ { 0,						0 }, { 0, 0, 0, 0 },				0 },	// Must be all-zero
+;|*** 	{ { AES,					0 }, { XTS, LRW, CBC, 0 },			1 },
+;|*** 	{ { SERPENT,				0 }, { XTS, LRW, CBC, 0 },			1 },
+;|*** 	{ { TWOFISH,				0 }, { XTS, LRW, CBC, 0 },			1 },
+;|*** 	{ { TWOFISH, AES,			0 }, { XTS, LRW, OUTER_CBC, 0 },	1 },
+;|*** 	{ { SERPENT, TWOFISH, AES,	0 }, { XTS, LRW, OUTER_CBC, 0 },	1 },
+;|*** 	{ { AES, SERPENT,			0 }, { XTS, LRW, OUTER_CBC, 0 },	1 },
+;|*** 	{ { AES, TWOFISH, SERPENT,	0 }, { XTS, LRW, OUTER_CBC, 0 },	1 },
+;|*** 	{ { SERPENT, TWOFISH,		0 }, { XTS, LRW, OUTER_CBC, 0 },	1 },
+;|*** 	{ { BLOWFISH,				0 }, { LRW, CBC, 0, 0 },			0 },	// Deprecated/legacy
+;|*** 	{ { CAST,					0 }, { LRW, CBC, 0, 0 },			0 },	// Deprecated/legacy
+;|*** 	{ { TRIPLEDES,				0 }, { LRW, CBC, 0, 0 },			0 },	// Deprecated/legacy
+;|*** 	{ { BLOWFISH, AES,			0 }, { INNER_CBC, 0, 0, 0 },		0 },	// Deprecated/legacy
+;|*** 	{ { SERPENT, BLOWFISH, AES,	0 }, { INNER_CBC, 0, 0, 0 },		0 },	// Deprecated/legacy
+;|*** 	{ { 0,						0 }, { 0, 0, 0, 0 },				0 }		// Must be all-zero
+;|*** 
+;|*** #else // TC_WINDOWS_BOOT
+;|*** 
+;|*** 	// Encryption algorithms available for boot drive encryption
+;|*** 	{ { 0,						0 }, { 0, 0 },		0 },	// Must be all-zero
+;|*** 	{ { AES,					0 }, { XTS, 0 },	1 },
+;|*** 	{ { SERPENT,				0 }, { XTS, 0 },	1 },
+;|*** 	{ { TWOFISH,				0 }, { XTS, 0 },	1 },
+;|*** 	{ { TWOFISH, AES,			0 }, { XTS, 0 },	1 },
+;|*** 	{ { SERPENT, TWOFISH, AES,	0 }, { XTS, 0 },	1 },
+;|*** 	{ { AES, SERPENT,			0 }, { XTS, 0 },	1 },
+;|*** 	{ { AES, TWOFISH, SERPENT,	0 }, { XTS, 0 },	1 },
+;|*** 	{ { SERPENT, TWOFISH,		0 }, { XTS, 0 },	1 },
+;|*** 	{ { 0,						0 }, { 0, 0 },		0 },	// Must be all-zero
+;|*** 
+;|*** #endif
+;|*** 
+;|*** };
+;|*** 
+;|*** 
+;|*** 
+;|*** // Hash algorithms
+;|*** static Hash Hashes[] =
+;|*** {	// ID			Name			Deprecated		System Encryption
+;|*** 	{ RIPEMD160,	"RIPEMD-160",	FALSE,			TRUE },
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 	{ SHA512,		"SHA-512",		FALSE,			FALSE },
+;|*** 	{ WHIRLPOOL,	"Whirlpool",	FALSE,			FALSE },
+;|*** 	{ SHA1,			"SHA-1",		TRUE,			FALSE },	// Deprecated/legacy
+;|*** #endif
+;|*** 	{ 0, 0, 0 }
+;|*** };
+;|*** 
+;|*** /* Return values: 0 = success, ERR_CIPHER_INIT_FAILURE (fatal), ERR_CIPHER_INIT_WEAK_KEY (non-fatal) */
+;|*** int CipherInit (int cipher, unsigned char *key, unsigned __int8 *ks)
+;|*** {
+; Line 115
+	*** 000000	c8 02 00 00 		enter	2,0
+;	cipher = 4
+;	key = 6
+;	ks = 8
+;	retVal = -2
+;|*** 	int retVal = ERR_SUCCESS;
+;|*** 
+;|*** 	switch (cipher)
+; Line 118
+	*** 000004	8b 46 04 		mov	ax,WORD PTR [bp+4]	;cipher
+;|*** 	{
+;|*** 	case AES:
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 		if (aes_encrypt_key256 (key, (aes_encrypt_ctx *) ks) != EXIT_SUCCESS)
+;|*** 			return ERR_CIPHER_INIT_FAILURE;
+;|*** 
+;|*** 		if (aes_decrypt_key256 (key, (aes_decrypt_ctx *) (ks + sizeof(aes_encrypt_ctx))) != EXIT_SUCCESS)
+;|*** 			return ERR_CIPHER_INIT_FAILURE;
+;|*** #else
+;|*** 		if (aes_set_key (key, (length_type) CipherGetKeySize(AES), (aes_context *) ks) != 0)
+;|*** 			return ERR_CIPHER_INIT_FAILURE;
+;|*** #endif
+;|*** 		break;
+;|*** 
+;|*** 	case SERPENT:
+;|*** 		serpent_set_key (key, CipherGetKeySize(SERPENT) * 8, ks);
+;|*** 		break;
+;|*** 		
+;|*** 	case TWOFISH:
+;|*** 		twofish_set_key ((TwofishInstance *)ks, (const u4byte *)key, CipherGetKeySize(TWOFISH) * 8);
+;|*** 		break;
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 		
+;|*** 	case BLOWFISH:
+;|*** 		/* Deprecated/legacy */
+;|*** 		BlowfishSetKey ((BF_KEY *)ks, CipherGetKeySize(BLOWFISH), key);
+;|*** 		break;
+;|*** 
+;|*** 	case CAST:
+;|*** 		/* Deprecated/legacy */
+;|*** 		Cast5SetKey ((CAST_KEY *) ks, CipherGetKeySize(CAST), key);
+;|*** 		break;
+;|*** 
+;|*** 	case TRIPLEDES:
+;|*** 		/* Deprecated/legacy */
+;|*** 		TripleDesSetKey (key, CipherGetKeySize (TRIPLEDES), (TDES_KEY *) ks);
+;|*** 
+;|*** 		// Verify whether all three DES keys are mutually different
+;|*** 		if (((*((__int64 *) key) ^ *((__int64 *) key+1)) & 0xFEFEFEFEFEFEFEFEULL) == 0
+;|*** 		|| ((*((__int64 *) key+1) ^ *((__int64 *) key+2)) & 0xFEFEFEFEFEFEFEFEULL) == 0
+;|*** 		|| ((*((__int64 *) key) ^ *((__int64 *) key+2)) & 0xFEFEFEFEFEFEFEFEULL) == 0)
+;|*** 			retVal = ERR_CIPHER_INIT_WEAK_KEY;		// Non-fatal error
+;|*** 
+;|*** 		break;
+;|*** 
+;|*** #endif	// TC_WINDOWS_BOOT
+;|*** 
+;|*** 	default:
+;|*** 		// Unknown/wrong cipher ID
+;|*** 		return ERR_CIPHER_INIT_FAILURE;
+;|*** 	}
+; Line 170
+	*** 000007	48 			dec	ax
+	*** 000008	74 0b 			je	SHORT $SC822
+	*** 00000a	48 			dec	ax
+	*** 00000b	74 21 			je	SHORT $SC824
+	*** 00000d	48 			dec	ax
+	*** 00000e	74 36 			je	SHORT $SC825
+;|*** 		return ERR_CIPHER_INIT_FAILURE;
+; Line 169
+					$L1168:
+	*** 000010	b8 11 00 		mov	ax,17	;0011H
+	*** 000013	c9 			leave	
+	*** 000014	c3 			ret	
+;|*** 	case AES:
+; Line 120
+					$SC822:
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 		if (aes_encrypt_key256 (key, (aes_encrypt_ctx *) ks) != EXIT_SUCCESS)
+;|*** 			return ERR_CIPHER_INIT_FAILURE;
+;|*** 
+;|*** 		if (aes_decrypt_key256 (key, (aes_decrypt_ctx *) (ks + sizeof(aes_encrypt_ctx))) != EXIT_SUCCESS)
+;|*** 			return ERR_CIPHER_INIT_FAILURE;
+;|*** #else
+;|*** 		if (aes_set_key (key, (length_type) CipherGetKeySize(AES), (aes_context *) ks) != 0)
+; Line 128
+	*** 000015	ff 76 08 		push	WORD PTR [bp+8]	;ks
+	*** 000018	6a 01 			push	1
+	*** 00001a	e8 00 00 		call	_CipherGetKeySize
+	*** 00001d	5b 			pop	bx
+	*** 00001e	50 			push	ax
+	*** 00001f	ff 76 06 		push	WORD PTR [bp+6]	;key
+	*** 000022	e8 00 00 		call	_aes_set_key
+	*** 000025	83 c4 06 		add	sp,6
+	*** 000028	0a c0 			or	al,al
+	*** 00002a	74 2f 			je	SHORT $SB819
+	*** 00002c	eb e2 			jmp	SHORT $L1168
+;|*** 			return ERR_CIPHER_INIT_FAILURE;
+;|*** #endif
+;|*** 		break;
+;|*** 
+;|*** 	case SERPENT:
+; Line 133
+					$SC824:
+;|*** 		serpent_set_key (key, CipherGetKeySize(SERPENT) * 8, ks);
+; Line 134
+	*** 00002e	ff 76 08 		push	WORD PTR [bp+8]	;ks
+	*** 000031	6a 02 			push	2
+	*** 000033	e8 00 00 		call	_CipherGetKeySize
+	*** 000036	5b 			pop	bx
+	*** 000037	c1 e0 03 		shl	ax,3
+	*** 00003a	50 			push	ax
+	*** 00003b	ff 76 06 		push	WORD PTR [bp+6]	;key
+	*** 00003e	e8 00 00 		call	_serpent_set_key
+	*** 000041	83 c4 06 		add	sp,6
+;|*** 		break;
+; Line 135
+	*** 000044	eb 15 			jmp	SHORT $SB819
+;|*** 		
+;|*** 	case TWOFISH:
+; Line 137
+					$SC825:
+;|*** 		twofish_set_key ((TwofishInstance *)ks, (const u4byte *)key, CipherGetKeySize(TWOFISH) * 8);
+; Line 138
+	*** 000046	6a 03 			push	3
+	*** 000048	e8 00 00 		call	_CipherGetKeySize
+	*** 00004b	5b 			pop	bx
+	*** 00004c	c1 e0 03 		shl	ax,3
+	*** 00004f	99 			cwd	
+	*** 000050	52 			push	dx
+	*** 000051	50 			push	ax
+	*** 000052	ff 76 06 		push	WORD PTR [bp+6]	;key
+	*** 000055	ff 76 08 		push	WORD PTR [bp+8]	;ks
+	*** 000058	e8 00 00 		call	_twofish_set_key
+;|*** 		break;
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 		
+;|*** 	case BLOWFISH:
+;|*** 		/* Deprecated/legacy */
+;|*** 		BlowfishSetKey ((BF_KEY *)ks, CipherGetKeySize(BLOWFISH), key);
+;|*** 		break;
+;|*** 
+;|*** 	case CAST:
+;|*** 		/* Deprecated/legacy */
+;|*** 		Cast5SetKey ((CAST_KEY *) ks, CipherGetKeySize(CAST), key);
+;|*** 		break;
+;|*** 
+;|*** 	case TRIPLEDES:
+;|*** 		/* Deprecated/legacy */
+;|*** 		TripleDesSetKey (key, CipherGetKeySize (TRIPLEDES), (TDES_KEY *) ks);
+;|*** 
+;|*** 		// Verify whether all three DES keys are mutually different
+;|*** 		if (((*((__int64 *) key) ^ *((__int64 *) key+1)) & 0xFEFEFEFEFEFEFEFEULL) == 0
+;|*** 		|| ((*((__int64 *) key+1) ^ *((__int64 *) key+2)) & 0xFEFEFEFEFEFEFEFEULL) == 0
+;|*** 		|| ((*((__int64 *) key) ^ *((__int64 *) key+2)) & 0xFEFEFEFEFEFEFEFEULL) == 0)
+;|*** 			retVal = ERR_CIPHER_INIT_WEAK_KEY;		// Non-fatal error
+;|*** 
+;|*** 		break;
+;|*** 
+;|*** #endif	// TC_WINDOWS_BOOT
+;|*** 
+;|*** 	default:
+;|*** 		// Unknown/wrong cipher ID
+;|*** 		return ERR_CIPHER_INIT_FAILURE;
+;|*** 	}
+; Line 170
+					$SB819:
+;|*** 
+;|*** 	return retVal;
+; Line 172
+	*** 00005b	33 c0 			xor	ax,ax
+;|*** }
+; Line 173
+	*** 00005d	c9 			leave	
+	*** 00005e	c3 			ret	
+
+_CipherInit	ENDP
+	PUBLIC	_EncipherBlock
+_EncipherBlock	PROC NEAR	;  COMDAT
+;|*** 
+;|*** void EncipherBlock(int cipher, void *data, void *ks)
+;|*** {
+; Line 176
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	56 			push	si
+;	ks = 8
+;	cipher = 4
+;	data = 6
+;|*** 	switch (cipher)
+; Line 177
+	*** 000004	8b 46 04 		mov	ax,WORD PTR [bp+4]	;cipher
+;|*** 	{
+;|*** 	case AES:	
+;|*** 		// In 32-bit kernel mode, due to KeSaveFloatingPointState() overhead, AES instructions can be used only when processing the whole data unit.
+;|*** #if (defined (_WIN64) || !defined (TC_WINDOWS_DRIVER)) && !defined (TC_WINDOWS_BOOT)
+;|*** 		if (IsAesHwCpuSupported())
+;|*** 			aes_hw_cpu_encrypt (ks, data);
+;|*** 		else
+;|*** #endif
+;|*** 			aes_encrypt (data, data, ks);
+;|*** 		break;
+;|*** 
+;|*** 	case TWOFISH:		twofish_encrypt (ks, data, data); break;
+;|*** 	case SERPENT:		serpent_encrypt (data, data, ks); break;
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 	case BLOWFISH:		BlowfishEncryptLE (data, data, ks, 1); break;	// Deprecated/legacy
+;|*** 	case CAST:			Cast5Encrypt (data, data, ks); break;			// Deprecated/legacy
+;|*** 	case TRIPLEDES:		TripleDesEncrypt (data, data, ks, 1); break;	// Deprecated/legacy
+;|*** #endif
+;|*** 	default:			TC_THROW_FATAL_EXCEPTION;	// Unknown/wrong ID
+;|*** 	}
+; Line 197
+	*** 000007	48 			dec	ax
+	*** 000008	74 10 			je	SHORT $SC838
+	*** 00000a	48 			dec	ax
+	*** 00000b	74 1a 			je	SHORT $SC840
+	*** 00000d	48 			dec	ax
+	*** 00000e	74 24 			je	SHORT $SC839
+;|*** 	default:			TC_THROW_FATAL_EXCEPTION;	// Unknown/wrong ID
+; Line 196
+	*** 000010	68 c4 00 		push	196	;00c4H
+	*** 000013	e8 00 00 		call	_ThrowFatalException
+	*** 000016	5b 			pop	bx
+;|*** 	}
+; Line 197
+	*** 000017	5e 			pop	si
+	*** 000018	c9 			leave	
+	*** 000019	c3 			ret	
+;|*** 	case AES:	
+; Line 179
+					$SC838:
+	*** 00001a	8b 76 06 		mov	si,WORD PTR [bp+6]	;data
+;|*** 		// In 32-bit kernel mode, due to KeSaveFloatingPointState() overhead, AES instructions can be used only when processing the whole data unit.
+;|*** #if (defined (_WIN64) || !defined (TC_WINDOWS_DRIVER)) && !defined (TC_WINDOWS_BOOT)
+;|*** 		if (IsAesHwCpuSupported())
+;|*** 			aes_hw_cpu_encrypt (ks, data);
+;|*** 		else
+;|*** #endif
+;|*** 			aes_encrypt (data, data, ks);
+; Line 186
+	*** 00001d	ff 76 08 		push	WORD PTR [bp+8]	;ks
+	*** 000020	56 			push	si
+	*** 000021	56 			push	si
+	*** 000022	e8 00 00 		call	_aes_encrypt
+	*** 000025	eb 18 			jmp	SHORT $L1169
+;|*** 		break;
+;|*** 
+;|*** 	case TWOFISH:		twofish_encrypt (ks, data, data); break;
+;|*** 	case SERPENT:		serpent_encrypt (data, data, ks); break;
+; Line 190
+					$SC840:
+	*** 000027	8b 76 06 		mov	si,WORD PTR [bp+6]	;data
+	*** 00002a	ff 76 08 		push	WORD PTR [bp+8]	;ks
+	*** 00002d	56 			push	si
+	*** 00002e	56 			push	si
+	*** 00002f	e8 00 00 		call	_serpent_encrypt
+	*** 000032	eb 0b 			jmp	SHORT $L1169
+;|*** 	case TWOFISH:		twofish_encrypt (ks, data, data); break;
+; Line 189
+					$SC839:
+	*** 000034	8b 76 06 		mov	si,WORD PTR [bp+6]	;data
+	*** 000037	56 			push	si
+	*** 000038	56 			push	si
+	*** 000039	ff 76 08 		push	WORD PTR [bp+8]	;ks
+	*** 00003c	e8 00 00 		call	_twofish_encrypt
+					$L1169:
+	*** 00003f	83 c4 06 		add	sp,6
+;|*** 	case SERPENT:		serpent_encrypt (data, data, ks); break;
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 	case BLOWFISH:		BlowfishEncryptLE (data, data, ks, 1); break;	// Deprecated/legacy
+;|*** 	case CAST:			Cast5Encrypt (data, data, ks); break;			// Deprecated/legacy
+;|*** 	case TRIPLEDES:		TripleDesEncrypt (data, data, ks, 1); break;	// Deprecated/legacy
+;|*** #endif
+;|*** 	default:			TC_THROW_FATAL_EXCEPTION;	// Unknown/wrong ID
+;|*** 	}
+;|*** }
+; Line 198
+	*** 000042	5e 			pop	si
+	*** 000043	c9 			leave	
+	*** 000044	c3 			ret	
+
+_EncipherBlock	ENDP
+	PUBLIC	_DecipherBlock
+_DecipherBlock	PROC NEAR	;  COMDAT
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 
+;|*** void EncipherBlocks (int cipher, void *dataPtr, void *ks, size_t blockCount)
+;|*** {
+;|*** 	byte *data = dataPtr;
+;|*** #if defined (TC_WINDOWS_DRIVER) && !defined (_WIN64)
+;|*** 	KFLOATING_SAVE floatingPointState;
+;|*** #endif
+;|*** 
+;|*** 	if (cipher == AES
+;|*** 		&& (blockCount & (32 - 1)) == 0
+;|*** 		&& IsAesHwCpuSupported()
+;|*** #if defined (TC_WINDOWS_DRIVER) && !defined (_WIN64)
+;|*** 		&& NT_SUCCESS (KeSaveFloatingPointState (&floatingPointState))
+;|*** #endif
+;|*** 		)
+;|*** 	{
+;|*** 		while (blockCount > 0)
+;|*** 		{
+;|*** 			aes_hw_cpu_encrypt_32_blocks (ks, data);
+;|*** 
+;|*** 			data += 32 * 16;
+;|*** 			blockCount -= 32;
+;|*** 		}
+;|*** 
+;|*** #if defined (TC_WINDOWS_DRIVER) && !defined (_WIN64)
+;|*** 		KeRestoreFloatingPointState (&floatingPointState);
+;|*** #endif
+;|*** 	}
+;|*** 	else
+;|*** 	{
+;|*** 		size_t blockSize = CipherGetBlockSize (cipher);
+;|*** 		while (blockCount-- > 0)
+;|*** 		{
+;|*** 			EncipherBlock (cipher, data, ks);
+;|*** 			data += blockSize;
+;|*** 		}
+;|*** 	}
+;|*** }
+;|*** 
+;|*** #endif // !TC_WINDOWS_BOOT
+;|*** 
+;|*** void DecipherBlock(int cipher, void *data, void *ks)
+;|*** {
+; Line 243
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	56 			push	si
+;	cipher = 4
+;	data = 6
+;	ks = 8
+;|*** 	switch (cipher)
+; Line 244
+	*** 000004	8b 46 04 		mov	ax,WORD PTR [bp+4]	;cipher
+;|*** 	{
+;|*** 	case SERPENT:	serpent_decrypt (data, data, ks); break;
+;|*** 	case TWOFISH:	twofish_decrypt (ks, data, data); break;
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 
+;|*** 	case AES:
+;|*** #if defined (_WIN64) || !defined (TC_WINDOWS_DRIVER)
+;|*** 		if (IsAesHwCpuSupported())
+;|*** 			aes_hw_cpu_decrypt ((byte *) ks + sizeof (aes_encrypt_ctx), data);
+;|*** 		else
+;|*** #endif
+;|*** 			aes_decrypt (data, data, (void *) ((char *) ks + sizeof(aes_encrypt_ctx)));
+;|*** 		break;
+;|*** 
+;|*** 	case BLOWFISH:	BlowfishEncryptLE (data, data, ks, 0); break;	// Deprecated/legacy
+;|*** 	case CAST:		Cast5Decrypt (data, data, ks); break;			// Deprecated/legacy
+;|*** 	case TRIPLEDES:	TripleDesEncrypt (data, data, ks, 0); break;	// Deprecated/legacy
+;|*** #else
+;|*** 	case AES:		aes_decrypt (data, data, ks); break;
+;|*** #endif
+;|*** 	default:		TC_THROW_FATAL_EXCEPTION;	// Unknown/wrong ID
+;|*** 	}
+; Line 266
+	*** 000007	48 			dec	ax
+	*** 000008	74 10 			je	SHORT $SC855
+	*** 00000a	48 			dec	ax
+	*** 00000b	74 1a 			je	SHORT $SC853
+	*** 00000d	48 			dec	ax
+	*** 00000e	74 24 			je	SHORT $SC854
+;|*** 	default:		TC_THROW_FATAL_EXCEPTION;	// Unknown/wrong ID
+; Line 265
+	*** 000010	68 09 01 		push	265	;0109H
+	*** 000013	e8 00 00 		call	_ThrowFatalException
+	*** 000016	5b 			pop	bx
+;|*** 	}
+; Line 266
+	*** 000017	5e 			pop	si
+	*** 000018	c9 			leave	
+	*** 000019	c3 			ret	
+;|*** 	case AES:		aes_decrypt (data, data, ks); break;
+; Line 263
+					$SC855:
+	*** 00001a	8b 76 06 		mov	si,WORD PTR [bp+6]	;data
+	*** 00001d	ff 76 08 		push	WORD PTR [bp+8]	;ks
+	*** 000020	56 			push	si
+	*** 000021	56 			push	si
+	*** 000022	e8 00 00 		call	_aes_decrypt
+	*** 000025	eb 18 			jmp	SHORT $L1170
+;|*** 	case SERPENT:	serpent_decrypt (data, data, ks); break;
+; Line 246
+					$SC853:
+	*** 000027	8b 76 06 		mov	si,WORD PTR [bp+6]	;data
+	*** 00002a	ff 76 08 		push	WORD PTR [bp+8]	;ks
+	*** 00002d	56 			push	si
+	*** 00002e	56 			push	si
+	*** 00002f	e8 00 00 		call	_serpent_decrypt
+	*** 000032	eb 0b 			jmp	SHORT $L1170
+;|*** 	case TWOFISH:	twofish_decrypt (ks, data, data); break;
+; Line 247
+					$SC854:
+	*** 000034	8b 76 06 		mov	si,WORD PTR [bp+6]	;data
+	*** 000037	56 			push	si
+	*** 000038	56 			push	si
+	*** 000039	ff 76 08 		push	WORD PTR [bp+8]	;ks
+	*** 00003c	e8 00 00 		call	_twofish_decrypt
+					$L1170:
+	*** 00003f	83 c4 06 		add	sp,6
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 
+;|*** 	case AES:
+;|*** #if defined (_WIN64) || !defined (TC_WINDOWS_DRIVER)
+;|*** 		if (IsAesHwCpuSupported())
+;|*** 			aes_hw_cpu_decrypt ((byte *) ks + sizeof (aes_encrypt_ctx), data);
+;|*** 		else
+;|*** #endif
+;|*** 			aes_decrypt (data, data, (void *) ((char *) ks + sizeof(aes_encrypt_ctx)));
+;|*** 		break;
+;|*** 
+;|*** 	case BLOWFISH:	BlowfishEncryptLE (data, data, ks, 0); break;	// Deprecated/legacy
+;|*** 	case CAST:		Cast5Decrypt (data, data, ks); break;			// Deprecated/legacy
+;|*** 	case TRIPLEDES:	TripleDesEncrypt (data, data, ks, 0); break;	// Deprecated/legacy
+;|*** #else
+;|*** 	case AES:		aes_decrypt (data, data, ks); break;
+;|*** #endif
+;|*** 	default:		TC_THROW_FATAL_EXCEPTION;	// Unknown/wrong ID
+;|*** 	}
+;|*** }
+; Line 267
+	*** 000042	5e 			pop	si
+	*** 000043	c9 			leave	
+	*** 000044	c3 			ret	
+
+_DecipherBlock	ENDP
+	PUBLIC	_CipherGet
+_CipherGet	PROC NEAR	;  COMDAT
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 
+;|*** void DecipherBlocks (int cipher, void *dataPtr, void *ks, size_t blockCount)
+;|*** {
+;|*** 	byte *data = dataPtr;
+;|*** #if defined (TC_WINDOWS_DRIVER) && !defined (_WIN64)
+;|*** 	KFLOATING_SAVE floatingPointState;
+;|*** #endif
+;|*** 
+;|*** 	if (cipher == AES
+;|*** 		&& (blockCount & (32 - 1)) == 0
+;|*** 		&& IsAesHwCpuSupported()
+;|*** #if defined (TC_WINDOWS_DRIVER) && !defined (_WIN64)
+;|*** 		&& NT_SUCCESS (KeSaveFloatingPointState (&floatingPointState))
+;|*** #endif
+;|*** 		)
+;|*** 	{
+;|*** 		while (blockCount > 0)
+;|*** 		{
+;|*** 			aes_hw_cpu_decrypt_32_blocks ((byte *) ks + sizeof (aes_encrypt_ctx), data);
+;|*** 
+;|*** 			data += 32 * 16;
+;|*** 			blockCount -= 32;
+;|*** 		}
+;|*** 
+;|*** #if defined (TC_WINDOWS_DRIVER) && !defined (_WIN64)
+;|*** 		KeRestoreFloatingPointState (&floatingPointState);
+;|*** #endif
+;|*** 	}
+;|*** 	else
+;|*** 	{
+;|*** 		size_t blockSize = CipherGetBlockSize (cipher);
+;|*** 		while (blockCount-- > 0)
+;|*** 		{
+;|*** 			DecipherBlock (cipher, data, ks);
+;|*** 			data += blockSize;
+;|*** 		}
+;|*** 	}
+;|*** }
+;|*** 
+;|*** #endif // !TC_WINDOWS_BOOT
+;|*** 
+;|*** 
+;|*** // Ciphers support
+;|*** 
+;|*** Cipher *CipherGet (int id)
+;|*** {
+; Line 315
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	id = 4
+;	register bx = i
+;|*** 	int i;
+;|*** 	for (i = 0; Ciphers[i].Id != 0; i++)
+; Line 317
+	*** 000005	33 db 			xor	bx,bx
+	*** 000007	8b 7e 04 		mov	di,WORD PTR [bp+4]	;id
+					$F862:
+	*** 00000a	6b f3 0a 		imul	si,bx,10	;000aH
+	*** 00000d	83 bc 00 00 00 		cmp	WORD PTR $S803_Ciphers[si],0
+	*** 000012	74 14 			je	SHORT $FB864
+;|*** 		if (Ciphers[i].Id == id)
+; Line 318
+	*** 000014	6b f3 0a 		imul	si,bx,10	;000aH
+	*** 000017	39 bc 00 00 		cmp	WORD PTR $S803_Ciphers[si],di
+	*** 00001b	74 03 			je	SHORT $L1134
+;|*** 	for (i = 0; Ciphers[i].Id != 0; i++)
+; Line 317
+	*** 00001d	43 			inc	bx
+	*** 00001e	eb ea 			jmp	SHORT $F862
+					$L1134:
+;|*** 		if (Ciphers[i].Id == id)
+;|*** 			return &Ciphers[i];
+; Line 319
+	*** 000020	6b c3 0a 		imul	ax,bx,10	;000aH
+	*** 000023	05 00 00 		add	ax,OFFSET DGROUP:$S803_Ciphers
+	*** 000026	eb 02 			jmp	SHORT $EX860
+;|*** 
+;|*** 	return NULL;
+; Line 321
+					$FB864:
+	*** 000028	33 c0 			xor	ax,ax
+;|*** }
+; Line 322
+					$EX860:
+	*** 00002a	5e 			pop	si
+	*** 00002b	5f 			pop	di
+	*** 00002c	c9 			leave	
+	*** 00002d	c3 			ret	
+
+_CipherGet	ENDP
+	PUBLIC	_CipherGetName
+_CipherGetName	PROC NEAR	;  COMDAT
+;|*** 
+;|*** char *CipherGetName (int cipherId)
+;|*** {
+; Line 325
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	cipherId = 4
+;|*** 	return CipherGet (cipherId) -> Name;
+; Line 326
+	*** 000003	ff 76 04 		push	WORD PTR [bp+4]	;cipherId
+	*** 000006	e8 00 00 		call	_CipherGet
+	*** 000009	5b 			pop	bx
+	*** 00000a	8b d8 			mov	bx,ax
+	*** 00000c	8b 47 02 		mov	ax,WORD PTR [bx+2]
+;|*** }
+; Line 327
+	*** 00000f	c9 			leave	
+	*** 000010	c3 			ret	
+
+_CipherGetName	ENDP
+	PUBLIC	_CipherGetBlockSize
+_CipherGetBlockSize	PROC NEAR	;  COMDAT
+;|*** 
+;|*** int CipherGetBlockSize (int cipherId)
+;|*** {
+; Line 330
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	cipherId = 4
+;|*** 	return CipherGet (cipherId) -> BlockSize;
+; Line 331
+	*** 000003	ff 76 04 		push	WORD PTR [bp+4]	;cipherId
+	*** 000006	e8 00 00 		call	_CipherGet
+	*** 000009	5b 			pop	bx
+	*** 00000a	8b d8 			mov	bx,ax
+	*** 00000c	8b 47 04 		mov	ax,WORD PTR [bx+4]
+;|*** }
+; Line 332
+	*** 00000f	c9 			leave	
+	*** 000010	c3 			ret	
+
+_CipherGetBlockSize	ENDP
+	PUBLIC	_CipherGetKeySize
+_CipherGetKeySize	PROC NEAR	;  COMDAT
+;|*** 
+;|*** int CipherGetKeySize (int cipherId)
+;|*** {
+; Line 335
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	cipherId = 4
+;|*** 	return CipherGet (cipherId) -> KeySize;
+; Line 336
+	*** 000003	ff 76 04 		push	WORD PTR [bp+4]	;cipherId
+	*** 000006	e8 00 00 		call	_CipherGet
+	*** 000009	5b 			pop	bx
+	*** 00000a	8b d8 			mov	bx,ax
+	*** 00000c	8b 47 06 		mov	ax,WORD PTR [bx+6]
+;|*** }
+; Line 337
+	*** 00000f	c9 			leave	
+	*** 000010	c3 			ret	
+
+_CipherGetKeySize	ENDP
+	PUBLIC	_CipherGetKeyScheduleSize
+_CipherGetKeyScheduleSize	PROC NEAR	;  COMDAT
+;|*** 
+;|*** int CipherGetKeyScheduleSize (int cipherId)
+;|*** {
+; Line 340
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	cipherId = 4
+;|*** 	return CipherGet (cipherId) -> KeyScheduleSize;
+; Line 341
+	*** 000003	ff 76 04 		push	WORD PTR [bp+4]	;cipherId
+	*** 000006	e8 00 00 		call	_CipherGet
+	*** 000009	5b 			pop	bx
+	*** 00000a	8b d8 			mov	bx,ax
+	*** 00000c	8b 47 08 		mov	ax,WORD PTR [bx+8]
+;|*** }
+; Line 342
+	*** 00000f	c9 			leave	
+	*** 000010	c3 			ret	
+
+_CipherGetKeyScheduleSize	ENDP
+	PUBLIC	_EAGetFirst
+_EAGetFirst	PROC NEAR	;  COMDAT
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 
+;|*** BOOL CipherSupportsIntraDataUnitParallelization (int cipher)
+;|*** {
+;|*** 	return cipher == AES && IsAesHwCpuSupported();
+;|*** }
+;|*** 
+;|*** #endif
+;|*** 
+;|*** 
+;|*** // Encryption algorithms support
+;|*** 
+;|*** int EAGetFirst ()
+;|*** {
+;|*** 	return 1;
+; Line 358
+	*** 000000	b8 01 00 		mov	ax,1
+;|*** }
+; Line 359
+	*** 000003	c3 			ret	
+
+_EAGetFirst	ENDP
+	PUBLIC	_EAGetCount
+_EAGetCount	PROC NEAR	;  COMDAT
+;|*** 
+;|*** // Returns number of EAs
+;|*** int EAGetCount (void)
+;|*** {
+; Line 363
+	*** 000000	57 			push	di
+	*** 000001	56 			push	si
+;	register si = ea
+;	register di = count
+;|*** 	int ea, count = 0;
+; Line 364
+	*** 000002	33 ff 			xor	di,di
+;|*** 
+;|*** 	for (ea = EAGetFirst (); ea != 0; ea = EAGetNext (ea))
+; Line 366
+	*** 000004	e8 00 00 		call	_EAGetFirst
+	*** 000007	eb 06 			jmp	SHORT $L1172
+					$F882:
+;|*** 	{
+;|*** 		count++;
+; Line 368
+	*** 000009	47 			inc	di
+;|*** 	for (ea = EAGetFirst (); ea != 0; ea = EAGetNext (ea))
+; Line 366
+	*** 00000a	56 			push	si
+	*** 00000b	e8 00 00 		call	_EAGetNext
+	*** 00000e	5b 			pop	bx
+					$L1172:
+	*** 00000f	8b f0 			mov	si,ax
+	*** 000011	0b f0 			or	si,ax
+	*** 000013	75 f4 			jne	SHORT $F882
+;|*** 	{
+;|*** 		count++;
+;|*** 	}
+;|*** 	return count;
+; Line 370
+	*** 000015	8b c7 			mov	ax,di
+;|*** }
+; Line 371
+	*** 000017	5e 			pop	si
+	*** 000018	5f 			pop	di
+	*** 000019	c3 			ret	
+
+_EAGetCount	ENDP
+	PUBLIC	_EAGetNext
+_EAGetNext	PROC NEAR	;  COMDAT
+;|*** 
+;|*** int EAGetNext (int previousEA)
+;|*** {
+; Line 374
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	56 			push	si
+;	previousEA = 4
+;	register bx = id
+;|*** 	int id = previousEA + 1;
+;|*** 	if (EncryptionAlgorithms[id].Ciphers[0] != 0) return id;
+; Line 376
+	*** 000004	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;previousEA
+	*** 000007	43 			inc	bx
+	*** 000008	6b f3 0e 		imul	si,bx,14	;000eH
+	*** 00000b	83 bc 00 00 00 		cmp	WORD PTR $S807_EncryptionAlgorithms[si],0
+	*** 000010	74 05 			je	SHORT $I889
+	*** 000012	8b c3 			mov	ax,bx
+	*** 000014	5e 			pop	si
+	*** 000015	c9 			leave	
+	*** 000016	c3 			ret	
+					$I889:
+	*** 000017	33 c0 			xor	ax,ax
+;|*** 	return 0;
+;|*** }
+; Line 378
+	*** 000019	5e 			pop	si
+	*** 00001a	c9 			leave	
+	*** 00001b	c3 			ret	
+
+_EAGetNext	ENDP
+	PUBLIC	_EAInit
+_EAInit	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** // Return values: 0 = success, ERR_CIPHER_INIT_FAILURE (fatal), ERR_CIPHER_INIT_WEAK_KEY (non-fatal)
+;|*** int EAInit (int ea, unsigned char *key, unsigned __int8 *ks)
+;|*** {
+; Line 383
+	*** 000000	c8 02 00 00 		enter	2,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	register si = c
+;	retVal = -2
+;	ea = 4
+;	key = 6
+;	ks = 8
+	*** 000006	8b 7e 04 		mov	di,WORD PTR [bp+4]	;ea
+;|*** 	int c, retVal = ERR_SUCCESS;
+; Line 384
+	*** 000009	c7 46 fe 00 00 		mov	WORD PTR [bp-2],0	;retVal
+;|*** 
+;|*** 	if (ea == 0)
+; Line 386
+	*** 00000e	0b ff 			or	di,di
+	*** 000010	75 05 			jne	SHORT $I899
+;|*** 		return ERR_CIPHER_INIT_FAILURE;
+; Line 387
+					$L1173:
+	*** 000012	b8 11 00 		mov	ax,17	;0011H
+	*** 000015	eb 46 			jmp	SHORT $EX896
+;|*** 
+;|*** 	for (c = EAGetFirstCipher (ea); c != 0; c = EAGetNextCipher (ea, c))
+; Line 389
+					$I899:
+	*** 000017	57 			push	di
+	*** 000018	e8 00 00 		call	_EAGetFirstCipher
+	*** 00001b	5b 			pop	bx
+	*** 00001c	8b f0 			mov	si,ax
+	*** 00001e	8b 7e 08 		mov	di,WORD PTR [bp+8]	;ks
+	*** 000021	eb 33 			jmp	SHORT $L1174
+					$F900:
+;|*** 	{
+;|*** 		switch (CipherInit (c, key, ks))
+; Line 391
+	*** 000023	57 			push	di
+	*** 000024	ff 76 06 		push	WORD PTR [bp+6]	;key
+	*** 000027	56 			push	si
+	*** 000028	e8 00 00 		call	_CipherInit
+	*** 00002b	83 c4 06 		add	sp,6
+;|*** 		{
+;|*** 		case ERR_CIPHER_INIT_FAILURE:
+;|*** 			return ERR_CIPHER_INIT_FAILURE;
+;|*** 
+;|*** 		case ERR_CIPHER_INIT_WEAK_KEY:
+;|*** 			retVal = ERR_CIPHER_INIT_WEAK_KEY;		// Non-fatal error
+;|*** 			break;
+;|*** 		}
+; Line 399
+	*** 00002e	2d 11 00 		sub	ax,17	;0011H
+	*** 000031	74 df 			je	SHORT $L1173
+	*** 000033	48 			dec	ax
+	*** 000034	75 05 			jne	SHORT $SB904
+;|*** 			retVal = ERR_CIPHER_INIT_WEAK_KEY;		// Non-fatal error
+; Line 397
+	*** 000036	c7 46 fe 12 00 		mov	WORD PTR [bp-2],18	;0012H	;retVal
+;|*** 			break;
+;|*** 		}
+; Line 399
+					$SB904:
+;|*** 
+;|*** 		key += CipherGetKeySize (c);
+; Line 401
+	*** 00003b	56 			push	si
+	*** 00003c	e8 00 00 		call	_CipherGetKeySize
+	*** 00003f	5b 			pop	bx
+	*** 000040	01 46 06 		add	WORD PTR [bp+6],ax	;key
+;|*** 		ks += CipherGetKeyScheduleSize (c);
+; Line 402
+	*** 000043	56 			push	si
+	*** 000044	e8 00 00 		call	_CipherGetKeyScheduleSize
+	*** 000047	5b 			pop	bx
+	*** 000048	03 f8 			add	di,ax
+;|*** 	for (c = EAGetFirstCipher (ea); c != 0; c = EAGetNextCipher (ea, c))
+; Line 389
+	*** 00004a	56 			push	si
+	*** 00004b	ff 76 04 		push	WORD PTR [bp+4]	;ea
+	*** 00004e	e8 00 00 		call	_EAGetNextCipher
+	*** 000051	83 c4 04 		add	sp,4
+	*** 000054	8b f0 			mov	si,ax
+					$L1174:
+	*** 000056	0b f0 			or	si,ax
+	*** 000058	75 c9 			jne	SHORT $F900
+;|*** 	{
+;|*** 		switch (CipherInit (c, key, ks))
+;|*** 		{
+;|*** 		case ERR_CIPHER_INIT_FAILURE:
+;|*** 			return ERR_CIPHER_INIT_FAILURE;
+;|*** 
+;|*** 		case ERR_CIPHER_INIT_WEAK_KEY:
+;|*** 			retVal = ERR_CIPHER_INIT_WEAK_KEY;		// Non-fatal error
+;|*** 			break;
+;|*** 		}
+;|*** 
+;|*** 		key += CipherGetKeySize (c);
+;|*** 		ks += CipherGetKeyScheduleSize (c);
+;|*** 	}
+;|*** 	return retVal;
+; Line 404
+	*** 00005a	8b 46 fe 		mov	ax,WORD PTR [bp-2]	;retVal
+;|*** }
+; Line 405
+					$EX896:
+	*** 00005d	5e 			pop	si
+	*** 00005e	5f 			pop	di
+	*** 00005f	c9 			leave	
+	*** 000060	c3 			ret	
+
+_EAInit	ENDP
+	PUBLIC	_EAGetKeySize
+_EAGetKeySize	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 
+;|*** BOOL EAInitMode (PCRYPTO_INFO ci)
+;|*** {
+;|*** 	switch (ci->mode)
+;|*** 	{
+;|*** 	case XTS:
+;|*** 		// Secondary key schedule
+;|*** 		if (EAInit (ci->ea, ci->k2, ci->ks2) != ERR_SUCCESS)
+;|*** 			return FALSE;
+;|*** 
+;|*** 		/* Note: XTS mode could potentially be initialized with a weak key causing all blocks in one data unit
+;|*** 		on the volume to be tweaked with zero tweaks (i.e. 512 bytes of the volume would be encrypted in ECB
+;|*** 		mode). However, to create a CipherShed volume with such a weak key, each human being on Earth would have
+;|*** 		to create approximately 11,378,125,361,078,862 (about eleven quadrillion) CipherShed volumes (provided 
+;|*** 		that the size of each of the volumes is 1024 terabytes). */
+;|*** 		break;
+;|*** 
+;|*** 	case LRW:
+;|*** 		switch (CipherGetBlockSize (EAGetFirstCipher (ci->ea)))
+;|*** 		{
+;|*** 		case 8:
+;|*** 			/* Deprecated/legacy */
+;|*** 			return Gf64TabInit (ci->k2, &ci->gf_ctx);
+;|*** 
+;|*** 		case 16:
+;|*** 			return Gf128Tab64Init (ci->k2, &ci->gf_ctx);
+;|*** 
+;|*** 		default:
+;|*** 			TC_THROW_FATAL_EXCEPTION;
+;|*** 		}
+;|*** 
+;|*** 		break;
+;|*** 
+;|*** 	case CBC:
+;|*** 	case INNER_CBC:
+;|*** 	case OUTER_CBC:
+;|*** 		// The mode does not need to be initialized or is initialized elsewhere 
+;|*** 		return TRUE;
+;|*** 
+;|*** 	default:		
+;|*** 		// Unknown/wrong ID
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 	}
+;|*** 	return TRUE;
+;|*** }
+;|*** 
+;|*** 
+;|*** // Returns name of EA, cascaded cipher names are separated by hyphens
+;|*** char *EAGetName (char *buf, int ea)
+;|*** {
+;|*** 	int i = EAGetLastCipher(ea);
+;|*** 	strcpy (buf, (i != 0) ? CipherGetName (i) : "?");
+;|*** 
+;|*** 	while (i = EAGetPreviousCipher(ea, i))
+;|*** 	{
+;|*** 		strcat (buf, "-");
+;|*** 		strcat (buf, CipherGetName (i));
+;|*** 	}
+;|*** 
+;|*** 	return buf;
+;|*** }
+;|*** 
+;|*** 
+;|*** int EAGetByName (char *name)
+;|*** {
+;|*** 	int ea = EAGetFirst ();
+;|*** 	char n[128];
+;|*** 
+;|*** 	do
+;|*** 	{
+;|*** 		EAGetName (n, ea);
+;|*** 		if (strcmp (n, name) == 0)
+;|*** 			return ea;
+;|*** 	}
+;|*** 	while (ea = EAGetNext (ea));
+;|*** 
+;|*** 	return 0;
+;|*** }
+;|*** 
+;|*** #endif // TC_WINDOWS_BOOT
+;|*** 
+;|*** // Returns sum of key sizes of all ciphers of the EA (in bytes)
+;|*** int EAGetKeySize (int ea)
+;|*** {
+; Line 492
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	ea = 4
+;	register si = i
+;	register di = size
+;|*** 	int i = EAGetFirstCipher (ea);
+;|*** 	int size = CipherGetKeySize (i);
+; Line 494
+	*** 000005	ff 76 04 		push	WORD PTR [bp+4]	;ea
+	*** 000008	e8 00 00 		call	_EAGetFirstCipher
+	*** 00000b	5b 			pop	bx
+	*** 00000c	8b f0 			mov	si,ax
+	*** 00000e	50 			push	ax
+	*** 00000f	e8 00 00 		call	_CipherGetKeySize
+	*** 000012	5b 			pop	bx
+	*** 000013	8b f8 			mov	di,ax
+;|*** 
+;|*** 	while (i = EAGetNextCipher (ea, i))
+; Line 496
+	*** 000015	eb 07 			jmp	SHORT $L1175
+					$FC915:
+;|*** 	{
+;|*** 		size += CipherGetKeySize (i);
+; Line 498
+	*** 000017	50 			push	ax
+	*** 000018	e8 00 00 		call	_CipherGetKeySize
+	*** 00001b	5b 			pop	bx
+	*** 00001c	03 f8 			add	di,ax
+;|*** 	}
+; Line 499
+					$L1175:
+	*** 00001e	56 			push	si
+	*** 00001f	ff 76 04 		push	WORD PTR [bp+4]	;ea
+	*** 000022	e8 00 00 		call	_EAGetNextCipher
+	*** 000025	83 c4 04 		add	sp,4
+	*** 000028	8b f0 			mov	si,ax
+	*** 00002a	0b f0 			or	si,ax
+	*** 00002c	75 e9 			jne	SHORT $FC915
+;|*** 
+;|*** 	return size;
+; Line 501
+	*** 00002e	8b c7 			mov	ax,di
+;|*** }
+; Line 502
+	*** 000030	5e 			pop	si
+	*** 000031	5f 			pop	di
+	*** 000032	c9 			leave	
+	*** 000033	c3 			ret	
+
+_EAGetKeySize	ENDP
+	PUBLIC	_EAGetFirstMode
+_EAGetFirstMode	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** // Returns the first mode of operation of EA
+;|*** int EAGetFirstMode (int ea)
+;|*** {
+; Line 507
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	ea = 4
+;|*** 	return (EncryptionAlgorithms[ea].Modes[0]);
+; Line 508
+	*** 000003	6b 5e 04 0e 		imul	bx,WORD PTR [bp+4],14	;000eH	;ea
+	*** 000007	8b 87 08 00 		mov	ax,WORD PTR $S807_EncryptionAlgorithms[bx+8]
+;|*** }
+; Line 509
+	*** 00000b	c9 			leave	
+	*** 00000c	c3 			ret	
+
+_EAGetFirstMode	ENDP
+	PUBLIC	_EAGetNextMode
+_EAGetNextMode	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** int EAGetNextMode (int ea, int previousModeId)
+;|*** {
+; Line 513
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+;	ea = 4
+;	previousModeId = 6
+;	register bx = c
+;	register di = i
+;|*** 	int c, i = 0;
+; Line 514
+	*** 000004	33 ff 			xor	di,di
+;|*** 	while (c = EncryptionAlgorithms[ea].Modes[i++])
+; Line 515
+					$FC928:
+	*** 000006	6b 5e 04 07 		imul	bx,WORD PTR [bp+4],7	;ea
+	*** 00000a	03 df 			add	bx,di
+	*** 00000c	03 db 			add	bx,bx
+	*** 00000e	47 			inc	di
+	*** 00000f	8b 9f 08 00 		mov	bx,WORD PTR $S807_EncryptionAlgorithms[bx+8]
+	*** 000013	0b db 			or	bx,bx
+	*** 000015	74 14 			je	SHORT $FB929
+;|*** 	{
+;|*** 		if (c == previousModeId) 
+; Line 517
+	*** 000017	3b 5e 06 		cmp	bx,WORD PTR [bp+6]	;previousModeId
+	*** 00001a	75 ea 			jne	SHORT $FC928
+;|*** 			return EncryptionAlgorithms[ea].Modes[i];
+; Line 518
+	*** 00001c	6b 5e 04 07 		imul	bx,WORD PTR [bp+4],7	;ea
+	*** 000020	03 df 			add	bx,di
+	*** 000022	03 db 			add	bx,bx
+	*** 000024	8b 87 08 00 		mov	ax,WORD PTR $S807_EncryptionAlgorithms[bx+8]
+	*** 000028	5f 			pop	di
+	*** 000029	c9 			leave	
+	*** 00002a	c3 			ret	
+;|*** 	}
+; Line 519
+					$FB929:
+;|*** 
+;|*** 	return 0;
+; Line 521
+	*** 00002b	33 c0 			xor	ax,ax
+;|*** }
+; Line 522
+	*** 00002d	5f 			pop	di
+	*** 00002e	c9 			leave	
+	*** 00002f	c3 			ret	
+
+_EAGetNextMode	ENDP
+	PUBLIC	_EAGetKeyScheduleSize
+_EAGetKeyScheduleSize	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 
+;|*** // Returns the name of the mode of operation of the whole EA
+;|*** char *EAGetModeName (int ea, int mode, BOOL capitalLetters)
+;|*** {
+;|*** 	switch (mode)
+;|*** 	{
+;|*** 	case XTS:
+;|*** 
+;|*** 		return "XTS";
+;|*** 
+;|*** 	case LRW:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		return "LRW";
+;|*** 
+;|*** 	case CBC:
+;|*** 		{
+;|*** 			/* Deprecated/legacy */
+;|*** 
+;|*** 			char eaName[100];
+;|*** 			EAGetName (eaName, ea);
+;|*** 
+;|*** 			if (strcmp (eaName, "Triple DES") == 0)
+;|*** 				return capitalLetters ? "Outer-CBC" : "outer-CBC";
+;|*** 
+;|*** 			return "CBC";
+;|*** 		}
+;|*** 
+;|*** 	case OUTER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		return  capitalLetters ? "Outer-CBC" : "outer-CBC";
+;|*** 
+;|*** 	case INNER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		return capitalLetters ? "Inner-CBC" : "inner-CBC";
+;|*** 
+;|*** 	}
+;|*** 	return "[unknown]";
+;|*** }
+;|*** 
+;|*** #endif // TC_WINDOWS_BOOT
+;|*** 
+;|*** 
+;|*** // Returns sum of key schedule sizes of all ciphers of the EA
+;|*** int EAGetKeyScheduleSize (int ea)
+;|*** {
+; Line 576
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	ea = 4
+;	register si = i
+;	register di = size
+;|*** 	int i = EAGetFirstCipher(ea);
+;|*** 	int size = CipherGetKeyScheduleSize (i);
+; Line 578
+	*** 000005	ff 76 04 		push	WORD PTR [bp+4]	;ea
+	*** 000008	e8 00 00 		call	_EAGetFirstCipher
+	*** 00000b	5b 			pop	bx
+	*** 00000c	8b f0 			mov	si,ax
+	*** 00000e	50 			push	ax
+	*** 00000f	e8 00 00 		call	_CipherGetKeyScheduleSize
+	*** 000012	5b 			pop	bx
+	*** 000013	8b f8 			mov	di,ax
+;|*** 
+;|*** 	while (i = EAGetNextCipher(ea, i))
+; Line 580
+	*** 000015	eb 07 			jmp	SHORT $L1176
+					$FC937:
+;|*** 	{
+;|*** 		size += CipherGetKeyScheduleSize (i);
+; Line 582
+	*** 000017	50 			push	ax
+	*** 000018	e8 00 00 		call	_CipherGetKeyScheduleSize
+	*** 00001b	5b 			pop	bx
+	*** 00001c	03 f8 			add	di,ax
+;|*** 	}
+; Line 583
+					$L1176:
+	*** 00001e	56 			push	si
+	*** 00001f	ff 76 04 		push	WORD PTR [bp+4]	;ea
+	*** 000022	e8 00 00 		call	_EAGetNextCipher
+	*** 000025	83 c4 04 		add	sp,4
+	*** 000028	8b f0 			mov	si,ax
+	*** 00002a	0b f0 			or	si,ax
+	*** 00002c	75 e9 			jne	SHORT $FC937
+;|*** 
+;|*** 	return size;
+; Line 585
+	*** 00002e	8b c7 			mov	ax,di
+;|*** }
+; Line 586
+	*** 000030	5e 			pop	si
+	*** 000031	5f 			pop	di
+	*** 000032	c9 			leave	
+	*** 000033	c3 			ret	
+
+_EAGetKeyScheduleSize	ENDP
+	PUBLIC	_EAGetLargestKeyForMode
+_EAGetLargestKeyForMode	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** // Returns the largest key size needed by an EA for the specified mode of operation
+;|*** int EAGetLargestKeyForMode (int mode)
+;|*** {
+; Line 591
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	mode = 4
+;	register si = ea
+;	register di = key
+;|*** 	int ea, key = 0;
+; Line 592
+	*** 000005	33 ff 			xor	di,di
+;|*** 
+;|*** 	for (ea = EAGetFirst (); ea != 0; ea = EAGetNext (ea))
+; Line 594
+	*** 000007	e8 00 00 		call	_EAGetFirst
+	*** 00000a	eb 23 			jmp	SHORT $L1178
+					$F944:
+;|*** 	{
+;|*** 		if (!EAIsModeSupported (ea, mode))
+; Line 596
+	*** 00000c	ff 76 04 		push	WORD PTR [bp+4]	;mode
+	*** 00000f	56 			push	si
+	*** 000010	e8 00 00 		call	_EAIsModeSupported
+	*** 000013	83 c4 04 		add	sp,4
+	*** 000016	0a c0 			or	al,al
+	*** 000018	74 10 			je	SHORT $FC945
+;|*** 			continue;
+;|*** 
+;|*** 		if (EAGetKeySize (ea) >= key)
+; Line 599
+	*** 00001a	56 			push	si
+	*** 00001b	e8 00 00 		call	_EAGetKeySize
+	*** 00001e	5b 			pop	bx
+	*** 00001f	3b c7 			cmp	ax,di
+	*** 000021	7c 07 			jl	SHORT $FC945
+;|*** 			key = EAGetKeySize (ea);
+; Line 600
+	*** 000023	56 			push	si
+	*** 000024	e8 00 00 		call	_EAGetKeySize
+	*** 000027	5b 			pop	bx
+	*** 000028	8b f8 			mov	di,ax
+;|*** 	for (ea = EAGetFirst (); ea != 0; ea = EAGetNext (ea))
+; Line 594
+					$FC945:
+	*** 00002a	56 			push	si
+	*** 00002b	e8 00 00 		call	_EAGetNext
+	*** 00002e	5b 			pop	bx
+					$L1178:
+	*** 00002f	8b f0 			mov	si,ax
+	*** 000031	0b f0 			or	si,ax
+	*** 000033	75 d7 			jne	SHORT $F944
+;|*** 	{
+;|*** 		if (!EAIsModeSupported (ea, mode))
+;|*** 			continue;
+;|*** 
+;|*** 		if (EAGetKeySize (ea) >= key)
+;|*** 			key = EAGetKeySize (ea);
+;|*** 	}
+;|*** 	return key;
+; Line 602
+	*** 000035	8b c7 			mov	ax,di
+;|*** }
+; Line 603
+	*** 000037	5e 			pop	si
+	*** 000038	5f 			pop	di
+	*** 000039	c9 			leave	
+	*** 00003a	c3 			ret	
+
+_EAGetLargestKeyForMode	ENDP
+	PUBLIC	_EAGetLargestKey
+_EAGetLargestKey	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** // Returns the largest key needed by any EA for any mode
+;|*** int EAGetLargestKey ()
+;|*** {
+; Line 608
+	*** 000000	57 			push	di
+	*** 000001	56 			push	si
+;	register si = ea
+;	register di = key
+;|*** 	int ea, key = 0;
+; Line 609
+	*** 000002	33 ff 			xor	di,di
+;|*** 
+;|*** 	for (ea = EAGetFirst (); ea != 0; ea = EAGetNext (ea))
+; Line 611
+	*** 000004	e8 00 00 		call	_EAGetFirst
+	*** 000007	eb 15 			jmp	SHORT $L1180
+					$F952:
+;|*** 	{
+;|*** 		if (EAGetKeySize (ea) >= key)
+; Line 613
+	*** 000009	56 			push	si
+	*** 00000a	e8 00 00 		call	_EAGetKeySize
+	*** 00000d	5b 			pop	bx
+	*** 00000e	3b c7 			cmp	ax,di
+	*** 000010	7c 07 			jl	SHORT $FC953
+;|*** 			key = EAGetKeySize (ea);
+; Line 614
+	*** 000012	56 			push	si
+	*** 000013	e8 00 00 		call	_EAGetKeySize
+	*** 000016	5b 			pop	bx
+	*** 000017	8b f8 			mov	di,ax
+;|*** 	for (ea = EAGetFirst (); ea != 0; ea = EAGetNext (ea))
+; Line 611
+					$FC953:
+	*** 000019	56 			push	si
+	*** 00001a	e8 00 00 		call	_EAGetNext
+	*** 00001d	5b 			pop	bx
+					$L1180:
+	*** 00001e	8b f0 			mov	si,ax
+	*** 000020	0b f0 			or	si,ax
+	*** 000022	75 e5 			jne	SHORT $F952
+;|*** 	{
+;|*** 		if (EAGetKeySize (ea) >= key)
+;|*** 			key = EAGetKeySize (ea);
+;|*** 	}
+;|*** 
+;|*** 	return key;
+; Line 617
+	*** 000024	8b c7 			mov	ax,di
+;|*** }
+; Line 618
+	*** 000026	5e 			pop	si
+	*** 000027	5f 			pop	di
+	*** 000028	c3 			ret	
+
+_EAGetLargestKey	ENDP
+	PUBLIC	_EAGetCipherCount
+_EAGetCipherCount	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** // Returns number of ciphers in EA
+;|*** int EAGetCipherCount (int ea)
+;|*** {
+; Line 623
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	ea = 4
+;	register bx = i
+;|*** 	int i = 0;
+; Line 624
+	*** 000005	33 db 			xor	bx,bx
+	*** 000007	8b 7e 04 		mov	di,WORD PTR [bp+4]	;ea
+;|*** 	while (EncryptionAlgorithms[ea].Ciphers[i++]);
+; Line 625
+					$FC961:
+	*** 00000a	6b f7 07 		imul	si,di,7
+	*** 00000d	8b c3 			mov	ax,bx
+	*** 00000f	43 			inc	bx
+	*** 000010	03 f0 			add	si,ax
+	*** 000012	03 f6 			add	si,si
+	*** 000014	83 bc 00 00 00 		cmp	WORD PTR $S807_EncryptionAlgorithms[si],0
+	*** 000019	75 ef 			jne	SHORT $FC961
+;|*** 
+;|*** 	return i - 1;
+; Line 627
+	*** 00001b	8d 47 ff 		lea	ax,WORD PTR [bx-1]
+;|*** }
+; Line 628
+	*** 00001e	5e 			pop	si
+	*** 00001f	5f 			pop	di
+	*** 000020	c9 			leave	
+	*** 000021	c3 			ret	
+
+_EAGetCipherCount	ENDP
+	PUBLIC	_EAGetFirstCipher
+_EAGetFirstCipher	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** int EAGetFirstCipher (int ea)
+;|*** {
+; Line 632
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	ea = 4
+;|*** 	return EncryptionAlgorithms[ea].Ciphers[0];
+; Line 633
+	*** 000003	6b 5e 04 0e 		imul	bx,WORD PTR [bp+4],14	;000eH	;ea
+	*** 000007	8b 87 00 00 		mov	ax,WORD PTR $S807_EncryptionAlgorithms[bx]
+;|*** }
+; Line 634
+	*** 00000b	c9 			leave	
+	*** 00000c	c3 			ret	
+
+_EAGetFirstCipher	ENDP
+	PUBLIC	_EAGetLastCipher
+_EAGetLastCipher	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** int EAGetLastCipher (int ea)
+;|*** {
+; Line 638
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	ea = 4
+;	register di = c
+;	register bx = i
+;|*** 	int c, i = 0;
+; Line 639
+	*** 000005	33 db 			xor	bx,bx
+;|*** 	while (c = EncryptionAlgorithms[ea].Ciphers[i++]);
+; Line 640
+					$FC972:
+	*** 000007	6b 76 04 07 		imul	si,WORD PTR [bp+4],7	;ea
+	*** 00000b	03 f3 			add	si,bx
+	*** 00000d	03 f6 			add	si,si
+	*** 00000f	43 			inc	bx
+	*** 000010	8b bc 00 00 		mov	di,WORD PTR $S807_EncryptionAlgorithms[si]
+	*** 000014	0b ff 			or	di,di
+	*** 000016	75 ef 			jne	SHORT $FC972
+;|*** 
+;|*** 	return EncryptionAlgorithms[ea].Ciphers[i - 2];
+; Line 642
+	*** 000018	6b 76 04 07 		imul	si,WORD PTR [bp+4],7	;ea
+	*** 00001c	03 f3 			add	si,bx
+	*** 00001e	03 f6 			add	si,si
+	*** 000020	8b 84 fc ff 		mov	ax,WORD PTR $S807_EncryptionAlgorithms[si-4]
+;|*** }
+; Line 643
+	*** 000024	5e 			pop	si
+	*** 000025	5f 			pop	di
+	*** 000026	c9 			leave	
+	*** 000027	c3 			ret	
+
+_EAGetLastCipher	ENDP
+	PUBLIC	_EAGetNextCipher
+_EAGetNextCipher	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** int EAGetNextCipher (int ea, int previousCipherId)
+;|*** {
+; Line 647
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+;	ea = 4
+;	previousCipherId = 6
+;	register bx = c
+;	register di = i
+;|*** 	int c, i = 0;
+; Line 648
+	*** 000004	33 ff 			xor	di,di
+;|*** 	while (c = EncryptionAlgorithms[ea].Ciphers[i++])
+; Line 649
+					$FC982:
+	*** 000006	6b 5e 04 07 		imul	bx,WORD PTR [bp+4],7	;ea
+	*** 00000a	03 df 			add	bx,di
+	*** 00000c	03 db 			add	bx,bx
+	*** 00000e	47 			inc	di
+	*** 00000f	8b 9f 00 00 		mov	bx,WORD PTR $S807_EncryptionAlgorithms[bx]
+	*** 000013	0b db 			or	bx,bx
+	*** 000015	74 14 			je	SHORT $FB983
+;|*** 	{
+;|*** 		if (c == previousCipherId) 
+; Line 651
+	*** 000017	3b 5e 06 		cmp	bx,WORD PTR [bp+6]	;previousCipherId
+	*** 00001a	75 ea 			jne	SHORT $FC982
+;|*** 			return EncryptionAlgorithms[ea].Ciphers[i];
+; Line 652
+	*** 00001c	6b 5e 04 07 		imul	bx,WORD PTR [bp+4],7	;ea
+	*** 000020	03 df 			add	bx,di
+	*** 000022	03 db 			add	bx,bx
+	*** 000024	8b 87 00 00 		mov	ax,WORD PTR $S807_EncryptionAlgorithms[bx]
+	*** 000028	5f 			pop	di
+	*** 000029	c9 			leave	
+	*** 00002a	c3 			ret	
+;|*** 	}
+; Line 653
+					$FB983:
+;|*** 
+;|*** 	return 0;
+; Line 655
+	*** 00002b	33 c0 			xor	ax,ax
+;|*** }
+; Line 656
+	*** 00002d	5f 			pop	di
+	*** 00002e	c9 			leave	
+	*** 00002f	c3 			ret	
+
+_EAGetNextCipher	ENDP
+	PUBLIC	_EAGetPreviousCipher
+_EAGetPreviousCipher	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** int EAGetPreviousCipher (int ea, int previousCipherId)
+;|*** {
+; Line 660
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+;	ea = 4
+;	previousCipherId = 6
+;	register bx = c
+;	register di = i
+;|*** 	int c, i = 0;
+;|*** 
+;|*** 	if (EncryptionAlgorithms[ea].Ciphers[i++] == previousCipherId)
+; Line 663
+	*** 000004	bf 01 00 		mov	di,1
+	*** 000007	8b 46 06 		mov	ax,WORD PTR [bp+6]	;previousCipherId
+	*** 00000a	6b 5e 04 0e 		imul	bx,WORD PTR [bp+4],14	;000eH	;ea
+	*** 00000e	39 87 00 00 		cmp	WORD PTR $S807_EncryptionAlgorithms[bx],ax
+	*** 000012	74 25 			je	SHORT $FB995
+					$L1145:
+;|*** 		return 0;
+;|*** 
+;|*** 	while (c = EncryptionAlgorithms[ea].Ciphers[i++])
+; Line 666
+	*** 000014	6b 5e 04 07 		imul	bx,WORD PTR [bp+4],7	;ea
+	*** 000018	03 df 			add	bx,di
+	*** 00001a	03 db 			add	bx,bx
+	*** 00001c	47 			inc	di
+	*** 00001d	8b 9f 00 00 		mov	bx,WORD PTR $S807_EncryptionAlgorithms[bx]
+	*** 000021	0b db 			or	bx,bx
+	*** 000023	74 14 			je	SHORT $FB995
+;|*** 	{
+;|*** 		if (c == previousCipherId) 
+; Line 668
+	*** 000025	3b 5e 06 		cmp	bx,WORD PTR [bp+6]	;previousCipherId
+	*** 000028	75 ea 			jne	SHORT $L1145
+;|*** 			return EncryptionAlgorithms[ea].Ciphers[i - 2];
+; Line 669
+	*** 00002a	6b 5e 04 07 		imul	bx,WORD PTR [bp+4],7	;ea
+	*** 00002e	03 df 			add	bx,di
+	*** 000030	03 db 			add	bx,bx
+	*** 000032	8b 87 fc ff 		mov	ax,WORD PTR $S807_EncryptionAlgorithms[bx-4]
+	*** 000036	5f 			pop	di
+	*** 000037	c9 			leave	
+	*** 000038	c3 			ret	
+;|*** 	}
+; Line 670
+					$FB995:
+;|*** 
+;|*** 	return 0;
+; Line 672
+	*** 000039	33 c0 			xor	ax,ax
+;|*** }
+; Line 673
+	*** 00003b	5f 			pop	di
+	*** 00003c	c9 			leave	
+	*** 00003d	c3 			ret	
+
+_EAGetPreviousCipher	ENDP
+	PUBLIC	_EAIsFormatEnabled
+_EAIsFormatEnabled	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** int EAIsFormatEnabled (int ea)
+;|*** {
+; Line 677
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	ea = 4
+;|*** 	return EncryptionAlgorithms[ea].FormatEnabled;
+; Line 678
+	*** 000003	6b 5e 04 0e 		imul	bx,WORD PTR [bp+4],14	;000eH	;ea
+	*** 000007	8b 87 0c 00 		mov	ax,WORD PTR $S807_EncryptionAlgorithms[bx+12]
+;|*** }
+; Line 679
+	*** 00000b	c9 			leave	
+	*** 00000c	c3 			ret	
+
+_EAIsFormatEnabled	ENDP
+	PUBLIC	_EAIsModeSupported
+_EAIsModeSupported	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** // Returns TRUE if the mode of operation is supported for the encryption algorithm
+;|*** BOOL EAIsModeSupported (int ea, int testedMode)
+;|*** {
+; Line 684
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	ea = 4
+;	testedMode = 6
+;	register si = mode
+	*** 000005	8b 7e 04 		mov	di,WORD PTR [bp+4]	;ea
+;|*** 	int mode;
+;|*** 
+;|*** 	for (mode = EAGetFirstMode (ea); mode != 0; mode = EAGetNextMode (ea, mode))
+; Line 687
+	*** 000008	57 			push	di
+	*** 000009	e8 00 00 		call	_EAGetFirstMode
+	*** 00000c	5b 			pop	bx
+					$L1182:
+	*** 00000d	8b f0 			mov	si,ax
+	*** 00000f	0b f0 			or	si,ax
+	*** 000011	74 13 			je	SHORT $FB1008
+;|*** 	{
+;|*** 		if (mode == testedMode)
+; Line 689
+	*** 000013	39 76 06 		cmp	WORD PTR [bp+6],si	;testedMode
+	*** 000016	74 0a 			je	SHORT $L1147
+;|*** 	for (mode = EAGetFirstMode (ea); mode != 0; mode = EAGetNextMode (ea, mode))
+; Line 687
+	*** 000018	56 			push	si
+	*** 000019	57 			push	di
+	*** 00001a	e8 00 00 		call	_EAGetNextMode
+	*** 00001d	83 c4 04 		add	sp,4
+	*** 000020	eb eb 			jmp	SHORT $L1182
+					$L1147:
+;|*** 	{
+;|*** 		if (mode == testedMode)
+;|*** 			return TRUE;
+; Line 690
+	*** 000022	b0 01 			mov	al,1
+	*** 000024	eb 02 			jmp	SHORT $EX1004
+;|*** 	}
+; Line 691
+					$FB1008:
+;|*** 	return FALSE;
+; Line 692
+	*** 000026	32 c0 			xor	al,al
+;|*** }
+; Line 693
+					$EX1004:
+	*** 000028	5e 			pop	si
+	*** 000029	5f 			pop	di
+	*** 00002a	c9 			leave	
+	*** 00002b	c3 			ret	
+
+_EAIsModeSupported	ENDP
+	PUBLIC	_HashGet
+_HashGet	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** Hash *HashGet (int id)
+;|*** {
+; Line 697
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	id = 4
+;	register bx = i
+;|*** 	int i;
+;|*** 	for (i = 0; Hashes[i].Id != 0; i++)
+; Line 699
+	*** 000005	33 db 			xor	bx,bx
+	*** 000007	8b 7e 04 		mov	di,WORD PTR [bp+4]	;id
+					$F1015:
+	*** 00000a	6b f3 06 		imul	si,bx,6
+	*** 00000d	83 bc 00 00 00 		cmp	WORD PTR $S808_Hashes[si],0
+	*** 000012	74 14 			je	SHORT $FB1017
+;|*** 		if (Hashes[i].Id == id)
+; Line 700
+	*** 000014	6b f3 06 		imul	si,bx,6
+	*** 000017	39 bc 00 00 		cmp	WORD PTR $S808_Hashes[si],di
+	*** 00001b	74 03 			je	SHORT $L1149
+;|*** 	for (i = 0; Hashes[i].Id != 0; i++)
+; Line 699
+	*** 00001d	43 			inc	bx
+	*** 00001e	eb ea 			jmp	SHORT $F1015
+					$L1149:
+;|*** 		if (Hashes[i].Id == id)
+;|*** 			return &Hashes[i];
+; Line 701
+	*** 000020	6b c3 06 		imul	ax,bx,6
+	*** 000023	05 00 00 		add	ax,OFFSET DGROUP:$S808_Hashes
+	*** 000026	eb 02 			jmp	SHORT $EX1013
+;|*** 
+;|*** 	return 0;
+; Line 703
+					$FB1017:
+	*** 000028	33 c0 			xor	ax,ax
+;|*** }
+; Line 704
+					$EX1013:
+	*** 00002a	5e 			pop	si
+	*** 00002b	5f 			pop	di
+	*** 00002c	c9 			leave	
+	*** 00002d	c3 			ret	
+
+_HashGet	ENDP
+	PUBLIC	_HashGetIdByName
+_HashGetIdByName	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** int HashGetIdByName (char *name)
+;|*** {
+; Line 708
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	name = 4
+;	register si = i
+;|*** 	int i;
+;|*** 	for (i = 0; Hashes[i].Id != 0; i++)
+; Line 710
+	*** 000005	33 f6 			xor	si,si
+	*** 000007	8b 7e 04 		mov	di,WORD PTR [bp+4]	;name
+					$F1024:
+	*** 00000a	6b de 06 		imul	bx,si,6
+	*** 00000d	83 bf 00 00 00 		cmp	WORD PTR $S808_Hashes[bx],0
+	*** 000012	74 1e 			je	SHORT $FB1026
+;|*** 		if (strcmp (Hashes[i].Name, name) == 0)
+; Line 711
+	*** 000014	57 			push	di
+	*** 000015	6b de 06 		imul	bx,si,6
+	*** 000018	ff b7 02 00 		push	WORD PTR $S808_Hashes[bx+2]
+	*** 00001c	e8 00 00 		call	_strcmp
+	*** 00001f	83 c4 04 		add	sp,4
+	*** 000022	0b c0 			or	ax,ax
+	*** 000024	74 03 			je	SHORT $L1151
+;|*** 	for (i = 0; Hashes[i].Id != 0; i++)
+; Line 710
+	*** 000026	46 			inc	si
+	*** 000027	eb e1 			jmp	SHORT $F1024
+					$L1151:
+;|*** 		if (strcmp (Hashes[i].Name, name) == 0)
+;|*** 			return Hashes[i].Id;
+; Line 712
+	*** 000029	6b de 06 		imul	bx,si,6
+	*** 00002c	8b 87 00 00 		mov	ax,WORD PTR $S808_Hashes[bx]
+	*** 000030	eb 02 			jmp	SHORT $EX1022
+;|*** 
+;|*** 	return 0;
+; Line 714
+					$FB1026:
+	*** 000032	33 c0 			xor	ax,ax
+;|*** }
+; Line 715
+					$EX1022:
+	*** 000034	5e 			pop	si
+	*** 000035	5f 			pop	di
+	*** 000036	c9 			leave	
+	*** 000037	c3 			ret	
+
+_HashGetIdByName	ENDP
+	PUBLIC	_HashGetName
+_HashGetName	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** char *HashGetName (int hashId)
+;|*** {
+; Line 719
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	hashId = 4
+;|*** 	return HashGet (hashId) -> Name;
+; Line 720
+	*** 000003	ff 76 04 		push	WORD PTR [bp+4]	;hashId
+	*** 000006	e8 00 00 		call	_HashGet
+	*** 000009	5b 			pop	bx
+	*** 00000a	8b d8 			mov	bx,ax
+	*** 00000c	8b 47 02 		mov	ax,WORD PTR [bx+2]
+;|*** }
+; Line 721
+	*** 00000f	c9 			leave	
+	*** 000010	c3 			ret	
+
+_HashGetName	ENDP
+	PUBLIC	_HashIsDeprecated
+_HashIsDeprecated	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** BOOL HashIsDeprecated (int hashId)
+;|*** {
+; Line 725
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	hashId = 4
+;|*** 	return HashGet (hashId) -> Deprecated;
+; Line 726
+	*** 000003	ff 76 04 		push	WORD PTR [bp+4]	;hashId
+	*** 000006	e8 00 00 		call	_HashGet
+	*** 000009	5b 			pop	bx
+	*** 00000a	8b d8 			mov	bx,ax
+	*** 00000c	8a 47 04 		mov	al,BYTE PTR [bx+4]
+;|*** }
+; Line 727
+	*** 00000f	c9 			leave	
+	*** 000010	c3 			ret	
+
+_HashIsDeprecated	ENDP
+	PUBLIC	_crypto_open
+_crypto_open	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** #endif // TC_WINDOWS_BOOT_SINGLE_CIPHER_MODE
+;|*** 
+;|*** 
+;|*** #ifdef TC_WINDOWS_BOOT
+;|*** 
+;|*** static byte CryptoInfoBufferInUse = 0;
+;|*** CRYPTO_INFO CryptoInfoBuffer;
+;|*** 
+;|*** #endif
+;|*** 
+;|*** PCRYPTO_INFO crypto_open ()
+;|*** {
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 
+;|*** 	/* Do the crt allocation */
+;|*** 	PCRYPTO_INFO cryptoInfo = (PCRYPTO_INFO) TCalloc (sizeof (CRYPTO_INFO));
+;|*** 	if (cryptoInfo == NULL)
+;|*** 		return NULL;
+;|*** 
+;|*** 	memset (cryptoInfo, 0, sizeof (CRYPTO_INFO));
+;|*** 
+;|*** #ifndef DEVICE_DRIVER
+;|*** 	VirtualLock (cryptoInfo, sizeof (CRYPTO_INFO));
+;|*** #endif
+;|*** 
+;|*** 	cryptoInfo->ea = -1;
+;|*** 	return cryptoInfo;
+;|*** 
+;|*** #else // TC_WINDOWS_BOOT
+;|*** 
+;|*** #if 0
+;|*** 	if (CryptoInfoBufferInUse)
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** #endif
+;|*** 	CryptoInfoBufferInUse = 1;
+; Line 764
+	*** 000000	c6 06 00 00 01 		mov	BYTE PTR $S1034_CryptoInfoBufferInUse,1
+;|*** 	return &CryptoInfoBuffer;
+; Line 765
+	*** 000005	b8 00 00 		mov	ax,OFFSET DGROUP:_CryptoInfoBuffer
+;|*** 
+;|*** #endif // TC_WINDOWS_BOOT
+;|*** }
+; Line 768
+	*** 000008	c3 			ret	
+
+_crypto_open	ENDP
+	PUBLIC	_crypto_loadkey
+_crypto_loadkey	PROC NEAR	;  COMDAT
+;|*** 
+;|*** void crypto_loadkey (PKEY_INFO keyInfo, char *lpszUserKey, int nUserKeyLen)
+;|*** {
+; Line 771
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	keyInfo = 4
+;	lpszUserKey = 6
+;	nUserKeyLen = 8
+	*** 000005	8b 76 04 		mov	si,WORD PTR [bp+4]	;keyInfo
+	*** 000008	8b 7e 08 		mov	di,WORD PTR [bp+8]	;nUserKeyLen
+;|*** 	keyInfo->keyLength = nUserKeyLen;
+; Line 772
+	*** 00000b	89 7c 02 		mov	WORD PTR [si+2],di
+;|*** 	burn (keyInfo->userKey, sizeof (keyInfo->userKey));
+; Line 773
+	*** 00000e	6a 40 			push	64	;0040H
+	*** 000010	8d 44 04 		lea	ax,WORD PTR [si+4]
+	*** 000013	50 			push	ax
+	*** 000014	8b f0 			mov	si,ax
+	*** 000016	e8 00 00 		call	_EraseMemory
+	*** 000019	83 c4 04 		add	sp,4
+;|*** 	memcpy (keyInfo->userKey, lpszUserKey, nUserKeyLen);
+; Line 774
+	*** 00001c	57 			push	di
+	*** 00001d	ff 76 06 		push	WORD PTR [bp+6]	;lpszUserKey
+	*** 000020	56 			push	si
+	*** 000021	e8 00 00 		call	_memcpy
+	*** 000024	83 c4 06 		add	sp,6
+;|*** }
+; Line 775
+	*** 000027	5e 			pop	si
+	*** 000028	5f 			pop	di
+	*** 000029	c9 			leave	
+	*** 00002a	c3 			ret	
+
+_crypto_loadkey	ENDP
+	PUBLIC	_crypto_close
+_crypto_close	PROC NEAR	;  COMDAT
+;|*** 
+;|*** void crypto_close (PCRYPTO_INFO cryptoInfo)
+;|*** {
+; Line 778
+;	cryptoInfo = 4
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 
+;|*** 	if (cryptoInfo != NULL)
+;|*** 	{
+;|*** 		burn (cryptoInfo, sizeof (CRYPTO_INFO));
+;|*** #ifndef DEVICE_DRIVER
+;|*** 		VirtualUnlock (cryptoInfo, sizeof (CRYPTO_INFO));
+;|*** #endif
+;|*** 		TCfree (cryptoInfo);
+;|*** 	}
+;|*** 
+;|*** #else // TC_WINDOWS_BOOT
+;|*** 
+;|*** 	burn (&CryptoInfoBuffer, sizeof (CryptoInfoBuffer));
+; Line 792
+	*** 000000	68 cc 07 		push	1996	;07ccH
+	*** 000003	68 00 00 		push	OFFSET DGROUP:_CryptoInfoBuffer
+	*** 000006	e8 00 00 		call	_EraseMemory
+	*** 000009	83 c4 04 		add	sp,4
+;|*** 	CryptoInfoBufferInUse = FALSE;
+; Line 793
+	*** 00000c	c6 06 00 00 00 		mov	BYTE PTR $S1034_CryptoInfoBufferInUse,0
+;|*** 
+;|*** #endif // TC_WINDOWS_BOOT
+;|*** }
+; Line 796
+	*** 000011	c3 			ret	
+
+_crypto_close	ENDP
+	PUBLIC	_EncryptBuffer
+_EncryptBuffer	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT_SINGLE_CIPHER_MODE
+;|*** 
+;|*** 
+;|*** #ifndef TC_NO_COMPILER_INT64
+;|*** void Xor128 (unsigned __int64 *a, unsigned __int64 *b)
+;|*** {
+;|*** 	*a++ ^= *b++;
+;|*** 	*a ^= *b;
+;|*** }
+;|*** 
+;|*** 
+;|*** void Xor64 (unsigned __int64 *a, unsigned __int64 *b)
+;|*** {
+;|*** 	*a ^= *b;
+;|*** }
+;|*** 
+;|*** 
+;|*** void EncryptBufferLRW128 (byte *buffer, uint64 length, uint64 blockIndex, PCRYPTO_INFO cryptoInfo)
+;|*** {
+;|*** 	/* Deprecated/legacy */
+;|*** 
+;|*** 	int cipher = EAGetFirstCipher (cryptoInfo->ea);
+;|*** 	int cipherCount = EAGetCipherCount (cryptoInfo->ea);
+;|*** 	unsigned __int8 *p = buffer;
+;|*** 	unsigned __int8 *ks = cryptoInfo->ks;
+;|*** 	unsigned __int8 i[8];
+;|*** 	unsigned __int8 t[16];
+;|*** 	unsigned __int64 b;
+;|*** 
+;|*** 	*(unsigned __int64 *)i = BE64(blockIndex);
+;|*** 
+;|*** 	if (length % 16)
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 
+;|*** 	// Note that the maximum supported volume size is 8589934592 GB  (i.e., 2^63 bytes).
+;|*** 
+;|*** 	for (b = 0; b < length >> 4; b++)
+;|*** 	{
+;|*** 		Gf128MulBy64Tab (i, t, &cryptoInfo->gf_ctx);
+;|*** 		Xor128 ((unsigned __int64 *)p, (unsigned __int64 *)t);
+;|*** 
+;|*** 		if (cipherCount > 1)
+;|*** 		{
+;|*** 			// Cipher cascade
+;|*** 			for (cipher = EAGetFirstCipher (cryptoInfo->ea);
+;|*** 				cipher != 0;
+;|*** 				cipher = EAGetNextCipher (cryptoInfo->ea, cipher))
+;|*** 			{
+;|*** 				EncipherBlock (cipher, p, ks);
+;|*** 				ks += CipherGetKeyScheduleSize (cipher);
+;|*** 			}
+;|*** 			ks = cryptoInfo->ks;
+;|*** 		}
+;|*** 		else
+;|*** 		{
+;|*** 			EncipherBlock (cipher, p, ks);
+;|*** 		}
+;|*** 
+;|*** 		Xor128 ((unsigned __int64 *)p, (unsigned __int64 *)t);
+;|*** 
+;|*** 		p += 16;
+;|*** 
+;|*** 		if (i[7] != 0xff)
+;|*** 			i[7]++;
+;|*** 		else
+;|*** 			*(unsigned __int64 *)i = BE64 ( BE64(*(unsigned __int64 *)i) + 1 );
+;|*** 	}
+;|*** 
+;|*** 	FAST_ERASE64 (t, sizeof(t));
+;|*** }
+;|*** 
+;|*** 
+;|*** void EncryptBufferLRW64 (byte *buffer, uint64 length, uint64 blockIndex, PCRYPTO_INFO cryptoInfo)
+;|*** {
+;|*** 	/* Deprecated/legacy */
+;|*** 
+;|*** 	int cipher = EAGetFirstCipher (cryptoInfo->ea);
+;|*** 	unsigned __int8 *p = buffer;
+;|*** 	unsigned __int8 *ks = cryptoInfo->ks;
+;|*** 	unsigned __int8 i[8];
+;|*** 	unsigned __int8 t[8];
+;|*** 	unsigned __int64 b;
+;|*** 
+;|*** 	*(unsigned __int64 *)i = BE64(blockIndex);
+;|*** 
+;|*** 	if (length % 8)
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 
+;|*** 	for (b = 0; b < length >> 3; b++)
+;|*** 	{
+;|*** 		Gf64MulTab (i, t, &cryptoInfo->gf_ctx);
+;|*** 		Xor64 ((unsigned __int64 *)p, (unsigned __int64 *)t);
+;|*** 
+;|*** 		EncipherBlock (cipher, p, ks);
+;|*** 
+;|*** 		Xor64 ((unsigned __int64 *)p, (unsigned __int64 *)t);
+;|*** 
+;|*** 		p += 8;
+;|*** 
+;|*** 		if (i[7] != 0xff)
+;|*** 			i[7]++;
+;|*** 		else
+;|*** 			*(unsigned __int64 *)i = BE64 ( BE64(*(unsigned __int64 *)i) + 1 );
+;|*** 	}
+;|*** 
+;|*** 	FAST_ERASE64 (t, sizeof(t));
+;|*** }
+;|*** 
+;|*** 
+;|*** void DecryptBufferLRW128 (byte *buffer, uint64 length, uint64 blockIndex, PCRYPTO_INFO cryptoInfo)
+;|*** {
+;|*** 	/* Deprecated/legacy */
+;|*** 
+;|*** 	int cipher = EAGetFirstCipher (cryptoInfo->ea);
+;|*** 	int cipherCount = EAGetCipherCount (cryptoInfo->ea);
+;|*** 	unsigned __int8 *p = buffer;
+;|*** 	unsigned __int8 *ks = cryptoInfo->ks;
+;|*** 	unsigned __int8 i[8];
+;|*** 	unsigned __int8 t[16];
+;|*** 	unsigned __int64 b;
+;|*** 
+;|*** 	*(unsigned __int64 *)i = BE64(blockIndex);
+;|*** 
+;|*** 	if (length % 16)
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 
+;|*** 	// Note that the maximum supported volume size is 8589934592 GB  (i.e., 2^63 bytes).
+;|*** 
+;|*** 	for (b = 0; b < length >> 4; b++)
+;|*** 	{
+;|*** 		Gf128MulBy64Tab (i, t, &cryptoInfo->gf_ctx);
+;|*** 		Xor128 ((unsigned __int64 *)p, (unsigned __int64 *)t);
+;|*** 
+;|*** 		if (cipherCount > 1)
+;|*** 		{
+;|*** 			// Cipher cascade
+;|*** 			ks = cryptoInfo->ks + EAGetKeyScheduleSize (cryptoInfo->ea);
+;|*** 
+;|*** 			for (cipher = EAGetLastCipher (cryptoInfo->ea);
+;|*** 				cipher != 0;
+;|*** 				cipher = EAGetPreviousCipher (cryptoInfo->ea, cipher))
+;|*** 			{
+;|*** 				ks -= CipherGetKeyScheduleSize (cipher);
+;|*** 				DecipherBlock (cipher, p, ks);
+;|*** 			}
+;|*** 		}
+;|*** 		else
+;|*** 		{
+;|*** 			DecipherBlock (cipher, p, ks);
+;|*** 		}
+;|*** 
+;|*** 		Xor128 ((unsigned __int64 *)p, (unsigned __int64 *)t);
+;|*** 
+;|*** 		p += 16;
+;|*** 
+;|*** 		if (i[7] != 0xff)
+;|*** 			i[7]++;
+;|*** 		else
+;|*** 			*(unsigned __int64 *)i = BE64 ( BE64(*(unsigned __int64 *)i) + 1 );
+;|*** 	}
+;|*** 
+;|*** 	FAST_ERASE64 (t, sizeof(t));
+;|*** }
+;|*** 
+;|*** 
+;|*** 
+;|*** void DecryptBufferLRW64 (byte *buffer, uint64 length, uint64 blockIndex, PCRYPTO_INFO cryptoInfo)
+;|*** {
+;|*** 	/* Deprecated/legacy */
+;|*** 
+;|*** 	int cipher = EAGetFirstCipher (cryptoInfo->ea);
+;|*** 	unsigned __int8 *p = buffer;
+;|*** 	unsigned __int8 *ks = cryptoInfo->ks;
+;|*** 	unsigned __int8 i[8];
+;|*** 	unsigned __int8 t[8];
+;|*** 	unsigned __int64 b;
+;|*** 
+;|*** 	*(unsigned __int64 *)i = BE64(blockIndex);
+;|*** 
+;|*** 	if (length % 8)
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 
+;|*** 	for (b = 0; b < length >> 3; b++)
+;|*** 	{
+;|*** 		Gf64MulTab (i, t, &cryptoInfo->gf_ctx);
+;|*** 		Xor64 ((unsigned __int64 *)p, (unsigned __int64 *)t);
+;|*** 
+;|*** 		DecipherBlock (cipher, p, ks);
+;|*** 
+;|*** 		Xor64 ((unsigned __int64 *)p, (unsigned __int64 *)t);
+;|*** 
+;|*** 		p += 8;
+;|*** 
+;|*** 		if (i[7] != 0xff)
+;|*** 			i[7]++;
+;|*** 		else
+;|*** 			*(unsigned __int64 *)i = BE64 ( BE64(*(unsigned __int64 *)i) + 1 );
+;|*** 	}
+;|*** 
+;|*** 	FAST_ERASE64 (t, sizeof(t));
+;|*** }
+;|*** 
+;|*** 
+;|*** // Initializes IV and whitening values for sector encryption/decryption in CBC mode.
+;|*** // IMPORTANT: This function has been deprecated (legacy).
+;|*** static void 
+;|*** InitSectorIVAndWhitening (unsigned __int64 unitNo,
+;|*** 	int blockSize,
+;|*** 	unsigned __int32 *iv,
+;|*** 	unsigned __int64 *ivSeed,
+;|*** 	unsigned __int32 *whitening)
+;|*** {
+;|*** 
+;|*** 	/* IMPORTANT: This function has been deprecated (legacy) */
+;|*** 
+;|*** 	unsigned __int64 iv64[4];
+;|*** 	unsigned __int32 *iv32 = (unsigned __int32 *) iv64;
+;|*** 
+;|*** 	iv64[0] = ivSeed[0] ^ LE64(unitNo);
+;|*** 	iv64[1] = ivSeed[1] ^ LE64(unitNo);
+;|*** 	iv64[2] = ivSeed[2] ^ LE64(unitNo);
+;|*** 	if (blockSize == 16)
+;|*** 	{
+;|*** 		iv64[3] = ivSeed[3] ^ LE64(unitNo);
+;|*** 	}
+;|*** 
+;|*** 	iv[0] = iv32[0];
+;|*** 	iv[1] = iv32[1];
+;|*** 
+;|*** 	switch (blockSize)
+;|*** 	{
+;|*** 	case 16:
+;|*** 
+;|*** 		// 128-bit block
+;|*** 
+;|*** 		iv[2] = iv32[2];
+;|*** 		iv[3] = iv32[3];
+;|*** 
+;|*** 		whitening[0] = LE32( crc32int ( &iv32[4] ) ^ crc32int ( &iv32[7] ) );
+;|*** 		whitening[1] = LE32( crc32int ( &iv32[5] ) ^ crc32int ( &iv32[6] ) );
+;|*** 		break;
+;|*** 
+;|*** 	case 8:
+;|*** 
+;|*** 		// 64-bit block
+;|*** 
+;|*** 		whitening[0] = LE32( crc32int ( &iv32[2] ) ^ crc32int ( &iv32[5] ) );
+;|*** 		whitening[1] = LE32( crc32int ( &iv32[3] ) ^ crc32int ( &iv32[4] ) );
+;|*** 		break;
+;|*** 
+;|*** 	default:
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 	}
+;|*** }
+;|*** 
+;|*** 
+;|*** // EncryptBufferCBC    (deprecated/legacy)
+;|*** //
+;|*** // data:		data to be encrypted
+;|*** // len:			number of bytes to encrypt (must be divisible by the largest cipher block size)
+;|*** // ks:			scheduled key
+;|*** // iv:			IV
+;|*** // whitening:	whitening constants
+;|*** // ea:			outer-CBC cascade ID (0 = CBC/inner-CBC)
+;|*** // cipher:		CBC/inner-CBC cipher ID (0 = outer-CBC)
+;|*** 
+;|*** static void
+;|*** EncryptBufferCBC (unsigned __int32 *data, 
+;|*** 		 unsigned int len,
+;|*** 		 unsigned __int8 *ks,
+;|*** 		 unsigned __int32 *iv,
+;|*** 		 unsigned __int32 *whitening,
+;|*** 		 int ea,
+;|*** 		 int cipher)
+;|*** {
+;|*** 	/* IMPORTANT: This function has been deprecated (legacy) */
+;|*** 
+;|*** 	unsigned __int32 bufIV[4];
+;|*** 	unsigned __int64 i;
+;|*** 	int blockSize = CipherGetBlockSize (ea != 0 ? EAGetFirstCipher (ea) : cipher);
+;|*** 
+;|*** 	if (len % blockSize)
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 
+;|*** 	//  IV
+;|*** 	bufIV[0] = iv[0];
+;|*** 	bufIV[1] = iv[1];
+;|*** 	if (blockSize == 16)
+;|*** 	{
+;|*** 		bufIV[2] = iv[2];
+;|*** 		bufIV[3] = iv[3];
+;|*** 	}
+;|*** 
+;|*** 	// Encrypt each block
+;|*** 	for (i = 0; i < len/blockSize; i++)
+;|*** 	{
+;|*** 		// CBC
+;|*** 		data[0] ^= bufIV[0];
+;|*** 		data[1] ^= bufIV[1];
+;|*** 		if (blockSize == 16)
+;|*** 		{
+;|*** 			data[2] ^= bufIV[2];
+;|*** 			data[3] ^= bufIV[3];
+;|*** 		}
+;|*** 
+;|*** 		if (ea != 0)
+;|*** 		{
+;|*** 			// Outer-CBC
+;|*** 			for (cipher = EAGetFirstCipher (ea); cipher != 0; cipher = EAGetNextCipher (ea, cipher))
+;|*** 			{
+;|*** 				EncipherBlock (cipher, data, ks);
+;|*** 				ks += CipherGetKeyScheduleSize (cipher);
+;|*** 			}
+;|*** 			ks -= EAGetKeyScheduleSize (ea);
+;|*** 		}
+;|*** 		else
+;|*** 		{
+;|*** 			// CBC/inner-CBC
+;|*** 			EncipherBlock (cipher, data, ks);
+;|*** 		}
+;|*** 
+;|*** 		// CBC
+;|*** 		bufIV[0] = data[0];
+;|*** 		bufIV[1] = data[1];
+;|*** 		if (blockSize == 16)
+;|*** 		{
+;|*** 			bufIV[2] = data[2];
+;|*** 			bufIV[3] = data[3];
+;|*** 		}
+;|*** 
+;|*** 		// Whitening
+;|*** 		data[0] ^= whitening[0];
+;|*** 		data[1] ^= whitening[1];
+;|*** 		if (blockSize == 16)
+;|*** 		{
+;|*** 			data[2] ^= whitening[0];
+;|*** 			data[3] ^= whitening[1];
+;|*** 		}
+;|*** 
+;|*** 		data += blockSize / sizeof(*data);
+;|*** 	}
+;|*** }
+;|*** 
+;|*** 
+;|*** // DecryptBufferCBC  (deprecated/legacy)
+;|*** //
+;|*** // data:		data to be decrypted
+;|*** // len:			number of bytes to decrypt (must be divisible by the largest cipher block size)
+;|*** // ks:			scheduled key
+;|*** // iv:			IV
+;|*** // whitening:	whitening constants
+;|*** // ea:			outer-CBC cascade ID (0 = CBC/inner-CBC)
+;|*** // cipher:		CBC/inner-CBC cipher ID (0 = outer-CBC)
+;|*** 
+;|*** static void
+;|*** DecryptBufferCBC (unsigned __int32 *data,
+;|*** 		 unsigned int len,
+;|*** 		 unsigned __int8 *ks,
+;|*** 		 unsigned __int32 *iv,
+;|***  		 unsigned __int32 *whitening,
+;|*** 		 int ea,
+;|*** 		 int cipher)
+;|*** {
+;|*** 
+;|*** 	/* IMPORTANT: This function has been deprecated (legacy) */
+;|*** 
+;|*** 	unsigned __int32 bufIV[4];
+;|*** 	unsigned __int64 i;
+;|*** 	unsigned __int32 ct[4];
+;|*** 	int blockSize = CipherGetBlockSize (ea != 0 ? EAGetFirstCipher (ea) : cipher);
+;|*** 
+;|*** 	if (len % blockSize)
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 
+;|*** 	//  IV
+;|*** 	bufIV[0] = iv[0];
+;|*** 	bufIV[1] = iv[1];
+;|*** 	if (blockSize == 16)
+;|*** 	{
+;|*** 		bufIV[2] = iv[2];
+;|*** 		bufIV[3] = iv[3];
+;|*** 	}
+;|*** 
+;|*** 	// Decrypt each block
+;|*** 	for (i = 0; i < len/blockSize; i++)
+;|*** 	{
+;|*** 		// Dewhitening
+;|*** 		data[0] ^= whitening[0];
+;|*** 		data[1] ^= whitening[1];
+;|*** 		if (blockSize == 16)
+;|*** 		{
+;|*** 			data[2] ^= whitening[0];
+;|*** 			data[3] ^= whitening[1];
+;|*** 		}
+;|*** 
+;|*** 		// CBC
+;|*** 		ct[0] = data[0];
+;|*** 		ct[1] = data[1];
+;|*** 		if (blockSize == 16)
+;|*** 		{
+;|*** 			ct[2] = data[2];
+;|*** 			ct[3] = data[3];
+;|*** 		}
+;|*** 
+;|*** 		if (ea != 0)
+;|*** 		{
+;|*** 			// Outer-CBC
+;|*** 			ks += EAGetKeyScheduleSize (ea);
+;|*** 			for (cipher = EAGetLastCipher (ea); cipher != 0; cipher = EAGetPreviousCipher (ea, cipher))
+;|*** 			{
+;|*** 				ks -= CipherGetKeyScheduleSize (cipher);
+;|*** 				DecipherBlock (cipher, data, ks);
+;|*** 			}
+;|*** 		}
+;|*** 		else
+;|*** 		{
+;|*** 			// CBC/inner-CBC
+;|*** 			DecipherBlock (cipher, data, ks);
+;|*** 		}
+;|*** 
+;|*** 		// CBC
+;|*** 		data[0] ^= bufIV[0];
+;|*** 		data[1] ^= bufIV[1];
+;|*** 		bufIV[0] = ct[0];
+;|*** 		bufIV[1] = ct[1];
+;|*** 		if (blockSize == 16)
+;|*** 		{
+;|*** 			data[2] ^= bufIV[2];
+;|*** 			data[3] ^= bufIV[3];
+;|*** 			bufIV[2] = ct[2];
+;|*** 			bufIV[3] = ct[3];
+;|*** 		}
+;|*** 
+;|*** 		data += blockSize / sizeof(*data);
+;|*** 	}
+;|*** }
+;|*** #endif	// #ifndef TC_NO_COMPILER_INT64
+;|*** 
+;|*** 
+;|*** // EncryptBuffer
+;|*** //
+;|*** // buf:  data to be encrypted; the start of the buffer is assumed to be aligned with the start of a data unit.
+;|*** // len:  number of bytes to encrypt; must be divisible by the block size (for cascaded ciphers, divisible 
+;|*** //       by the largest block size used within the cascade)
+;|*** void EncryptBuffer (unsigned __int8 *buf, TC_LARGEST_COMPILER_UINT len, PCRYPTO_INFO cryptoInfo)
+;|*** {
+; Line 1244
+	*** 000000	c8 0c 00 00 		enter	12,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	buf = 4
+;	len = 6
+;	cryptoInfo = 10
+;	register di = ks
+;	ks2 = -4
+;	dataUnitNo = -12
+;	cipher = -2
+	*** 000006	8b 76 0a 		mov	si,WORD PTR [bp+10]	;cryptoInfo
+;|*** 	switch (cryptoInfo->mode)
+; Line 1245
+	*** 000009	8b 44 02 		mov	ax,WORD PTR [si+2]
+;|*** 	{
+;|*** 	case XTS:
+;|*** 		{
+;|*** 			unsigned __int8 *ks = cryptoInfo->ks;
+;|*** 			unsigned __int8 *ks2 = cryptoInfo->ks2;
+;|*** 			UINT64_STRUCT dataUnitNo;
+;|*** 			int cipher;
+;|*** 
+;|*** 			// When encrypting/decrypting a buffer (typically a volume header) the sequential number
+;|*** 			// of the first XTS data unit in the buffer is always 0 and the start of the buffer is
+;|*** 			// always assumed to be aligned with the start of a data unit.
+;|*** 			dataUnitNo.LowPart = 0;
+;|*** 			dataUnitNo.HighPart = 0;
+;|*** 
+;|*** 			for (cipher = EAGetFirstCipher (cryptoInfo->ea);
+;|*** 				cipher != 0;
+;|*** 				cipher = EAGetNextCipher (cryptoInfo->ea, cipher))
+;|*** 			{
+;|*** 				EncryptBufferXTS (buf, len, &dataUnitNo, 0, ks, ks2, cipher);
+;|*** 
+;|*** 				ks += CipherGetKeyScheduleSize (cipher);
+;|*** 				ks2 += CipherGetKeyScheduleSize (cipher);
+;|*** 			}
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** #ifndef TC_NO_COMPILER_INT64
+;|*** 	case LRW:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		switch (CipherGetBlockSize (EAGetFirstCipher (cryptoInfo->ea)))
+;|*** 		{
+;|*** 		case 8:
+;|*** 			EncryptBufferLRW64 ((unsigned __int8 *)buf, (unsigned __int64) len, 1, cryptoInfo);
+;|*** 			break;
+;|*** 
+;|*** 		case 16:
+;|*** 			EncryptBufferLRW128 ((unsigned __int8 *)buf, (unsigned __int64) len, 1, cryptoInfo);
+;|*** 			break;
+;|*** 
+;|*** 		default:
+;|*** 			TC_THROW_FATAL_EXCEPTION;
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case CBC:
+;|*** 	case INNER_CBC:
+;|*** 		{
+;|*** 			/* Deprecated/legacy */
+;|*** 
+;|*** 			unsigned __int8 *ks = cryptoInfo->ks;
+;|*** 			int cipher;
+;|*** 
+;|*** 			for (cipher = EAGetFirstCipher (cryptoInfo->ea);
+;|*** 				cipher != 0;
+;|*** 				cipher = EAGetNextCipher (cryptoInfo->ea, cipher))
+;|*** 			{
+;|*** 				EncryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 					(unsigned int) len,
+;|*** 					ks,
+;|*** 					(unsigned __int32 *) cryptoInfo->k2,
+;|*** 					(unsigned __int32 *) &cryptoInfo->k2[8],
+;|*** 					0,
+;|*** 					cipher);
+;|*** 
+;|*** 				ks += CipherGetKeyScheduleSize (cipher);
+;|*** 			}
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case OUTER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		EncryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 			(unsigned int) len,
+;|*** 			cryptoInfo->ks,
+;|*** 			(unsigned __int32 *) cryptoInfo->k2,
+;|*** 			(unsigned __int32 *) &cryptoInfo->k2[8],
+;|*** 			cryptoInfo->ea,
+;|*** 			0);
+;|*** 
+;|*** 		break;
+;|*** #endif	// #ifndef TC_NO_COMPILER_INT64
+;|*** 
+;|*** 	default:		
+;|*** 		// Unknown/wrong ID
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 	}
+; Line 1335
+	*** 00000c	48 			dec	ax
+	*** 00000d	74 09 			je	SHORT $SC1058
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+; Line 1334
+	*** 00000f	68 36 05 		push	1334	;0536H
+	*** 000012	e8 00 00 		call	_ThrowFatalException
+	*** 000015	5b 			pop	bx
+;|*** 	}
+; Line 1335
+	*** 000016	eb 59 			jmp	SHORT $EX1053
+;|*** 	case XTS:
+; Line 1247
+					$SC1058:
+;|*** 		{
+;|*** 			unsigned __int8 *ks = cryptoInfo->ks;
+; Line 1249
+	*** 000018	8d 7c 04 		lea	di,WORD PTR [si+4]
+;|*** 			unsigned __int8 *ks2 = cryptoInfo->ks2;
+; Line 1250
+	*** 00001b	8d 84 d9 03 		lea	ax,WORD PTR [si+985]
+	*** 00001f	89 46 fc 		mov	WORD PTR [bp-4],ax	;ks2
+;|*** 			UINT64_STRUCT dataUnitNo;
+;|*** 			int cipher;
+;|*** 
+;|*** 			// When encrypting/decrypting a buffer (typically a volume header) the sequential number
+;|*** 			// of the first XTS data unit in the buffer is always 0 and the start of the buffer is
+;|*** 			// always assumed to be aligned with the start of a data unit.
+;|*** 			dataUnitNo.LowPart = 0;
+; Line 1257
+	*** 000022	66 2b c0 		sub	eax,eax
+	*** 000025	66 89 46 f4 		mov	DWORD PTR [bp-12],eax	;dataUnitNo
+;|*** 			dataUnitNo.HighPart = 0;
+; Line 1258
+	*** 000029	66 89 46 f8 		mov	DWORD PTR [bp-8],eax
+;|*** 
+;|*** 			for (cipher = EAGetFirstCipher (cryptoInfo->ea);
+;|*** 				cipher != 0;
+;|*** 				cipher = EAGetNextCipher (cryptoInfo->ea, cipher))
+; Line 1262
+	*** 00002d	ff 34 			push	WORD PTR [si]
+	*** 00002f	e8 00 00 		call	_EAGetFirstCipher
+	*** 000032	5b 			pop	bx
+	*** 000033	89 46 fe 		mov	WORD PTR [bp-2],ax	;cipher
+					$L1183:
+	*** 000036	8b f0 			mov	si,ax
+	*** 000038	0b f0 			or	si,ax
+	*** 00003a	74 35 			je	SHORT $EX1053
+;|*** 			{
+;|*** 				EncryptBufferXTS (buf, len, &dataUnitNo, 0, ks, ks2, cipher);
+; Line 1264
+	*** 00003c	56 			push	si
+	*** 00003d	ff 76 fc 		push	WORD PTR [bp-4]	;ks2
+	*** 000040	57 			push	di
+	*** 000041	6a 00 			push	0
+	*** 000043	8d 46 f4 		lea	ax,WORD PTR [bp-12]	;dataUnitNo
+	*** 000046	50 			push	ax
+	*** 000047	66 ff 76 06 		push	DWORD PTR [bp+6]	;len
+	*** 00004b	ff 76 04 		push	WORD PTR [bp+4]	;buf
+	*** 00004e	e8 00 00 		call	_EncryptBufferXTS
+	*** 000051	83 c4 10 		add	sp,16	;0010H
+;|*** 
+;|*** 				ks += CipherGetKeyScheduleSize (cipher);
+; Line 1266
+	*** 000054	56 			push	si
+	*** 000055	e8 00 00 		call	_CipherGetKeyScheduleSize
+	*** 000058	5b 			pop	bx
+	*** 000059	03 f8 			add	di,ax
+;|*** 				ks2 += CipherGetKeyScheduleSize (cipher);
+; Line 1267
+	*** 00005b	56 			push	si
+	*** 00005c	e8 00 00 		call	_CipherGetKeyScheduleSize
+	*** 00005f	5b 			pop	bx
+	*** 000060	01 46 fc 		add	WORD PTR [bp-4],ax	;ks2
+;|*** 				cipher = EAGetNextCipher (cryptoInfo->ea, cipher))
+; Line 1262
+	*** 000063	56 			push	si
+	*** 000064	8b 5e 0a 		mov	bx,WORD PTR [bp+10]	;cryptoInfo
+	*** 000067	ff 37 			push	WORD PTR [bx]
+	*** 000069	e8 00 00 		call	_EAGetNextCipher
+	*** 00006c	83 c4 04 		add	sp,4
+	*** 00006f	eb c5 			jmp	SHORT $L1183
+;|*** 			{
+;|*** 				EncryptBufferXTS (buf, len, &dataUnitNo, 0, ks, ks2, cipher);
+;|*** 
+;|*** 				ks += CipherGetKeyScheduleSize (cipher);
+;|*** 				ks2 += CipherGetKeyScheduleSize (cipher);
+;|*** 			}
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** #ifndef TC_NO_COMPILER_INT64
+;|*** 	case LRW:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		switch (CipherGetBlockSize (EAGetFirstCipher (cryptoInfo->ea)))
+;|*** 		{
+;|*** 		case 8:
+;|*** 			EncryptBufferLRW64 ((unsigned __int8 *)buf, (unsigned __int64) len, 1, cryptoInfo);
+;|*** 			break;
+;|*** 
+;|*** 		case 16:
+;|*** 			EncryptBufferLRW128 ((unsigned __int8 *)buf, (unsigned __int64) len, 1, cryptoInfo);
+;|*** 			break;
+;|*** 
+;|*** 		default:
+;|*** 			TC_THROW_FATAL_EXCEPTION;
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case CBC:
+;|*** 	case INNER_CBC:
+;|*** 		{
+;|*** 			/* Deprecated/legacy */
+;|*** 
+;|*** 			unsigned __int8 *ks = cryptoInfo->ks;
+;|*** 			int cipher;
+;|*** 
+;|*** 			for (cipher = EAGetFirstCipher (cryptoInfo->ea);
+;|*** 				cipher != 0;
+;|*** 				cipher = EAGetNextCipher (cryptoInfo->ea, cipher))
+;|*** 			{
+;|*** 				EncryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 					(unsigned int) len,
+;|*** 					ks,
+;|*** 					(unsigned __int32 *) cryptoInfo->k2,
+;|*** 					(unsigned __int32 *) &cryptoInfo->k2[8],
+;|*** 					0,
+;|*** 					cipher);
+;|*** 
+;|*** 				ks += CipherGetKeyScheduleSize (cipher);
+;|*** 			}
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case OUTER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		EncryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 			(unsigned int) len,
+;|*** 			cryptoInfo->ks,
+;|*** 			(unsigned __int32 *) cryptoInfo->k2,
+;|*** 			(unsigned __int32 *) &cryptoInfo->k2[8],
+;|*** 			cryptoInfo->ea,
+;|*** 			0);
+;|*** 
+;|*** 		break;
+;|*** #endif	// #ifndef TC_NO_COMPILER_INT64
+;|*** 
+;|*** 	default:		
+;|*** 		// Unknown/wrong ID
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 	}
+;|*** }
+; Line 1336
+					$EX1053:
+	*** 000071	5e 			pop	si
+	*** 000072	5f 			pop	di
+	*** 000073	c9 			leave	
+	*** 000074	c3 			ret	
+
+_EncryptBuffer	ENDP
+	PUBLIC	_EncryptDataUnits
+_EncryptDataUnits	PROC NEAR	;  COMDAT
+;|*** 
+;|*** #ifndef TC_NO_COMPILER_INT64
+;|*** // Converts a data unit number to the index of the first LRW block in the data unit.
+;|*** // Note that the maximum supported volume size is 8589934592 GB  (i.e., 2^63 bytes).
+;|*** uint64 DataUnit2LRWIndex (uint64 dataUnit, int blockSize, PCRYPTO_INFO ci)
+;|*** {
+;|*** 	/* Deprecated/legacy */
+;|*** 
+;|*** 	if (ci->hiddenVolume)
+;|*** 		dataUnit -= ci->hiddenVolumeOffset / ENCRYPTION_DATA_UNIT_SIZE;
+;|*** 	else
+;|*** 		dataUnit -= TC_VOLUME_HEADER_SIZE_LEGACY / ENCRYPTION_DATA_UNIT_SIZE;	// Compensate for the volume header size
+;|*** 
+;|*** 	switch (blockSize)
+;|*** 	{
+;|*** 	case 8:
+;|*** 		return (dataUnit << 6) | 1;
+;|*** 
+;|*** 	case 16:
+;|*** 		return (dataUnit << 5) | 1;
+;|*** 
+;|*** 	default:
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 	}
+;|*** 
+;|*** 	return 0;
+;|*** }
+;|*** #endif	// #ifndef TC_NO_COMPILER_INT64
+;|*** 
+;|*** 
+;|*** // buf:			data to be encrypted
+;|*** // unitNo:		sequential number of the data unit with which the buffer starts
+;|*** // nbrUnits:	number of data units in the buffer
+;|*** void EncryptDataUnits (unsigned __int8 *buf, const UINT64_STRUCT *structUnitNo, uint32 nbrUnits, PCRYPTO_INFO ci)
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** {
+;|*** 	EncryptionThreadPoolDoWork (EncryptDataUnitsWork, buf, structUnitNo, nbrUnits, ci);
+;|*** }
+;|*** 
+;|*** void EncryptDataUnitsCurrentThread (unsigned __int8 *buf, const UINT64_STRUCT *structUnitNo, TC_LARGEST_COMPILER_UINT nbrUnits, PCRYPTO_INFO ci)
+;|*** #endif // !TC_WINDOWS_BOOT
+;|*** {
+; Line 1378
+	*** 000000	c8 06 00 00 		enter	6,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	buf = 4
+;	structUnitNo = 6
+;	nbrUnits = 8
+;	ci = 12
+;	ea = -2
+;	ks = -4
+;	ks2 = -6
+;	register si = cipher
+	*** 000006	8b 76 0c 		mov	si,WORD PTR [bp+12]	;ci
+;|*** 	int ea = ci->ea;
+; Line 1379
+	*** 000009	8b 3c 			mov	di,WORD PTR [si]
+;|*** 	unsigned __int8 *ks = ci->ks;
+; Line 1380
+	*** 00000b	8d 44 04 		lea	ax,WORD PTR [si+4]
+	*** 00000e	89 46 fc 		mov	WORD PTR [bp-4],ax	;ks
+;|*** 	unsigned __int8 *ks2 = ci->ks2;
+; Line 1381
+	*** 000011	8d 84 d9 03 		lea	ax,WORD PTR [si+985]
+	*** 000015	89 46 fa 		mov	WORD PTR [bp-6],ax	;ks2
+;|*** 	int cipher;
+;|*** 
+;|*** #ifndef TC_NO_COMPILER_INT64
+;|*** 	void *iv = ci->k2;									// Deprecated/legacy
+;|*** 	unsigned __int64 unitNo = structUnitNo->Value;
+;|*** 	unsigned __int64 *iv64 = (unsigned __int64 *) iv;	// Deprecated/legacy
+;|*** 	unsigned __int32 sectorIV[4];						// Deprecated/legacy
+;|*** 	unsigned __int32 secWhitening[2];					// Deprecated/legacy
+;|*** #endif
+;|*** 
+;|*** 	switch (ci->mode)
+; Line 1392
+	*** 000018	8b 44 02 		mov	ax,WORD PTR [si+2]
+;|*** 	{
+;|*** 	case XTS:
+;|*** 		for (cipher = EAGetFirstCipher (ea); cipher != 0; cipher = EAGetNextCipher (ea, cipher))
+;|*** 		{
+;|*** 			EncryptBufferXTS (buf,
+;|*** 				nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				structUnitNo,
+;|*** 				0,
+;|*** 				ks,
+;|*** 				ks2,
+;|*** 				cipher);
+;|*** 
+;|*** 			ks += CipherGetKeyScheduleSize (cipher);
+;|*** 			ks2 += CipherGetKeyScheduleSize (cipher);
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** #ifndef TC_NO_COMPILER_INT64
+;|*** 	case LRW:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		switch (CipherGetBlockSize (EAGetFirstCipher (ea)))
+;|*** 		{
+;|*** 		case 8:
+;|*** 			EncryptBufferLRW64 (buf,
+;|*** 				(unsigned __int64) nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				DataUnit2LRWIndex (unitNo, 8, ci),
+;|*** 				ci);
+;|*** 			break;
+;|*** 
+;|*** 		case 16:
+;|*** 			EncryptBufferLRW128 (buf,
+;|*** 				(unsigned __int64) nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				DataUnit2LRWIndex (unitNo, 16, ci),
+;|*** 				ci);
+;|*** 			break;
+;|*** 
+;|*** 		default:
+;|*** 			TC_THROW_FATAL_EXCEPTION;
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case CBC:
+;|*** 	case INNER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		while (nbrUnits--)
+;|*** 		{
+;|*** 			for (cipher = EAGetFirstCipher (ea); cipher != 0; cipher = EAGetNextCipher (ea, cipher))
+;|*** 			{
+;|*** 				InitSectorIVAndWhitening (unitNo, CipherGetBlockSize (cipher), sectorIV, iv64, secWhitening);
+;|*** 
+;|*** 				EncryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 					ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 					ks,
+;|*** 					sectorIV,
+;|*** 					secWhitening,
+;|*** 					0,
+;|*** 					cipher);
+;|*** 
+;|*** 				ks += CipherGetKeyScheduleSize (cipher);
+;|*** 			}
+;|*** 			ks -= EAGetKeyScheduleSize (ea);
+;|*** 			buf += ENCRYPTION_DATA_UNIT_SIZE;
+;|*** 			unitNo++;
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case OUTER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		while (nbrUnits--)
+;|*** 		{
+;|*** 			InitSectorIVAndWhitening (unitNo, CipherGetBlockSize (EAGetFirstCipher (ea)), sectorIV, iv64, secWhitening);
+;|*** 
+;|*** 			EncryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 				ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				ks,
+;|*** 				sectorIV,
+;|*** 				secWhitening,
+;|*** 				ea,
+;|*** 				0);
+;|*** 
+;|*** 			buf += ENCRYPTION_DATA_UNIT_SIZE;
+;|*** 			unitNo++;
+;|*** 		}
+;|*** 		break;
+;|*** #endif	// #ifndef TC_NO_COMPILER_INT64
+;|*** 
+;|*** 	default:		
+;|*** 		// Unknown/wrong ID
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 	}
+; Line 1488
+	*** 00001b	48 			dec	ax
+	*** 00001c	74 09 			je	SHORT $SC1084
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+; Line 1487
+	*** 00001e	68 cf 05 		push	1487	;05cfH
+	*** 000021	e8 00 00 		call	_ThrowFatalException
+	*** 000024	5b 			pop	bx
+;|*** 	}
+; Line 1488
+	*** 000025	eb 4b 			jmp	SHORT $EX1075
+;|*** 	case XTS:
+; Line 1394
+					$SC1084:
+;|*** 		for (cipher = EAGetFirstCipher (ea); cipher != 0; cipher = EAGetNextCipher (ea, cipher))
+; Line 1395
+	*** 000027	57 			push	di
+	*** 000028	e8 00 00 		call	_EAGetFirstCipher
+	*** 00002b	5b 			pop	bx
+	*** 00002c	8b f0 			mov	si,ax
+	*** 00002e	89 7e fe 		mov	WORD PTR [bp-2],di	;ea
+	*** 000031	8b 7e fa 		mov	di,WORD PTR [bp-6]	;ks2
+					$F1085:
+	*** 000034	0b f0 			or	si,ax
+	*** 000036	74 3a 			je	SHORT $EX1075
+;|*** 		{
+;|*** 			EncryptBufferXTS (buf,
+;|*** 				nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				structUnitNo,
+;|*** 				0,
+;|*** 				ks,
+;|*** 				ks2,
+;|*** 				cipher);
+; Line 1403
+	*** 000038	56 			push	si
+	*** 000039	57 			push	di
+	*** 00003a	ff 76 fc 		push	WORD PTR [bp-4]	;ks
+	*** 00003d	6a 00 			push	0
+	*** 00003f	ff 76 06 		push	WORD PTR [bp+6]	;structUnitNo
+	*** 000042	66 8b 46 08 		mov	eax,DWORD PTR [bp+8]	;nbrUnits
+	*** 000046	66 c1 e0 09 		shl	eax,9
+	*** 00004a	66 50 			push	eax
+	*** 00004c	ff 76 04 		push	WORD PTR [bp+4]	;buf
+	*** 00004f	e8 00 00 		call	_EncryptBufferXTS
+	*** 000052	83 c4 10 		add	sp,16	;0010H
+;|*** 
+;|*** 			ks += CipherGetKeyScheduleSize (cipher);
+; Line 1405
+	*** 000055	56 			push	si
+	*** 000056	e8 00 00 		call	_CipherGetKeyScheduleSize
+	*** 000059	5b 			pop	bx
+	*** 00005a	01 46 fc 		add	WORD PTR [bp-4],ax	;ks
+;|*** 			ks2 += CipherGetKeyScheduleSize (cipher);
+; Line 1406
+	*** 00005d	56 			push	si
+	*** 00005e	e8 00 00 		call	_CipherGetKeyScheduleSize
+	*** 000061	5b 			pop	bx
+	*** 000062	03 f8 			add	di,ax
+;|*** 		for (cipher = EAGetFirstCipher (ea); cipher != 0; cipher = EAGetNextCipher (ea, cipher))
+; Line 1395
+	*** 000064	56 			push	si
+	*** 000065	ff 76 fe 		push	WORD PTR [bp-2]	;ea
+	*** 000068	e8 00 00 		call	_EAGetNextCipher
+	*** 00006b	83 c4 04 		add	sp,4
+	*** 00006e	8b f0 			mov	si,ax
+	*** 000070	eb c2 			jmp	SHORT $F1085
+;|*** 		{
+;|*** 			EncryptBufferXTS (buf,
+;|*** 				nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				structUnitNo,
+;|*** 				0,
+;|*** 				ks,
+;|*** 				ks2,
+;|*** 				cipher);
+;|*** 
+;|*** 			ks += CipherGetKeyScheduleSize (cipher);
+;|*** 			ks2 += CipherGetKeyScheduleSize (cipher);
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** #ifndef TC_NO_COMPILER_INT64
+;|*** 	case LRW:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		switch (CipherGetBlockSize (EAGetFirstCipher (ea)))
+;|*** 		{
+;|*** 		case 8:
+;|*** 			EncryptBufferLRW64 (buf,
+;|*** 				(unsigned __int64) nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				DataUnit2LRWIndex (unitNo, 8, ci),
+;|*** 				ci);
+;|*** 			break;
+;|*** 
+;|*** 		case 16:
+;|*** 			EncryptBufferLRW128 (buf,
+;|*** 				(unsigned __int64) nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				DataUnit2LRWIndex (unitNo, 16, ci),
+;|*** 				ci);
+;|*** 			break;
+;|*** 
+;|*** 		default:
+;|*** 			TC_THROW_FATAL_EXCEPTION;
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case CBC:
+;|*** 	case INNER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		while (nbrUnits--)
+;|*** 		{
+;|*** 			for (cipher = EAGetFirstCipher (ea); cipher != 0; cipher = EAGetNextCipher (ea, cipher))
+;|*** 			{
+;|*** 				InitSectorIVAndWhitening (unitNo, CipherGetBlockSize (cipher), sectorIV, iv64, secWhitening);
+;|*** 
+;|*** 				EncryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 					ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 					ks,
+;|*** 					sectorIV,
+;|*** 					secWhitening,
+;|*** 					0,
+;|*** 					cipher);
+;|*** 
+;|*** 				ks += CipherGetKeyScheduleSize (cipher);
+;|*** 			}
+;|*** 			ks -= EAGetKeyScheduleSize (ea);
+;|*** 			buf += ENCRYPTION_DATA_UNIT_SIZE;
+;|*** 			unitNo++;
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case OUTER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		while (nbrUnits--)
+;|*** 		{
+;|*** 			InitSectorIVAndWhitening (unitNo, CipherGetBlockSize (EAGetFirstCipher (ea)), sectorIV, iv64, secWhitening);
+;|*** 
+;|*** 			EncryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 				ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				ks,
+;|*** 				sectorIV,
+;|*** 				secWhitening,
+;|*** 				ea,
+;|*** 				0);
+;|*** 
+;|*** 			buf += ENCRYPTION_DATA_UNIT_SIZE;
+;|*** 			unitNo++;
+;|*** 		}
+;|*** 		break;
+;|*** #endif	// #ifndef TC_NO_COMPILER_INT64
+;|*** 
+;|*** 	default:		
+;|*** 		// Unknown/wrong ID
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 	}
+;|*** }
+; Line 1489
+					$EX1075:
+	*** 000072	5e 			pop	si
+	*** 000073	5f 			pop	di
+	*** 000074	c9 			leave	
+	*** 000075	c3 			ret	
+
+_EncryptDataUnits	ENDP
+	PUBLIC	_DecryptBuffer
+_DecryptBuffer	PROC NEAR	;  COMDAT
+;|*** 
+;|*** // DecryptBuffer
+;|*** //
+;|*** // buf:  data to be decrypted; the start of the buffer is assumed to be aligned with the start of a data unit.
+;|*** // len:  number of bytes to decrypt; must be divisible by the block size (for cascaded ciphers, divisible 
+;|*** //       by the largest block size used within the cascade)
+;|*** void DecryptBuffer (unsigned __int8 *buf, TC_LARGEST_COMPILER_UINT len, PCRYPTO_INFO cryptoInfo)
+;|*** {
+; Line 1497
+	*** 000000	c8 0c 00 00 		enter	12,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	buf = 4
+;	len = 6
+;	cryptoInfo = 10
+;	register di = ks
+;	ks2 = -4
+;	dataUnitNo = -12
+;	cipher = -2
+	*** 000006	8b 76 0a 		mov	si,WORD PTR [bp+10]	;cryptoInfo
+;|*** 	switch (cryptoInfo->mode)
+; Line 1498
+	*** 000009	8b 44 02 		mov	ax,WORD PTR [si+2]
+;|*** 	{
+;|*** 	case XTS:
+;|*** 		{
+;|*** 			unsigned __int8 *ks = cryptoInfo->ks + EAGetKeyScheduleSize (cryptoInfo->ea);
+;|*** 			unsigned __int8 *ks2 = cryptoInfo->ks2 + EAGetKeyScheduleSize (cryptoInfo->ea);
+;|*** 			UINT64_STRUCT dataUnitNo;
+;|*** 			int cipher;
+;|*** 
+;|*** 			// When encrypting/decrypting a buffer (typically a volume header) the sequential number
+;|*** 			// of the first XTS data unit in the buffer is always 0 and the start of the buffer is
+;|*** 			// always assumed to be aligned with the start of the data unit 0.
+;|*** 			dataUnitNo.LowPart = 0;
+;|*** 			dataUnitNo.HighPart = 0;
+;|*** 
+;|*** 			for (cipher = EAGetLastCipher (cryptoInfo->ea);
+;|*** 				cipher != 0;
+;|*** 				cipher = EAGetPreviousCipher (cryptoInfo->ea, cipher))
+;|*** 			{
+;|*** 				ks -= CipherGetKeyScheduleSize (cipher);
+;|*** 				ks2 -= CipherGetKeyScheduleSize (cipher);
+;|*** 
+;|*** 				DecryptBufferXTS (buf, len, &dataUnitNo, 0, ks, ks2, cipher);
+;|*** 			}
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** #ifndef TC_NO_COMPILER_INT64
+;|*** 	case LRW:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		switch (CipherGetBlockSize (EAGetFirstCipher (cryptoInfo->ea)))
+;|*** 		{
+;|*** 		case 8:
+;|*** 			DecryptBufferLRW64 (buf, (unsigned __int64) len, 1, cryptoInfo);
+;|*** 			break;
+;|*** 
+;|*** 		case 16:
+;|*** 			DecryptBufferLRW128 (buf, (unsigned __int64) len, 1, cryptoInfo);
+;|*** 			break;
+;|*** 
+;|*** 		default:
+;|*** 			TC_THROW_FATAL_EXCEPTION;
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case CBC:
+;|*** 	case INNER_CBC:
+;|*** 		{
+;|*** 			/* Deprecated/legacy */
+;|*** 
+;|*** 			unsigned __int8 *ks = cryptoInfo->ks + EAGetKeyScheduleSize (cryptoInfo->ea);
+;|*** 			int cipher;
+;|*** 			for (cipher = EAGetLastCipher (cryptoInfo->ea);
+;|*** 				cipher != 0;
+;|*** 				cipher = EAGetPreviousCipher (cryptoInfo->ea, cipher))
+;|*** 			{
+;|*** 				ks -= CipherGetKeyScheduleSize (cipher);
+;|*** 
+;|*** 				DecryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 					(unsigned int) len,
+;|*** 					ks,
+;|*** 					(unsigned __int32 *) cryptoInfo->k2,
+;|*** 					(unsigned __int32 *) &cryptoInfo->k2[8],
+;|*** 					0,
+;|*** 					cipher);
+;|*** 			}
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case OUTER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		DecryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 			(unsigned int) len,
+;|*** 			cryptoInfo->ks,
+;|*** 			(unsigned __int32 *) cryptoInfo->k2,
+;|*** 			(unsigned __int32 *) &cryptoInfo->k2[8],
+;|*** 			cryptoInfo->ea,
+;|*** 			0);
+;|*** 
+;|*** 		break;
+;|*** #endif	// #ifndef TC_NO_COMPILER_INT64
+;|*** 
+;|*** 	default:		
+;|*** 		// Unknown/wrong ID
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 	}
+; Line 1587
+	*** 00000c	48 			dec	ax
+	*** 00000d	74 09 			je	SHORT $SC1100
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+; Line 1586
+	*** 00000f	68 32 06 		push	1586	;0632H
+	*** 000012	e8 00 00 		call	_ThrowFatalException
+	*** 000015	5b 			pop	bx
+;|*** 	}
+; Line 1587
+	*** 000016	eb 6a 			jmp	SHORT $EX1095
+;|*** 	case XTS:
+; Line 1500
+					$SC1100:
+;|*** 		{
+;|*** 			unsigned __int8 *ks = cryptoInfo->ks + EAGetKeyScheduleSize (cryptoInfo->ea);
+; Line 1502
+	*** 000018	ff 34 			push	WORD PTR [si]
+	*** 00001a	e8 00 00 		call	_EAGetKeyScheduleSize
+	*** 00001d	5b 			pop	bx
+	*** 00001e	8b f8 			mov	di,ax
+	*** 000020	03 fe 			add	di,si
+	*** 000022	83 c7 04 		add	di,4
+;|*** 			unsigned __int8 *ks2 = cryptoInfo->ks2 + EAGetKeyScheduleSize (cryptoInfo->ea);
+; Line 1503
+	*** 000025	ff 34 			push	WORD PTR [si]
+	*** 000027	e8 00 00 		call	_EAGetKeyScheduleSize
+	*** 00002a	5b 			pop	bx
+	*** 00002b	03 c6 			add	ax,si
+	*** 00002d	05 d9 03 		add	ax,985	;03d9H
+	*** 000030	89 46 fc 		mov	WORD PTR [bp-4],ax	;ks2
+;|*** 			UINT64_STRUCT dataUnitNo;
+;|*** 			int cipher;
+;|*** 
+;|*** 			// When encrypting/decrypting a buffer (typically a volume header) the sequential number
+;|*** 			// of the first XTS data unit in the buffer is always 0 and the start of the buffer is
+;|*** 			// always assumed to be aligned with the start of the data unit 0.
+;|*** 			dataUnitNo.LowPart = 0;
+; Line 1510
+	*** 000033	66 2b c0 		sub	eax,eax
+	*** 000036	66 89 46 f4 		mov	DWORD PTR [bp-12],eax	;dataUnitNo
+;|*** 			dataUnitNo.HighPart = 0;
+; Line 1511
+	*** 00003a	66 89 46 f8 		mov	DWORD PTR [bp-8],eax
+;|*** 
+;|*** 			for (cipher = EAGetLastCipher (cryptoInfo->ea);
+;|*** 				cipher != 0;
+;|*** 				cipher = EAGetPreviousCipher (cryptoInfo->ea, cipher))
+; Line 1515
+	*** 00003e	ff 34 			push	WORD PTR [si]
+	*** 000040	e8 00 00 		call	_EAGetLastCipher
+	*** 000043	5b 			pop	bx
+	*** 000044	89 46 fe 		mov	WORD PTR [bp-2],ax	;cipher
+					$L1184:
+	*** 000047	8b f0 			mov	si,ax
+	*** 000049	0b f0 			or	si,ax
+	*** 00004b	74 35 			je	SHORT $EX1095
+;|*** 			{
+;|*** 				ks -= CipherGetKeyScheduleSize (cipher);
+; Line 1517
+	*** 00004d	56 			push	si
+	*** 00004e	e8 00 00 		call	_CipherGetKeyScheduleSize
+	*** 000051	5b 			pop	bx
+	*** 000052	2b f8 			sub	di,ax
+;|*** 				ks2 -= CipherGetKeyScheduleSize (cipher);
+;|*** 
+;|*** 				DecryptBufferXTS (buf, len, &dataUnitNo, 0, ks, ks2, cipher);
+; Line 1520
+	*** 000054	56 			push	si
+	*** 000055	56 			push	si
+	*** 000056	e8 00 00 		call	_CipherGetKeyScheduleSize
+	*** 000059	5b 			pop	bx
+	*** 00005a	29 46 fc 		sub	WORD PTR [bp-4],ax	;ks2
+	*** 00005d	ff 76 fc 		push	WORD PTR [bp-4]	;ks2
+	*** 000060	57 			push	di
+	*** 000061	6a 00 			push	0
+	*** 000063	8d 46 f4 		lea	ax,WORD PTR [bp-12]	;dataUnitNo
+	*** 000066	50 			push	ax
+	*** 000067	66 ff 76 06 		push	DWORD PTR [bp+6]	;len
+	*** 00006b	ff 76 04 		push	WORD PTR [bp+4]	;buf
+	*** 00006e	e8 00 00 		call	_DecryptBufferXTS
+	*** 000071	83 c4 10 		add	sp,16	;0010H
+;|*** 				cipher = EAGetPreviousCipher (cryptoInfo->ea, cipher))
+; Line 1515
+	*** 000074	56 			push	si
+	*** 000075	8b 5e 0a 		mov	bx,WORD PTR [bp+10]	;cryptoInfo
+	*** 000078	ff 37 			push	WORD PTR [bx]
+	*** 00007a	e8 00 00 		call	_EAGetPreviousCipher
+	*** 00007d	83 c4 04 		add	sp,4
+	*** 000080	eb c5 			jmp	SHORT $L1184
+;|*** 			{
+;|*** 				ks -= CipherGetKeyScheduleSize (cipher);
+;|*** 				ks2 -= CipherGetKeyScheduleSize (cipher);
+;|*** 
+;|*** 				DecryptBufferXTS (buf, len, &dataUnitNo, 0, ks, ks2, cipher);
+;|*** 			}
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** #ifndef TC_NO_COMPILER_INT64
+;|*** 	case LRW:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		switch (CipherGetBlockSize (EAGetFirstCipher (cryptoInfo->ea)))
+;|*** 		{
+;|*** 		case 8:
+;|*** 			DecryptBufferLRW64 (buf, (unsigned __int64) len, 1, cryptoInfo);
+;|*** 			break;
+;|*** 
+;|*** 		case 16:
+;|*** 			DecryptBufferLRW128 (buf, (unsigned __int64) len, 1, cryptoInfo);
+;|*** 			break;
+;|*** 
+;|*** 		default:
+;|*** 			TC_THROW_FATAL_EXCEPTION;
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case CBC:
+;|*** 	case INNER_CBC:
+;|*** 		{
+;|*** 			/* Deprecated/legacy */
+;|*** 
+;|*** 			unsigned __int8 *ks = cryptoInfo->ks + EAGetKeyScheduleSize (cryptoInfo->ea);
+;|*** 			int cipher;
+;|*** 			for (cipher = EAGetLastCipher (cryptoInfo->ea);
+;|*** 				cipher != 0;
+;|*** 				cipher = EAGetPreviousCipher (cryptoInfo->ea, cipher))
+;|*** 			{
+;|*** 				ks -= CipherGetKeyScheduleSize (cipher);
+;|*** 
+;|*** 				DecryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 					(unsigned int) len,
+;|*** 					ks,
+;|*** 					(unsigned __int32 *) cryptoInfo->k2,
+;|*** 					(unsigned __int32 *) &cryptoInfo->k2[8],
+;|*** 					0,
+;|*** 					cipher);
+;|*** 			}
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case OUTER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		DecryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 			(unsigned int) len,
+;|*** 			cryptoInfo->ks,
+;|*** 			(unsigned __int32 *) cryptoInfo->k2,
+;|*** 			(unsigned __int32 *) &cryptoInfo->k2[8],
+;|*** 			cryptoInfo->ea,
+;|*** 			0);
+;|*** 
+;|*** 		break;
+;|*** #endif	// #ifndef TC_NO_COMPILER_INT64
+;|*** 
+;|*** 	default:		
+;|*** 		// Unknown/wrong ID
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 	}
+;|*** }
+; Line 1588
+					$EX1095:
+	*** 000082	5e 			pop	si
+	*** 000083	5f 			pop	di
+	*** 000084	c9 			leave	
+	*** 000085	c3 			ret	
+
+_DecryptBuffer	ENDP
+	PUBLIC	_DecryptDataUnits
+_DecryptDataUnits	PROC NEAR	;  COMDAT
+;|*** 
+;|*** // buf:			data to be decrypted
+;|*** // unitNo:		sequential number of the data unit with which the buffer starts
+;|*** // nbrUnits:	number of data units in the buffer
+;|*** void DecryptDataUnits (unsigned __int8 *buf, const UINT64_STRUCT *structUnitNo, uint32 nbrUnits, PCRYPTO_INFO ci)
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** {
+;|*** 	EncryptionThreadPoolDoWork (DecryptDataUnitsWork, buf, structUnitNo, nbrUnits, ci);
+;|*** }
+;|*** 
+;|*** void DecryptDataUnitsCurrentThread (unsigned __int8 *buf, const UINT64_STRUCT *structUnitNo, TC_LARGEST_COMPILER_UINT nbrUnits, PCRYPTO_INFO ci)
+;|*** #endif // !TC_WINDOWS_BOOT
+;|*** {
+; Line 1601
+	*** 000000	c8 08 00 00 		enter	8,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	buf = 4
+;	structUnitNo = 6
+;	nbrUnits = 8
+;	ci = 12
+;	ea = -8
+;	ks = -4
+;	ks2 = -6
+;	cipher = -2
+	*** 000006	8b 76 0c 		mov	si,WORD PTR [bp+12]	;ci
+;|*** 	int ea = ci->ea;
+; Line 1602
+	*** 000009	8b 3c 			mov	di,WORD PTR [si]
+;|*** 	unsigned __int8 *ks = ci->ks;
+; Line 1603
+	*** 00000b	8d 4c 04 		lea	cx,WORD PTR [si+4]
+;|*** 	unsigned __int8 *ks2 = ci->ks2;
+; Line 1604
+	*** 00000e	8d 84 d9 03 		lea	ax,WORD PTR [si+985]
+	*** 000012	89 46 fa 		mov	WORD PTR [bp-6],ax	;ks2
+;|*** 	int cipher;
+;|*** 
+;|*** #ifndef TC_NO_COMPILER_INT64
+;|*** 	void *iv = ci->k2;									// Deprecated/legacy
+;|*** 	unsigned __int64 unitNo = structUnitNo->Value;
+;|*** 	unsigned __int64 *iv64 = (unsigned __int64 *) iv;	// Deprecated/legacy
+;|*** 	unsigned __int32 sectorIV[4];						// Deprecated/legacy
+;|*** 	unsigned __int32 secWhitening[2];					// Deprecated/legacy
+;|*** #endif	// #ifndef TC_NO_COMPILER_INT64
+;|*** 
+;|*** 
+;|*** 	switch (ci->mode)
+; Line 1616
+	*** 000015	8b 44 02 		mov	ax,WORD PTR [si+2]
+;|*** 	{
+;|*** 	case XTS:
+;|*** 		ks += EAGetKeyScheduleSize (ea);
+;|*** 		ks2 += EAGetKeyScheduleSize (ea);
+;|*** 
+;|*** 		for (cipher = EAGetLastCipher (ea); cipher != 0; cipher = EAGetPreviousCipher (ea, cipher))
+;|*** 		{
+;|*** 			ks -= CipherGetKeyScheduleSize (cipher);
+;|*** 			ks2 -= CipherGetKeyScheduleSize (cipher);
+;|*** 
+;|*** 			DecryptBufferXTS (buf,
+;|*** 				nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				structUnitNo,
+;|*** 				0,
+;|*** 				ks,
+;|*** 				ks2,
+;|*** 				cipher);
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** #ifndef TC_NO_COMPILER_INT64
+;|*** 	case LRW:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		switch (CipherGetBlockSize (EAGetFirstCipher (ea)))
+;|*** 		{
+;|*** 		case 8:
+;|*** 			DecryptBufferLRW64 (buf,
+;|*** 				(unsigned __int64) nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				DataUnit2LRWIndex (unitNo, 8, ci),
+;|*** 				ci);
+;|*** 			break;
+;|*** 
+;|*** 		case 16:
+;|*** 			DecryptBufferLRW128 (buf,
+;|*** 				(unsigned __int64) nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				DataUnit2LRWIndex (unitNo, 16, ci),
+;|*** 				ci);
+;|*** 			break;
+;|*** 
+;|*** 		default:
+;|*** 			TC_THROW_FATAL_EXCEPTION;
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case CBC:
+;|*** 	case INNER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		while (nbrUnits--)
+;|*** 		{
+;|*** 			ks += EAGetKeyScheduleSize (ea);
+;|*** 			for (cipher = EAGetLastCipher (ea); cipher != 0; cipher = EAGetPreviousCipher (ea, cipher))
+;|*** 			{
+;|*** 				InitSectorIVAndWhitening (unitNo, CipherGetBlockSize (cipher), sectorIV, iv64, secWhitening);
+;|*** 
+;|*** 				ks -= CipherGetKeyScheduleSize (cipher);
+;|*** 
+;|*** 				DecryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 					ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 					ks,
+;|*** 					sectorIV,
+;|*** 					secWhitening,
+;|*** 					0,
+;|*** 					cipher);
+;|*** 			}
+;|*** 			buf += ENCRYPTION_DATA_UNIT_SIZE;
+;|*** 			unitNo++;
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case OUTER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		while (nbrUnits--)
+;|*** 		{
+;|*** 			InitSectorIVAndWhitening (unitNo, CipherGetBlockSize (EAGetFirstCipher (ea)), sectorIV, iv64, secWhitening);
+;|*** 
+;|*** 			DecryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 				ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				ks,
+;|*** 				sectorIV,
+;|*** 				secWhitening,
+;|*** 				ea,
+;|*** 				0);
+;|*** 
+;|*** 			buf += ENCRYPTION_DATA_UNIT_SIZE;
+;|*** 			unitNo++;
+;|*** 		}
+;|*** 		break;
+;|*** #endif // #ifndef TC_NO_COMPILER_INT64
+;|*** 
+;|*** 	default:		
+;|*** 		// Unknown/wrong ID
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 	}
+; Line 1715
+	*** 000018	48 			dec	ax
+	*** 000019	74 09 			je	SHORT $L1165
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+; Line 1714
+	*** 00001b	68 b2 06 		push	1714	;06b2H
+	*** 00001e	e8 00 00 		call	_ThrowFatalException
+	*** 000021	5b 			pop	bx
+;|*** 	}
+; Line 1715
+	*** 000022	eb 5f 			jmp	SHORT $EX1117
+					$L1165:
+;|*** 	case XTS:
+; Line 1618
+	*** 000024	8b f1 			mov	si,cx
+;|*** 		ks += EAGetKeyScheduleSize (ea);
+; Line 1619
+	*** 000026	57 			push	di
+	*** 000027	e8 00 00 		call	_EAGetKeyScheduleSize
+	*** 00002a	5b 			pop	bx
+	*** 00002b	03 f0 			add	si,ax
+;|*** 		ks2 += EAGetKeyScheduleSize (ea);
+; Line 1620
+	*** 00002d	57 			push	di
+	*** 00002e	e8 00 00 		call	_EAGetKeyScheduleSize
+	*** 000031	5b 			pop	bx
+	*** 000032	01 46 fa 		add	WORD PTR [bp-6],ax	;ks2
+;|*** 
+;|*** 		for (cipher = EAGetLastCipher (ea); cipher != 0; cipher = EAGetPreviousCipher (ea, cipher))
+; Line 1622
+	*** 000035	57 			push	di
+	*** 000036	e8 00 00 		call	_EAGetLastCipher
+	*** 000039	5b 			pop	bx
+	*** 00003a	89 7e f8 		mov	WORD PTR [bp-8],di	;ea
+	*** 00003d	89 76 fc 		mov	WORD PTR [bp-4],si	;ks
+	*** 000040	8b f0 			mov	si,ax
+	*** 000042	8b 7e fc 		mov	di,WORD PTR [bp-4]	;ks
+					$F1127:
+	*** 000045	0b f0 			or	si,ax
+	*** 000047	74 3a 			je	SHORT $EX1117
+;|*** 		{
+;|*** 			ks -= CipherGetKeyScheduleSize (cipher);
+; Line 1624
+	*** 000049	56 			push	si
+	*** 00004a	e8 00 00 		call	_CipherGetKeyScheduleSize
+	*** 00004d	5b 			pop	bx
+	*** 00004e	2b f8 			sub	di,ax
+;|*** 			ks2 -= CipherGetKeyScheduleSize (cipher);
+;|*** 
+;|*** 			DecryptBufferXTS (buf,
+;|*** 				nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				structUnitNo,
+;|*** 				0,
+;|*** 				ks,
+;|*** 				ks2,
+;|*** 				cipher);
+; Line 1633
+	*** 000050	56 			push	si
+	*** 000051	56 			push	si
+	*** 000052	e8 00 00 		call	_CipherGetKeyScheduleSize
+	*** 000055	5b 			pop	bx
+	*** 000056	29 46 fa 		sub	WORD PTR [bp-6],ax	;ks2
+	*** 000059	ff 76 fa 		push	WORD PTR [bp-6]	;ks2
+	*** 00005c	57 			push	di
+	*** 00005d	6a 00 			push	0
+	*** 00005f	ff 76 06 		push	WORD PTR [bp+6]	;structUnitNo
+	*** 000062	66 8b 46 08 		mov	eax,DWORD PTR [bp+8]	;nbrUnits
+	*** 000066	66 c1 e0 09 		shl	eax,9
+	*** 00006a	66 50 			push	eax
+	*** 00006c	ff 76 04 		push	WORD PTR [bp+4]	;buf
+	*** 00006f	e8 00 00 		call	_DecryptBufferXTS
+	*** 000072	83 c4 10 		add	sp,16	;0010H
+;|*** 		for (cipher = EAGetLastCipher (ea); cipher != 0; cipher = EAGetPreviousCipher (ea, cipher))
+; Line 1622
+	*** 000075	56 			push	si
+	*** 000076	ff 76 f8 		push	WORD PTR [bp-8]	;ea
+	*** 000079	e8 00 00 		call	_EAGetPreviousCipher
+	*** 00007c	83 c4 04 		add	sp,4
+	*** 00007f	8b f0 			mov	si,ax
+	*** 000081	eb c2 			jmp	SHORT $F1127
+;|*** 		{
+;|*** 			ks -= CipherGetKeyScheduleSize (cipher);
+;|*** 			ks2 -= CipherGetKeyScheduleSize (cipher);
+;|*** 
+;|*** 			DecryptBufferXTS (buf,
+;|*** 				nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				structUnitNo,
+;|*** 				0,
+;|*** 				ks,
+;|*** 				ks2,
+;|*** 				cipher);
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** #ifndef TC_NO_COMPILER_INT64
+;|*** 	case LRW:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		switch (CipherGetBlockSize (EAGetFirstCipher (ea)))
+;|*** 		{
+;|*** 		case 8:
+;|*** 			DecryptBufferLRW64 (buf,
+;|*** 				(unsigned __int64) nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				DataUnit2LRWIndex (unitNo, 8, ci),
+;|*** 				ci);
+;|*** 			break;
+;|*** 
+;|*** 		case 16:
+;|*** 			DecryptBufferLRW128 (buf,
+;|*** 				(unsigned __int64) nbrUnits * ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				DataUnit2LRWIndex (unitNo, 16, ci),
+;|*** 				ci);
+;|*** 			break;
+;|*** 
+;|*** 		default:
+;|*** 			TC_THROW_FATAL_EXCEPTION;
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case CBC:
+;|*** 	case INNER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		while (nbrUnits--)
+;|*** 		{
+;|*** 			ks += EAGetKeyScheduleSize (ea);
+;|*** 			for (cipher = EAGetLastCipher (ea); cipher != 0; cipher = EAGetPreviousCipher (ea, cipher))
+;|*** 			{
+;|*** 				InitSectorIVAndWhitening (unitNo, CipherGetBlockSize (cipher), sectorIV, iv64, secWhitening);
+;|*** 
+;|*** 				ks -= CipherGetKeyScheduleSize (cipher);
+;|*** 
+;|*** 				DecryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 					ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 					ks,
+;|*** 					sectorIV,
+;|*** 					secWhitening,
+;|*** 					0,
+;|*** 					cipher);
+;|*** 			}
+;|*** 			buf += ENCRYPTION_DATA_UNIT_SIZE;
+;|*** 			unitNo++;
+;|*** 		}
+;|*** 		break;
+;|*** 
+;|*** 	case OUTER_CBC:
+;|*** 
+;|*** 		/* Deprecated/legacy */
+;|*** 
+;|*** 		while (nbrUnits--)
+;|*** 		{
+;|*** 			InitSectorIVAndWhitening (unitNo, CipherGetBlockSize (EAGetFirstCipher (ea)), sectorIV, iv64, secWhitening);
+;|*** 
+;|*** 			DecryptBufferCBC ((unsigned __int32 *) buf,
+;|*** 				ENCRYPTION_DATA_UNIT_SIZE,
+;|*** 				ks,
+;|*** 				sectorIV,
+;|*** 				secWhitening,
+;|*** 				ea,
+;|*** 				0);
+;|*** 
+;|*** 			buf += ENCRYPTION_DATA_UNIT_SIZE;
+;|*** 			unitNo++;
+;|*** 		}
+;|*** 		break;
+;|*** #endif // #ifndef TC_NO_COMPILER_INT64
+;|*** 
+;|*** 	default:		
+;|*** 		// Unknown/wrong ID
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 	}
+;|*** }
+; Line 1716
+					$EX1117:
+	*** 000083	5e 			pop	si
+	*** 000084	5f 			pop	di
+	*** 000085	c9 			leave	
+	*** 000086	c3 			ret	
+
+_DecryptDataUnits	ENDP
+	PUBLIC	_GetMaxPkcs5OutSize
+_GetMaxPkcs5OutSize	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** // Returns the maximum number of bytes necessary to be generated by the PBKDF2 (PKCS #5)
+;|*** int GetMaxPkcs5OutSize (void)
+;|*** {
+; Line 1721
+	*** 000000	56 			push	si
+;	register si = size
+;|*** 	int size = 32;
+; Line 1722
+	*** 000001	be 20 00 		mov	si,32	;0020H
+;|*** 
+;|*** 	size = max (size, EAGetLargestKeyForMode (XTS) * 2);	// Sizes of primary + secondary keys
+; Line 1724
+	*** 000004	6a 01 			push	1
+	*** 000006	e8 00 00 		call	_EAGetLargestKeyForMode
+	*** 000009	5b 			pop	bx
+	*** 00000a	03 c0 			add	ax,ax
+	*** 00000c	3b c6 			cmp	ax,si
+	*** 00000e	7c 0a 			jl	SHORT $L1167
+	*** 000010	6a 01 			push	1
+	*** 000012	e8 00 00 		call	_EAGetLargestKeyForMode
+	*** 000015	5b 			pop	bx
+	*** 000016	03 c0 			add	ax,ax
+	*** 000018	8b f0 			mov	si,ax
+					$L1167:
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 	size = max (size, LEGACY_VOL_IV_SIZE + EAGetLargestKeyForMode (LRW));		// Deprecated/legacy
+;|*** 	size = max (size, LEGACY_VOL_IV_SIZE + EAGetLargestKeyForMode (CBC));		// Deprecated/legacy
+;|*** 	size = max (size, LEGACY_VOL_IV_SIZE + EAGetLargestKeyForMode (OUTER_CBC));	// Deprecated/legacy
+;|*** 	size = max (size, LEGACY_VOL_IV_SIZE + EAGetLargestKeyForMode (INNER_CBC));	// Deprecated/legacy
+;|*** #endif
+;|*** 
+;|*** 	return size;
+; Line 1733
+	*** 00001a	8b c6 			mov	ax,si
+;|*** }
+; Line 1734
+	*** 00001c	5e 			pop	si
+	*** 00001d	c3 			ret	
+
+_GetMaxPkcs5OutSize	ENDP
+_TEXT	ENDS
+END
+;|*** 
+;|*** 
+;|*** #else // TC_WINDOWS_BOOT_SINGLE_CIPHER_MODE
+;|*** 
+;|*** 
+;|*** #if !defined (TC_WINDOWS_BOOT_AES) && !defined (TC_WINDOWS_BOOT_SERPENT) && !defined (TC_WINDOWS_BOOT_TWOFISH)
+;|*** #error No cipher defined
+;|*** #endif
+;|*** 
+;|*** void EncipherBlock(int cipher, void *data, void *ks)
+;|*** {
+;|*** #ifdef TC_WINDOWS_BOOT_AES
+;|*** 	if (IsAesHwCpuSupported())
+;|*** 		aes_hw_cpu_encrypt ((byte *) ks, data);
+;|*** 	else
+;|*** 		aes_encrypt (data, data, ks); 
+;|*** #elif defined (TC_WINDOWS_BOOT_SERPENT)
+;|*** 	serpent_encrypt (data, data, ks);
+;|*** #elif defined (TC_WINDOWS_BOOT_TWOFISH)
+;|*** 	twofish_encrypt (ks, data, data);
+;|*** #endif
+;|*** }
+;|*** 
+;|*** void DecipherBlock(int cipher, void *data, void *ks)
+;|*** {
+;|*** #ifdef TC_WINDOWS_BOOT_AES
+;|*** 	if (IsAesHwCpuSupported())
+;|*** 		aes_hw_cpu_decrypt ((byte *) ks + sizeof (aes_encrypt_ctx) + 14 * 16, data);
+;|*** 	else
+;|*** 		aes_decrypt (data, data, (aes_decrypt_ctx *) ((byte *) ks + sizeof(aes_encrypt_ctx))); 
+;|*** #elif defined (TC_WINDOWS_BOOT_SERPENT)
+;|*** 	serpent_decrypt (data, data, ks);
+;|*** #elif defined (TC_WINDOWS_BOOT_TWOFISH)
+;|*** 	twofish_decrypt (ks, data, data);
+;|*** #endif
+;|*** }
+;|*** 
+;|*** int EAGetFirst ()
+;|*** {
+;|*** 	return 1;
+;|*** }
+;|*** 
+;|*** int EAGetNext (int previousEA)
+;|*** {
+;|*** 	return 0;
+;|*** }
+;|*** 
+;|*** int EAInit (int ea, unsigned char *key, unsigned __int8 *ks)
+;|*** {
+;|*** #ifdef TC_WINDOWS_BOOT_AES
+;|*** 
+;|*** 	aes_init();
+;|*** 
+;|*** 	if (aes_encrypt_key256 (key, (aes_encrypt_ctx *) ks) != EXIT_SUCCESS)
+;|*** 		return ERR_CIPHER_INIT_FAILURE;
+;|*** 	if (aes_decrypt_key256 (key, (aes_decrypt_ctx *) (ks + sizeof (aes_encrypt_ctx))) != EXIT_SUCCESS)
+;|*** 		return ERR_CIPHER_INIT_FAILURE;
+;|*** 
+;|*** #elif defined (TC_WINDOWS_BOOT_SERPENT)
+;|*** 	serpent_set_key (key, 32 * 8, ks);
+;|*** #elif defined (TC_WINDOWS_BOOT_TWOFISH)
+;|*** 	twofish_set_key ((TwofishInstance *)ks, (const u4byte *)key, 32 * 8);
+;|*** #endif
+;|*** 	return ERR_SUCCESS;
+;|*** }
+;|*** 
+;|*** int EAGetKeySize (int ea)
+;|*** {
+;|*** 	return 32;
+;|*** }
+;|*** 
+;|*** int EAGetFirstCipher (int ea)
+;|*** {
+;|*** 	return 1;
+;|*** }
+;|*** 
+;|*** void EncryptBuffer (unsigned __int8 *buf, TC_LARGEST_COMPILER_UINT len, PCRYPTO_INFO cryptoInfo)
+;|*** {
+;|*** 	UINT64_STRUCT dataUnitNo;
+;|*** 	dataUnitNo.LowPart = 0; dataUnitNo.HighPart = 0;
+;|*** 	EncryptBufferXTS (buf, len, &dataUnitNo, 0, cryptoInfo->ks, cryptoInfo->ks2, 1);
+;|*** }
+;|*** 
+;|*** void EncryptDataUnits (unsigned __int8 *buf, const UINT64_STRUCT *structUnitNo, TC_LARGEST_COMPILER_UINT nbrUnits, PCRYPTO_INFO ci)
+;|*** {
+;|*** 	EncryptBufferXTS (buf, nbrUnits * ENCRYPTION_DATA_UNIT_SIZE, structUnitNo, 0, ci->ks, ci->ks2, 1);
+;|*** }
+;|*** 
+;|*** void DecryptBuffer (unsigned __int8 *buf, TC_LARGEST_COMPILER_UINT len, PCRYPTO_INFO cryptoInfo)
+;|*** {
+;|*** 	UINT64_STRUCT dataUnitNo;
+;|*** 	dataUnitNo.LowPart = 0; dataUnitNo.HighPart = 0;
+;|*** 	DecryptBufferXTS (buf, len, &dataUnitNo, 0, cryptoInfo->ks, cryptoInfo->ks2, 1);
+;|*** }
+;|*** 
+;|*** void DecryptDataUnits (unsigned __int8 *buf, const UINT64_STRUCT *structUnitNo, TC_LARGEST_COMPILER_UINT nbrUnits, PCRYPTO_INFO ci)
+;|*** {
+;|*** 	DecryptBufferXTS (buf, nbrUnits * ENCRYPTION_DATA_UNIT_SIZE, structUnitNo, 0, ci->ks, ci->ks2, 1);
+;|*** }
+;|*** 
+;|*** #endif // TC_WINDOWS_BOOT_SINGLE_CIPHER_MODE
+;|*** 
+;|*** 
+;|*** #if !defined (TC_WINDOWS_BOOT) || defined (TC_WINDOWS_BOOT_AES)
+;|*** 
+;|*** static BOOL HwEncryptionDisabled = FALSE;
+;|*** 
+;|*** BOOL IsAesHwCpuSupported ()
+;|*** {
+;|*** 	static BOOL state = FALSE;
+;|*** 	static BOOL stateValid = FALSE;
+;|*** 
+;|*** 	if (!stateValid)
+;|*** 	{
+;|*** 		state = is_aes_hw_cpu_supported() ? TRUE : FALSE;
+;|*** 		stateValid = TRUE;
+;|*** 	}
+;|*** 
+;|*** 	return state && !HwEncryptionDisabled;
+;|*** }
+;|*** 
+;|*** void EnableHwEncryption (BOOL enable)
+;|*** {
+;|*** #if defined (TC_WINDOWS_BOOT)
+;|*** 	if (enable)
+;|*** 		aes_hw_cpu_enable_sse();
+;|*** #endif
+;|*** 
+;|*** 	HwEncryptionDisabled = !enable;
+;|*** }
+;|*** 
+;|*** BOOL IsHwEncryptionEnabled ()
+;|*** {
+;|*** 	return !HwEncryptionDisabled;
+;|*** }
+;|*** 
+;|*** #endif // !TC_WINDOWS_BOOT

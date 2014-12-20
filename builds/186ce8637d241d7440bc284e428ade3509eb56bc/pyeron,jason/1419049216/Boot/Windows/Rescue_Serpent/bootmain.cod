@@ -1,0 +1,4191 @@
+;	Static Name Aliases
+;
+;	$S1830_?options@?3??RepairMenu@@YAXXZ@4QAPBDA	EQU	?options@?3??RepairMenu@@YAXXZ@4QAPBDA
+	TITLE   ..\bootmain.cpp
+	.MODEL  SMALL
+	.386p
+	.387
+_TEXT	SEGMENT  WORD USE16 PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD USE16 PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD USE16 PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD USE16 PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+PUBLIC  ??_C@_0CA@HAB@Press?51?99?5to?5select?5partition?3?5?$AA@
+PUBLIC  ??_C@_0BA@LKAJ@Is?5this?5correct?$AA@
+PUBLIC  ??_C@_01KHLB@?$FL?$AA@
+PUBLIC  ??_C@_0DK@PFGO@Please?5remove?5the?5Rescue?5Disk?5fr@
+PUBLIC  ??_C@_05EFLO@?$FN?5?5?5?5?$AA@
+PUBLIC  ??_C@_0BC@DHAO@?$FLEsc?$FN?5?5Cancel?$AN?6?$AN?6?$AA@
+PUBLIC  ??_C@_0BH@NEPP@To?5select?0?5press?51?99?3?5?$AA@
+PUBLIC  ??_C@_0CA@FBFB@BIOS?5reserved?5too?5much?5memory?3?5?$AA@
+PUBLIC  ??_C@_0DM@HBD@?9?5Upgrade?5BIOS?$AN?6?9?5Use?5a?5differen@
+PUBLIC  ??_C@_0BM@IDKA@No?5bootable?5partition?5found?$AA@
+PUBLIC  ??_C@_0P@EOMF@Enter?5password?$AA@
+PUBLIC  ??_C@_0BG@GEFN@?5for?5hidden?5system?3?$AN?6?$AA@
+PUBLIC  ??_C@_02HFBK@?3?5?$AA@
+PUBLIC  ??_C@_0BE@LMLE@?$ANDrive?5decrypted?4?$AN?6?$AA@
+PUBLIC  ??_C@_0BJ@HKIB@?$AN?6Decryption?5deferred?4?$AN?6?$AA@
+PUBLIC  ??_C@_0IL@JNGI@?$AN?6Use?5only?5if?5Windows?5cannot?5sta@
+PUBLIC  ??_C@_0M@EMPJ@Decrypt?5now?$AA@
+PUBLIC  ??_C@_0BM@NMNK@Warning?3?5Caps?5Lock?5is?5on?4?$AN?6?$AA@
+PUBLIC  ??_C@_0BI@KFOG@Incorrect?5password?4?$AN?6?$AN?6?$AA@
+PUBLIC  ??_C@_0BN@MGAM@Original?5header?5preserved?4?$AN?6?$AA@
+PUBLIC  ??_C@_0L@CGGC@Available?5?$AA@
+PUBLIC  ??_C@_0HN@LBMO@If?5you?5are?5sure?5the?5password?5is?5@
+PUBLIC  ??_C@_0HG@PFFC@?$AN?6To?5safely?5interrupt?5and?5defer?5@
+PUBLIC  ??_C@_03KPOF@?3?$AN?6?$AA@
+PUBLIC  ??_C@_0CM@CODF@WARNING?3?5Drive?50?5contains?5a?5vali@
+PUBLIC  ??_C@_0P@JAC@Modify?5drive?50?$AA@
+PUBLIC  ??_C@_0CA@GGMN@?5CipherShed?5Rescue?5Disk?50?47?43?$AN?6?$AA@
+PUBLIC  ??_C@_0BJ@CIJ@?5?5?5?5Keyboard?5Controls?3?$AN?6?$AA@
+PUBLIC  ??_C@_0M@NCBA@?5?5?5?5?$FLEsc?$FN?5?5?$AA@
+PUBLIC  ??_C@_0CD@GJAD@Skip?5Authentication?5?$CIBoot?5Manage@
+PUBLIC  ??_C@_0CL@PPMD@Permanently?5decrypt?5system?5parti@
+PUBLIC  ??_C@_0O@MJCG@?$AN?6?5?5?5?5?$FLF8?$FN?5?5?5?$AA@
+PUBLIC  ??_C@_0N@BNAP@?$ANRemaining?3?5?$AA@
+PUBLIC  ??_C@_0BP@HFME@Restore?5CipherShed?5Boot?5Loader?$AA@
+PUBLIC  ??_C@_0P@KAON@Repair?5Options?$AA@
+PUBLIC  ??_C@_0CB@OIIA@Restore?5key?5data?5?$CIvolume?5header?$CJ@
+PUBLIC  ??_C@_0N@DGHN@Booting?4?4?4?$AN?6?$AA@
+PUBLIC  ??_C@_0BP@PLOE@Restore?5original?5system?5loader?$AA@
+PUBLIC  ??_C@_0BH@PMEC@CipherShed?5Boot?5Loader?$AA@
+PUBLIC  ??_C@_06IEHP@Header?$AA@
+PUBLIC  ??_C@_09LGPG@?$DP?5?$CIy?1n?$CJ?3?5?$AA@
+PUBLIC  ??_C@_0O@MJLK@System?5loader?$AA@
+PUBLIC  ??_C@_0N@HIBI@?5restored?4?$AN?6?$AA@
+PUBLIC  ??_C@_0CI@CJAH@Is?5the?5system?5partition?1drive?5de@
+PUBLIC  ??_C@_0BH@CKJE@Bootable?5Partitions?3?$AN?6?$AA@
+PUBLIC  ??_C@_0BL@HDPH@Please?5decrypt?5it?5first?4?$AN?6?$AA@
+PUBLIC  ??_C@_02PIMC@?$AN?6?$AA@
+PUBLIC  ??_C@_03NMHE@y?$AN?6?$AA@
+PUBLIC  ??_C@_0BF@LODE@Skip?5all?5bad?5sectors?$AA@
+PUBLIC  ??_C@_03EDHP@n?$AN?6?$AA@
+PUBLIC  ??_C@_0CK@MNCE@?9?5Connect?5system?5drive?5to?5?$CISATA?$CJ@
+PUBLIC  ??_C@_07MCKD@Drive?3?5?$AA@
+PUBLIC  ??_C@_0O@LEMN@?0?5Partition?3?5?$AA@
+PUBLIC  ??_C@_08PFEJ@?0?5Size?3?5?$AA@
+PUBLIC  ??_C@_0CJ@BABO@It?5appears?5you?5are?5creating?5a?5hi@
+EXTRN	__acrtused:ABS
+EXTRN	?ClearScreen@@YAXXZ:NEAR
+EXTRN	??G@YA?ATUINT64_STRUCT@@ABT0@0@Z:NEAR
+EXTRN	?ReadWriteMBR@@YAEDED@Z:NEAR
+EXTRN	??G@YA?ATUINT64_STRUCT@@ABT0@K@Z:NEAR
+EXTRN	?EscKeyPressed@@YADXZ:NEAR
+EXTRN	?GetKeyboardChar@@YAEXZ:NEAR
+EXTRN	_memcpy:NEAR
+EXTRN	?GetKeyboardChar@@YAEPAE@Z:NEAR
+EXTRN	??5@YA?ATUINT64_STRUCT@@ABT0@H@Z:NEAR
+EXTRN	?GetShiftFlags@@YAEXZ:NEAR
+EXTRN	_GetCrc32:NEAR
+EXTRN	??6@YA?ATUINT64_STRUCT@@ABT0@H@Z:NEAR
+EXTRN	?GetString@@YAHPADI@Z:NEAR
+EXTRN	?ReadSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z:NEAR
+EXTRN	?InitVideoMode@@YAXXZ:NEAR
+EXTRN	_DecryptDataUnits:NEAR
+EXTRN	?IsPrintable@@YADD@Z:NEAR
+EXTRN	?ReadSectors@@YAEPAEEABUChsAddress@@ED@Z:NEAR
+EXTRN	?Print@@YAXPBD@Z:NEAR
+EXTRN	?Print@@YAXK@Z:NEAR
+EXTRN	_EncryptBuffer:NEAR
+EXTRN	?InstallInterruptFilters@@YADXZ:NEAR
+EXTRN	?PrintBackspace@@YAXXZ:NEAR
+EXTRN	?ReadWriteSectors@@YAEDIIEABTUINT64_STRUCT@@ID@Z:NEAR
+EXTRN	?PrintChar@@YAXD@Z:NEAR
+EXTRN	??N@YADABTUINT64_STRUCT@@0@Z:NEAR
+EXTRN	_DecryptBuffer:NEAR
+EXTRN	?PrintCharAtCursor@@YAXD@Z:NEAR
+EXTRN	?GetActivePartition@@YADE@Z:NEAR
+EXTRN	?PrintEndl@@YAXXZ:NEAR
+EXTRN	?WriteSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z:NEAR
+EXTRN	?CopyMemory@@YAXPAXIII@Z:NEAR
+EXTRN	?PrintEndl@@YAXH@Z:NEAR
+EXTRN	?GetDriveGeometry@@YAEEAAUDriveGeometry@@D@Z:NEAR
+EXTRN	?PrintRepeatedChar@@YAXDH@Z:NEAR
+EXTRN	_EraseMemory:NEAR
+EXTRN	?CopyMemory@@YAXIIPAXI@Z:NEAR
+EXTRN	?PrintError@@YAXPBD@Z:NEAR
+EXTRN	?PrintErrorNoEndl@@YAXPBD@Z:NEAR
+EXTRN	?GetDrivePartitions@@YAEEPAUPartition@@IAAID0D@Z:NEAR
+EXTRN	_crypto_open:NEAR
+EXTRN	?LbaToChs@@YAXABUDriveGeometry@@ABTUINT64_STRUCT@@AAUChsAddress@@@Z:NEAR
+EXTRN	_crypto_close:NEAR
+EXTRN	_ReadVolumeHeader:NEAR
+EXTRN	__aNulshr:NEAR
+EXTRN	?Beep@@YAXXZ:NEAR
+EXTRN	??H@YA?ATUINT64_STRUCT@@ABT0@K@Z:NEAR
+EXTRN	?ClearBiosKeystrokeBuffer@@YAXXZ:NEAR
+EXTRN	?PrintSectorCountInMB@@YAXABTUINT64_STRUCT@@@Z:NEAR
+EXTRN	??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z:NEAR
+EXTRN	?SectorBuffer@@3QAEA:BYTE
+EXTRN	?BootSectorFlags@@3EA:BYTE
+EXTRN	?BootLoaderDrive@@3EA:BYTE
+EXTRN	?BootDrive@@3EA:BYTE
+EXTRN	?BootDriveGeometryValid@@3DA:BYTE
+EXTRN	?BootDriveGeometry@@3UDriveGeometry@@A:DWORD
+EXTRN	?PreventNormalSystemBoot@@3DA:BYTE
+EXTRN	?PreventBootMenu@@3DA:BYTE
+EXTRN	?BootStarted@@3DA:BYTE
+EXTRN	?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A:WORD
+EXTRN	?EncryptedVirtualPartition@@3UPartition@@A:BYTE
+EXTRN	?ActivePartition@@3UPartition@@A:BYTE
+EXTRN	?PartitionFollowingActive@@3UPartition@@A:BYTE
+EXTRN	?ExtraBootPartitionPresent@@3DA:BYTE
+EXTRN	?HiddenVolumeStartUnitNo@@3TUINT64_STRUCT@@A:QWORD
+EXTRN	?HiddenVolumeStartSector@@3TUINT64_STRUCT@@A:QWORD
+_DATA      SEGMENT
+??_C@_0CA@GGMN@?5CipherShed?5Rescue?5Disk?50?47?43?$AN?6?$AA@	DB	' CipherShed Rescue Disk 0.7.3',  0dH,  0aH,  00H
+	ORG	$-32
+??_C@_0BJ@CIJ@?5?5?5?5Keyboard?5Controls?3?$AN?6?$AA@	DB	'    Keyboard Controls:',  0dH,  0aH,  00H
+	ORG	$-25
+??_C@_0M@NCBA@?5?5?5?5?$FLEsc?$FN?5?5?$AA@	DB	'    [Esc]  ',  00H
+	ORG	$-12
+??_C@_0CD@GJAD@Skip?5Authentication?5?$CIBoot?5Manage@	DB	'Skip Authentication (Boot Manager)',  00H
+	ORG	$-35
+??_C@_0O@MJCG@?$AN?6?5?5?5?5?$FLF8?$FN?5?5?5?$AA@	DB	0dH,  0aH, '    [F8]   ',  00H
+	ORG	$-14
+??_C@_0P@KAON@Repair?5Options?$AA@	DB	'Repair Options',  00H
+	ORG	$-15
+??_C@_09LGPG@?$DP?5?$CIy?1n?$CJ?3?5?$AA@	DB	'? (y/n): ',  00H
+	ORG	$-10
+??_C@_03NMHE@y?$AN?6?$AA@	DB	'y',  0dH,  0aH,  00H
+	ORG	$-4
+??_C@_03EDHP@n?$AN?6?$AA@	DB	'n',  0dH,  0aH,  00H
+	ORG	$-4
+??_C@_01KHLB@?$FL?$AA@	DB	'[',  00H
+	ORG	$-2
+??_C@_05EFLO@?$FN?5?5?5?5?$AA@	DB	']    ',  00H
+	ORG	$-6
+??_C@_0BC@DHAO@?$FLEsc?$FN?5?5Cancel?$AN?6?$AN?6?$AA@	DB	'[Esc]  Cancel',  0dH,  0aH,  0dH,  0aH,  00H
+	ORG	$-18
+??_C@_0BH@NEPP@To?5select?0?5press?51?99?3?5?$AA@	DB	'To select, press 1-9: ',  00H
+	ORG	$-23
+??_C@_0P@EOMF@Enter?5password?$AA@	DB	'Enter password',  00H
+	ORG	$-15
+??_C@_0BG@GEFN@?5for?5hidden?5system?3?$AN?6?$AA@	DB	' for hidden system:',  0dH,  0aH,  00H
+	ORG	$-22
+??_C@_02HFBK@?3?5?$AA@	DB	': ',  00H
+	ORG	$-3
+??_C@_0N@DGHN@Booting?4?4?4?$AN?6?$AA@	DB	'Booting...',  0dH,  0aH,  00H
+	ORG	$-13
+??_C@_0CA@FBFB@BIOS?5reserved?5too?5much?5memory?3?5?$AA@	DB	'BIOS reserved too much memory: ',  00H
+	ORG	$-32
+??_C@_0DM@HBD@?9?5Upgrade?5BIOS?$AN?6?9?5Use?5a?5differen@	DB	'- Upgrade BIOS',  0dH,  0aH, '- Use a different motherboard '
+	DB	'model/brand',  0dH,  0aH,  00H
+	ORG	$-60
+??_C@_0BM@NMNK@Warning?3?5Caps?5Lock?5is?5on?4?$AN?6?$AA@	DB	'Warning: Caps Lock is on.',  0dH,  0aH,  00H
+	ORG	$-28
+??_C@_0BI@KFOG@Incorrect?5password?4?$AN?6?$AN?6?$AA@	DB	'Incorrect password.',  0dH,  0aH,  0dH,  0aH,  00H
+	ORG	$-24
+??_C@_0HN@LBMO@If?5you?5are?5sure?5the?5password?5is?5@	DB	'If you are sure the password is correct, the key data may be'
+	DB	' damaged.',  0dH,  0aH, 'If so, use ''Repair Options'' > ''R'
+	DB	'estore key data''.',  0dH,  0aH,  0dH,  0aH,  00H
+	ORG	$-125
+??_C@_0BM@IDKA@No?5bootable?5partition?5found?$AA@	DB	'No bootable partition found',  00H
+	ORG	$-28
+??_C@_0BH@CKJE@Bootable?5Partitions?3?$AN?6?$AA@	DB	'Bootable Partitions:',  0dH,  0aH,  00H
+	ORG	$-23
+??_C@_02PIMC@?$AN?6?$AA@	DB	0dH,  0aH,  00H
+	ORG	$-3
+??_C@_07MCKD@Drive?3?5?$AA@	DB	'Drive: ',  00H
+	ORG	$-8
+??_C@_0O@LEMN@?0?5Partition?3?5?$AA@	DB	', Partition: ',  00H
+	ORG	$-14
+??_C@_08PFEJ@?0?5Size?3?5?$AA@	DB	', Size: ',  00H
+	ORG	$-9
+??_C@_0CA@HAB@Press?51?99?5to?5select?5partition?3?5?$AA@	DB	'Press 1-9 to select partition: ',  00H
+	ORG	$-32
+??_C@_0IL@JNGI@?$AN?6Use?5only?5if?5Windows?5cannot?5sta@	DB	0dH,  0aH, 'Use only if Windows cannot start. Decryption und'
+	DB	'er Windows is much faster',  0dH,  0aH, '(in CipherShed, sel'
+	DB	'ect ''System'' > ''Permanently Decrypt'').',  0dH,  0aH,  0dH
+	DB	0aH,  00H
+	ORG	$-139
+??_C@_0M@EMPJ@Decrypt?5now?$AA@	DB	'Decrypt now',  00H
+	ORG	$-12
+??_C@_0HG@PFFC@?$AN?6To?5safely?5interrupt?5and?5defer?5@	DB	0dH,  0aH, 'To safely interrupt and defer decryption, press '
+	DB	'Esc.',  0dH,  0aH, 'WARNING: You can turn off power only aft'
+	DB	'er you press Esc.',  0dH,  0aH,  0dH,  0aH,  00H
+	ORG	$-118
+??_C@_0N@BNAP@?$ANRemaining?3?5?$AA@	DB	0dH, 'Remaining: ',  00H
+	ORG	$-13
+??_C@_0BF@LODE@Skip?5all?5bad?5sectors?$AA@	DB	'Skip all bad sectors',  00H
+	ORG	$-21
+??_C@_0BE@LMLE@?$ANDrive?5decrypted?4?$AN?6?$AA@	DB	0dH, 'Drive decrypted.',  0dH,  0aH,  00H
+	ORG	$-20
+??_C@_0BJ@HKIB@?$AN?6Decryption?5deferred?4?$AN?6?$AA@	DB	0dH,  0aH, 'Decryption deferred.',  0dH,  0aH,  00H
+	ORG	$-25
+??_C@_0L@CGGC@Available?5?$AA@	DB	'Available ',  00H
+	ORG	$-11
+??_C@_03KPOF@?3?$AN?6?$AA@	DB	':',  0dH,  0aH,  00H
+	ORG	$-4
+??_C@_0CL@PPMD@Permanently?5decrypt?5system?5parti@	DB	'Permanently decrypt system partition/drive',  00H
+	ORG	$-43
+??_C@_0BP@HFME@Restore?5CipherShed?5Boot?5Loader?$AA@	DB	'Restore CipherShed Boot Loader',  00H
+	ORG	$-31
+??_C@_0CB@OIIA@Restore?5key?5data?5?$CIvolume?5header?$CJ@	DB	'Restore key data (volume header)',  00H
+	ORG	$-33
+??_C@_0BP@PLOE@Restore?5original?5system?5loader?$AA@	DB	'Restore original system loader',  00H
+	ORG	$-31
+$S1830_?options@?3??RepairMenu@@YAXXZ@4QAPBDA	DW	DGROUP:??_C@_0CL@PPMD@Permanently?5decrypt?5system?5parti@
+	DW	DGROUP:??_C@_0BP@HFME@Restore?5CipherShed?5Boot?5Loader?$AA@
+	DW	DGROUP:??_C@_0CB@OIIA@Restore?5key?5data?5?$CIvolume?5header?$CJ@
+	DW	DGROUP:??_C@_0BP@PLOE@Restore?5original?5system?5loader?$AA@
+	ORG	$-8
+??_C@_0CI@CJAH@Is?5the?5system?5partition?1drive?5de@	DB	'Is the system partition/drive decrypted',  00H
+	ORG	$-40
+??_C@_0BL@HDPH@Please?5decrypt?5it?5first?4?$AN?6?$AA@	DB	'Please decrypt it first.',  0dH,  0aH,  00H
+	ORG	$-27
+??_C@_0BN@MGAM@Original?5header?5preserved?4?$AN?6?$AA@	DB	'Original header preserved.',  0dH,  0aH,  00H
+	ORG	$-29
+??_C@_0CM@CODF@WARNING?3?5Drive?50?5contains?5a?5vali@	DB	'WARNING: Drive 0 contains a valid header!',  0dH,  0aH,  00H
+	ORG	$-44
+??_C@_0P@JAC@Modify?5drive?50?$AA@	DB	'Modify drive 0',  00H
+	ORG	$-15
+??_C@_0BH@PMEC@CipherShed?5Boot?5Loader?$AA@	DB	'CipherShed Boot Loader',  00H
+	ORG	$-23
+??_C@_06IEHP@Header?$AA@	DB	'Header',  00H
+	ORG	$-7
+??_C@_0O@MJLK@System?5loader?$AA@	DB	'System loader',  00H
+	ORG	$-14
+??_C@_0N@HIBI@?5restored?4?$AN?6?$AA@	DB	' restored.',  0dH,  0aH,  00H
+	ORG	$-13
+??_C@_0CK@MNCE@?9?5Connect?5system?5drive?5to?5?$CISATA?$CJ@	DB	'- Connect system drive to (SATA) port 1',  0dH,  0aH,  00H
+	ORG	$-42
+??_C@_0CJ@BABO@It?5appears?5you?5are?5creating?5a?5hi@	DB	'It appears you are creating a hidden OS.',  00H
+	ORG	$-41
+??_C@_0BA@LKAJ@Is?5this?5correct?$AA@	DB	'Is this correct',  00H
+	ORG	$-16
+??_C@_0DK@PFGO@Please?5remove?5the?5Rescue?5Disk?5fr@	DB	'Please remove the Rescue Disk from the drive and restart.',  00H
+_DATA      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+
+?InitScreen@@YAXXZ	PROC NEAR	; InitScreen COMDAT
+;|*** /*
+;|***  Copyright (c) 2008-2011 TrueCrypt Developers Association. All rights reserved.
+;|*** 
+;|***  Governed by the TrueCrypt License 3.0 the full text of which is contained in
+;|***  the file License.txt included in TrueCrypt binary and source code distribution
+;|***  packages.
+;|*** */
+;|*** 
+;|*** #include "Crc.h"
+;|*** #include "Crypto.h"
+;|*** #include "Password.h"
+;|*** #include "Volumes.h"
+;|*** 
+;|*** #include "Platform.h"
+;|*** #include "Bios.h"
+;|*** #include "BootConfig.h"
+;|*** #include "BootMain.h"
+;|*** #include "BootDefs.h"
+;|*** #include "BootCommon.h"
+;|*** #include "BootConsoleIo.h"
+;|*** #include "BootDebug.h"
+;|*** #include "BootDiskIo.h"
+;|*** #include "BootEncryptedIo.h"
+;|*** #include "BootMemory.h"
+;|*** #include "BootStrings.h"
+;|*** #include "IntFilter.h"
+;|*** 
+;|*** 
+;|*** static void InitScreen ()
+;|*** {
+; Line 30
+;	title = -2
+;|*** 	ClearScreen();
+; Line 31
+	*** 000000	e8 00 00 		call	?ClearScreen@@YAXXZ	; ClearScreen
+;|*** 
+;|*** 	const char *title =
+;|*** #ifndef TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 		" CipherShed Boot Loader "
+;|*** #else
+;|*** 		" CipherShed Rescue Disk "
+;|*** #endif
+;|*** 		VERSION_STRING "\r\n";
+;|*** 
+;|*** 	Print (title);
+; Line 41
+	*** 000003	68 00 00 		push	OFFSET DGROUP:??_C@_0CA@GGMN@?5CipherShed?5Rescue?5Disk?50?47?43?$AN?6?$AA@
+	*** 000006	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000009	5b 			pop	bx
+;|*** 
+;|*** 	PrintRepeatedChar ('\xDC', TC_BIOS_MAX_CHARS_PER_LINE);
+; Line 43
+	*** 00000a	6a 50 			push	80	;0050H
+	*** 00000c	6a dc 			push	-36	;ffdcH
+	*** 00000e	e8 00 00 		call	?PrintRepeatedChar@@YAXDH@Z	; PrintRepeatedChar
+	*** 000011	83 c4 04 		add	sp,4
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 	if (CustomUserMessage[0])
+;|*** 	{
+;|*** 		PrintEndl();
+;|*** 		Print (CustomUserMessage);
+;|*** 	}
+;|*** #endif
+;|*** 
+;|*** 	PrintEndl (2);
+; Line 53
+	*** 000014	6a 02 			push	2
+	*** 000016	e8 00 00 		call	?PrintEndl@@YAXH@Z	; PrintEndl
+	*** 000019	5b 			pop	bx
+;|*** }
+; Line 54
+	*** 00001a	c3 			ret	
+
+?InitScreen@@YAXXZ	ENDP
+
+?PrintMainMenu@@YAXXZ	PROC NEAR	; PrintMainMenu COMDAT
+;|*** 
+;|*** 
+;|*** static void PrintMainMenu ()
+;|*** {
+;|*** 	if (PreventBootMenu)
+; Line 59
+	*** 000000	80 3e 00 00 00 		cmp	BYTE PTR ?PreventBootMenu@@3DA,0	;PreventBootMenu
+	*** 000005	75 29 			jne	SHORT $EX1507
+;|*** 		return;
+;|*** 
+;|*** 	Print ("    Keyboard Controls:\r\n");
+; Line 62
+	*** 000007	68 00 00 		push	OFFSET DGROUP:??_C@_0BJ@CIJ@?5?5?5?5Keyboard?5Controls?3?$AN?6?$AA@
+	*** 00000a	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00000d	5b 			pop	bx
+;|*** 	Print ("    [Esc]  ");
+; Line 63
+	*** 00000e	68 00 00 		push	OFFSET DGROUP:??_C@_0M@NCBA@?5?5?5?5?$FLEsc?$FN?5?5?$AA@
+	*** 000011	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000014	5b 			pop	bx
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 
+;|*** 	Print ((BootSectorFlags & TC_BOOT_CFG_MASK_HIDDEN_OS_CREATION_PHASE) != TC_HIDDEN_OS_CREATION_PHASE_NONE
+;|*** 		? "Boot Non-Hidden System (Boot Manager)"
+;|*** 		: "Skip Authentication (Boot Manager)");
+;|*** 	
+;|*** #else // TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 
+;|*** 	Print ("Skip Authentication (Boot Manager)");
+; Line 73
+	*** 000015	68 00 00 		push	OFFSET DGROUP:??_C@_0CD@GJAD@Skip?5Authentication?5?$CIBoot?5Manage@
+	*** 000018	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00001b	5b 			pop	bx
+;|*** 	Print ("\r\n    [F8]   "); Print ("Repair Options");
+; Line 74
+	*** 00001c	68 00 00 		push	OFFSET DGROUP:??_C@_0O@MJCG@?$AN?6?5?5?5?5?$FLF8?$FN?5?5?5?$AA@
+	*** 00001f	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000022	5b 			pop	bx
+	*** 000023	68 00 00 		push	OFFSET DGROUP:??_C@_0P@KAON@Repair?5Options?$AA@
+	*** 000026	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000029	5b 			pop	bx
+;|*** 
+;|*** #endif // TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 
+;|*** 	PrintEndl (3);
+; Line 78
+	*** 00002a	6a 03 			push	3
+	*** 00002c	e8 00 00 		call	?PrintEndl@@YAXH@Z	; PrintEndl
+	*** 00002f	5b 			pop	bx
+;|*** }
+; Line 79
+					$EX1507:
+	*** 000030	c3 			ret	
+
+?PrintMainMenu@@YAXXZ	ENDP
+
+?IsMenuKey@@YADE@Z	PROC NEAR	; IsMenuKey COMDAT
+;|*** 
+;|*** 
+;|*** static bool IsMenuKey (byte scanCode)
+;|*** {
+; Line 83
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	scanCode = 4
+;|*** #ifdef TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 	return scanCode == TC_MENU_KEY_REPAIR;
+; Line 85
+	*** 000003	80 7e 04 42 		cmp	BYTE PTR [bp+4],66	;0042H	;scanCode
+	*** 000007	75 04 			jne	SHORT $L1933
+	*** 000009	b0 01 			mov	al,1
+	*** 00000b	c9 			leave	
+	*** 00000c	c3 			ret	
+					$L1933:
+	*** 00000d	32 c0 			xor	al,al
+;|*** #else
+;|*** 	return false;
+;|*** #endif
+;|*** }
+; Line 89
+	*** 00000f	c9 			leave	
+	*** 000010	c3 			ret	
+
+?IsMenuKey@@YADE@Z	ENDP
+
+?AskYesNo@@YADPBD@Z	PROC NEAR	; AskYesNo COMDAT
+;|*** 
+;|*** 
+;|*** static bool AskYesNo (const char *message)
+;|*** {
+; Line 93
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	message = 4
+;|*** 	Print (message);
+; Line 94
+	*** 000003	ff 76 04 		push	WORD PTR [bp+4]	;message
+	*** 000006	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000009	5b 			pop	bx
+;|*** 	Print ("? (y/n): ");
+; Line 95
+	*** 00000a	68 00 00 		push	OFFSET DGROUP:??_C@_09LGPG@?$DP?5?$CIy?1n?$CJ?3?5?$AA@
+	*** 00000d	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000010	5b 			pop	bx
+;|*** 	while (true)
+; Line 96
+	*** 000011	eb 1a 			jmp	SHORT $L1991
+					$FC1520:
+;|*** 	{
+;|*** 		switch (GetKeyboardChar())
+; Line 98
+	*** 000013	2d 0b 00 		sub	ax,11	;000bH
+	*** 000016	7c 12 			jl	SHORT $SD1530
+	*** 000018	70 10 			jo	SHORT $SD1530
+	*** 00001a	48 			dec	ax
+	*** 00001b	7e 25 			jle	SHORT $SC1526
+	*** 00001d	2d 14 00 		sub	ax,20	;0014H
+	*** 000020	74 15 			je	SHORT $SC1528
+	*** 000022	2d 0b 00 		sub	ax,11	;000bH
+	*** 000025	7c 03 			jl	SHORT $SD1530
+	*** 000027	48 			dec	ax
+	*** 000028	7e 18 			jle	SHORT $SC1526
+;|*** 		{
+;|*** 		case 'y':
+;|*** 		case 'Y':
+;|*** 		case 'z':
+;|*** 		case 'Z':
+;|*** 			Print ("y\r\n");
+;|*** 			return true;
+;|*** 
+;|*** 		case 'n':
+;|*** 		case 'N':
+;|*** 			Print ("n\r\n");
+;|*** 			return false;
+;|*** 
+;|*** 		default:
+; Line 112
+					$SD1530:
+;|*** 			Beep();
+; Line 113
+	*** 00002a	e8 00 00 		call	?Beep@@YAXXZ	; Beep
+;|*** 		}
+; Line 114
+					$L1991:
+	*** 00002d	e8 00 00 		call	?GetKeyboardChar@@YAEXZ	; GetKeyboardChar
+	*** 000030	2a e4 			sub	ah,ah
+	*** 000032	2d 4e 00 		sub	ax,78	;004eH
+	*** 000035	75 dc 			jne	SHORT $FC1520
+;|*** 		case 'n':
+; Line 107
+					$SC1528:
+;|*** 		case 'N':
+;|*** 			Print ("n\r\n");
+; Line 109
+	*** 000037	68 00 00 		push	OFFSET DGROUP:??_C@_03EDHP@n?$AN?6?$AA@
+	*** 00003a	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00003d	5b 			pop	bx
+;|*** 			return false;
+; Line 110
+	*** 00003e	32 c0 			xor	al,al
+	*** 000040	c9 			leave	
+	*** 000041	c3 			ret	
+;|*** 		case 'y':
+; Line 100
+					$SC1526:
+;|*** 		case 'Y':
+;|*** 		case 'z':
+;|*** 		case 'Z':
+;|*** 			Print ("y\r\n");
+; Line 104
+	*** 000042	68 00 00 		push	OFFSET DGROUP:??_C@_03NMHE@y?$AN?6?$AA@
+	*** 000045	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000048	5b 			pop	bx
+;|*** 			return true;
+; Line 105
+	*** 000049	b0 01 			mov	al,1
+;|*** 
+;|*** 		case 'n':
+;|*** 		case 'N':
+;|*** 			Print ("n\r\n");
+;|*** 			return false;
+;|*** 
+;|*** 		default:
+;|*** 			Beep();
+;|*** 		}
+;|*** 	}
+;|*** }
+; Line 116
+	*** 00004b	c9 			leave	
+	*** 00004c	c3 			ret	
+
+?AskYesNo@@YADPBD@Z	ENDP
+
+?AskSelection@@YAHQAPBDI@Z	PROC NEAR	; AskSelection COMDAT
+;|*** 
+;|*** 
+;|*** static int AskSelection (const char *options[], size_t optionCount)
+;|*** {
+; Line 120
+	*** 000000	c8 02 00 00 		enter	2,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	str = -1
+;	options = 4
+;	optionCount = 6
+;	register si = i
+;|*** 	for (int i = 0; i < optionCount; ++i)
+; Line 121
+	*** 000006	33 f6 			xor	si,si
+	*** 000008	8b 7e 06 		mov	di,WORD PTR [bp+6]	;optionCount
+	*** 00000b	eb 2f 			jmp	SHORT $L1992
+					$F1535:
+;|*** 	{
+;|*** 		Print ("["); Print (i + 1); Print ("]    ");
+; Line 123
+	*** 00000d	68 00 00 		push	OFFSET DGROUP:??_C@_01KHLB@?$FL?$AA@
+	*** 000010	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000013	5b 			pop	bx
+	*** 000014	8d 44 01 		lea	ax,WORD PTR [si+1]
+	*** 000017	99 			cwd	
+	*** 000018	52 			push	dx
+	*** 000019	50 			push	ax
+	*** 00001a	e8 00 00 		call	?Print@@YAXK@Z	; Print
+	*** 00001d	83 c4 04 		add	sp,4
+	*** 000020	68 00 00 		push	OFFSET DGROUP:??_C@_05EFLO@?$FN?5?5?5?5?$AA@
+	*** 000023	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000026	5b 			pop	bx
+;|*** 		Print (options[i]);
+; Line 124
+	*** 000027	8b de 			mov	bx,si
+	*** 000029	03 de 			add	bx,si
+	*** 00002b	03 5e 04 		add	bx,WORD PTR [bp+4]	;options
+	*** 00002e	ff 37 			push	WORD PTR [bx]
+	*** 000030	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000033	5b 			pop	bx
+;|*** 		PrintEndl();
+; Line 125
+	*** 000034	e8 00 00 		call	?PrintEndl@@YAXXZ	; PrintEndl
+;|*** 	for (int i = 0; i < optionCount; ++i)
+; Line 121
+	*** 000037	8d 44 01 		lea	ax,WORD PTR [si+1]
+	*** 00003a	8b f0 			mov	si,ax
+					$L1992:
+	*** 00003c	3b f7 			cmp	si,di
+	*** 00003e	72 cd 			jb	SHORT $F1535
+;|*** 	{
+;|*** 		Print ("["); Print (i + 1); Print ("]    ");
+;|*** 		Print (options[i]);
+;|*** 		PrintEndl();
+;|*** 	}
+;|*** 	Print ("[Esc]  Cancel\r\n\r\n");
+; Line 127
+	*** 000040	68 00 00 		push	OFFSET DGROUP:??_C@_0BC@DHAO@?$FLEsc?$FN?5?5Cancel?$AN?6?$AN?6?$AA@
+	*** 000043	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000046	5b 			pop	bx
+;|*** 
+;|*** 	Print ("To select, press 1-9: ");
+; Line 129
+	*** 000047	68 00 00 		push	OFFSET DGROUP:??_C@_0BH@NEPP@To?5select?0?5press?51?99?3?5?$AA@
+	*** 00004a	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00004d	5b 			pop	bx
+;|*** 
+;|*** 	char str;
+;|*** 
+;|*** 	while (true)
+; Line 133
+	*** 00004e	eb 17 			jmp	SHORT $L1993
+					$FC1544:
+;|*** 	{
+;|*** 		if (GetString (&str, 1) == 0)
+;|*** 			return 0;
+;|*** 
+;|*** 		if (str >= '1' && str <= optionCount + '0')
+; Line 138
+	*** 000050	80 7e ff 31 		cmp	BYTE PTR [bp-1],49	;0031H	;str
+	*** 000054	7c 0b 			jl	SHORT $I1547
+	*** 000056	8a 46 ff 		mov	al,BYTE PTR [bp-1]	;str
+	*** 000059	98 			cbw	
+	*** 00005a	8d 4d 30 		lea	cx,WORD PTR [di+48]
+	*** 00005d	3b c8 			cmp	cx,ax
+	*** 00005f	73 18 			jae	SHORT $L1939
+;|*** 			return str - '0';
+;|*** 
+;|*** 		Beep();
+; Line 141
+					$I1547:
+	*** 000061	e8 00 00 		call	?Beep@@YAXXZ	; Beep
+;|*** 		PrintBackspace();
+; Line 142
+	*** 000064	e8 00 00 		call	?PrintBackspace@@YAXXZ	; PrintBackspace
+;|*** 	}
+; Line 143
+					$L1993:
+	*** 000067	6a 01 			push	1
+	*** 000069	8d 46 ff 		lea	ax,WORD PTR [bp-1]	;str
+	*** 00006c	50 			push	ax
+	*** 00006d	e8 00 00 		call	?GetString@@YAHPADI@Z	; GetString
+	*** 000070	83 c4 04 		add	sp,4
+	*** 000073	0b c0 			or	ax,ax
+	*** 000075	75 d9 			jne	SHORT $FC1544
+;|*** 			return 0;
+; Line 136
+	*** 000077	eb 07 			jmp	SHORT $EX1533
+					$L1939:
+;|*** 
+;|*** 		if (str >= '1' && str <= optionCount + '0')
+;|*** 			return str - '0';
+; Line 139
+	*** 000079	8a 46 ff 		mov	al,BYTE PTR [bp-1]	;str
+	*** 00007c	98 			cbw	
+	*** 00007d	2d 30 00 		sub	ax,48	;0030H
+;|*** 
+;|*** 		Beep();
+;|*** 		PrintBackspace();
+;|*** 	}
+;|*** }
+; Line 144
+					$EX1533:
+	*** 000080	5e 			pop	si
+	*** 000081	5f 			pop	di
+	*** 000082	c9 			leave	
+	*** 000083	c3 			ret	
+
+?AskSelection@@YAHQAPBDI@Z	ENDP
+
+?AskPassword@@YAEAAUPassword@@@Z	PROC NEAR	; AskPassword COMDAT
+;|*** 
+;|*** 
+;|*** static byte AskPassword (Password &password)
+;|*** {
+; Line 148
+	*** 000000	c8 02 00 00 		enter	2,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	password = 4
+;	register si = pos
+;	scanCode = -2
+;	asciiCode = -1
+;|*** 	size_t pos = 0;
+; Line 149
+	*** 000006	33 f6 			xor	si,si
+;|*** 	byte scanCode;
+;|*** 	byte asciiCode;
+;|*** 
+;|*** 	Print ("Enter password");
+; Line 153
+	*** 000008	68 00 00 		push	OFFSET DGROUP:??_C@_0P@EOMF@Enter?5password?$AA@
+	*** 00000b	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00000e	5b 			pop	bx
+;|*** 	Print (PreventNormalSystemBoot ? " for hidden system:\r\n" : ": ");
+; Line 154
+	*** 00000f	80 3e 00 00 00 		cmp	BYTE PTR ?PreventNormalSystemBoot@@3DA,0	;PreventNormalSystemBoot
+	*** 000014	74 05 			je	SHORT $L1941
+	*** 000016	b8 00 00 		mov	ax,OFFSET DGROUP:??_C@_0BG@GEFN@?5for?5hidden?5system?3?$AN?6?$AA@
+	*** 000019	eb 03 			jmp	SHORT $L1942
+					$L1941:
+	*** 00001b	b8 00 00 		mov	ax,OFFSET DGROUP:??_C@_02HFBK@?3?5?$AA@
+					$L1942:
+	*** 00001e	50 			push	ax
+	*** 00001f	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000022	5b 			pop	bx
+	*** 000023	8b 7e 04 		mov	di,WORD PTR [bp+4]	;password
+;|*** 
+;|*** 	while (true)
+; Line 156
+	*** 000026	eb 4c 			jmp	SHORT $L1995
+					$FC1557:
+;|*** 	{
+;|*** 		asciiCode = GetKeyboardChar (&scanCode);
+; Line 158
+	*** 000028	2d 0e 00 		sub	ax,14	;000eH
+	*** 00002b	0f 84 85 00 		je	$SC1563
+;|*** 
+;|*** 		switch (scanCode)
+;|*** 		{
+;|*** 		case TC_BIOS_KEY_ENTER:
+;|*** 			ClearBiosKeystrokeBuffer();
+;|*** 			PrintEndl();
+;|*** 
+;|*** 			password.Length = pos;
+;|*** 			return scanCode;
+;|*** 
+;|*** 		case TC_BIOS_KEY_BACKSPACE:
+;|*** 			if (pos > 0)
+;|*** 			{
+;|*** 				if (pos < MAX_PASSWORD)
+;|*** 					PrintBackspace();
+;|*** 				else
+;|*** 					PrintCharAtCursor (' ');
+;|*** 
+;|*** 				--pos;
+;|*** 			}
+;|*** 			continue;
+;|*** 
+;|*** 		default:
+;|*** 			if (scanCode == TC_BIOS_KEY_ESC || IsMenuKey (scanCode))
+; Line 182
+	*** 00002f	80 7e fe 01 		cmp	BYTE PTR [bp-2],1	;scanCode
+	*** 000033	74 6b 			je	SHORT $I1570
+	*** 000035	8a 46 fe 		mov	al,BYTE PTR [bp-2]	;scanCode
+	*** 000038	50 			push	ax
+	*** 000039	e8 00 00 		call	?IsMenuKey@@YADE@Z	; IsMenuKey
+	*** 00003c	5b 			pop	bx
+	*** 00003d	0a c0 			or	al,al
+	*** 00003f	75 5f 			jne	SHORT $I1570
+;|*** 			{
+;|*** 				burn (password.Text, sizeof (password.Text));
+;|*** 				ClearBiosKeystrokeBuffer();
+;|*** 
+;|*** 				PrintEndl();
+;|*** 				return scanCode;
+;|*** 			}
+;|*** 		}
+;|*** 
+;|*** 		if (!IsPrintable (asciiCode) || pos == MAX_PASSWORD)
+; Line 192
+	*** 000041	8a 46 ff 		mov	al,BYTE PTR [bp-1]	;asciiCode
+	*** 000044	50 			push	ax
+	*** 000045	e8 00 00 		call	?IsPrintable@@YADD@Z	; IsPrintable
+	*** 000048	5b 			pop	bx
+	*** 000049	0a c0 			or	al,al
+	*** 00004b	74 24 			je	SHORT $I1572
+	*** 00004d	83 fe 40 		cmp	si,64	;0040H
+	*** 000050	74 1f 			je	SHORT $I1572
+;|*** 		{
+;|*** 			Beep();
+;|*** 			continue;
+;|*** 		}
+;|*** 
+;|*** 		password.Text[pos++] = asciiCode;
+; Line 198
+	*** 000052	8a 46 ff 		mov	al,BYTE PTR [bp-1]	;asciiCode
+	*** 000055	8b de 			mov	bx,si
+	*** 000057	03 df 			add	bx,di
+	*** 000059	46 			inc	si
+	*** 00005a	88 47 04 		mov	BYTE PTR [bx+4],al
+;|*** 		if (pos < MAX_PASSWORD)
+; Line 199
+	*** 00005d	83 fe 40 		cmp	si,64	;0040H
+	*** 000060	73 08 			jae	SHORT $I1573
+;|*** 			PrintChar ('*');
+; Line 200
+	*** 000062	6a 2a 			push	42	;002aH
+	*** 000064	e8 00 00 		call	?PrintChar@@YAXD@Z	; PrintChar
+					$L1994:
+	*** 000067	5b 			pop	bx
+;|*** 		else
+; Line 201
+	*** 000068	eb 0a 			jmp	SHORT $L1995
+					$I1573:
+;|*** 			PrintCharAtCursor ('*');
+; Line 202
+	*** 00006a	6a 2a 			push	42	;002aH
+	*** 00006c	e8 00 00 		call	?PrintCharAtCursor@@YAXD@Z	; PrintCharAtCursor
+	*** 00006f	eb f6 			jmp	SHORT $L1994
+;|*** 		if (!IsPrintable (asciiCode) || pos == MAX_PASSWORD)
+; Line 192
+					$I1572:
+;|*** 		{
+;|*** 			Beep();
+; Line 194
+	*** 000071	e8 00 00 		call	?Beep@@YAXXZ	; Beep
+;|*** 			continue;
+; Line 195
+					$L1995:
+	*** 000074	8d 46 fe 		lea	ax,WORD PTR [bp-2]	;scanCode
+	*** 000077	50 			push	ax
+	*** 000078	e8 00 00 		call	?GetKeyboardChar@@YAEPAE@Z	; GetKeyboardChar
+	*** 00007b	5b 			pop	bx
+	*** 00007c	88 46 ff 		mov	BYTE PTR [bp-1],al	;asciiCode
+;|*** 		switch (scanCode)
+; Line 160
+	*** 00007f	8a 46 fe 		mov	al,BYTE PTR [bp-2]	;scanCode
+	*** 000082	2a e4 			sub	ah,ah
+;|*** 		{
+;|*** 		case TC_BIOS_KEY_ENTER:
+;|*** 			ClearBiosKeystrokeBuffer();
+;|*** 			PrintEndl();
+;|*** 
+;|*** 			password.Length = pos;
+;|*** 			return scanCode;
+;|*** 
+;|*** 		case TC_BIOS_KEY_BACKSPACE:
+;|*** 			if (pos > 0)
+;|*** 			{
+;|*** 				if (pos < MAX_PASSWORD)
+;|*** 					PrintBackspace();
+;|*** 				else
+;|*** 					PrintCharAtCursor (' ');
+;|*** 
+;|*** 				--pos;
+;|*** 			}
+;|*** 			continue;
+;|*** 
+;|*** 		default:
+;|*** 			if (scanCode == TC_BIOS_KEY_ESC || IsMenuKey (scanCode))
+;|*** 			{
+;|*** 				burn (password.Text, sizeof (password.Text));
+;|*** 				ClearBiosKeystrokeBuffer();
+;|*** 
+;|*** 				PrintEndl();
+;|*** 				return scanCode;
+;|*** 			}
+;|*** 		}
+; Line 190
+	*** 000084	2d 0e 00 		sub	ax,14	;000eH
+	*** 000087	75 9f 			jne	SHORT $FC1557
+;|*** 			if (pos > 0)
+; Line 170
+	*** 000089	0b f6 			or	si,si
+	*** 00008b	74 e7 			je	SHORT $L1995
+;|*** 			{
+;|*** 				if (pos < MAX_PASSWORD)
+; Line 172
+	*** 00008d	83 fe 40 		cmp	si,64	;0040H
+	*** 000090	73 05 			jae	SHORT $I1566
+;|*** 					PrintBackspace();
+; Line 173
+	*** 000092	e8 00 00 		call	?PrintBackspace@@YAXXZ	; PrintBackspace
+;|*** 				else
+; Line 174
+	*** 000095	eb 06 			jmp	SHORT $I1567
+					$I1566:
+;|*** 					PrintCharAtCursor (' ');
+; Line 175
+	*** 000097	6a 20 			push	32	;0020H
+	*** 000099	e8 00 00 		call	?PrintCharAtCursor@@YAXD@Z	; PrintCharAtCursor
+	*** 00009c	5b 			pop	bx
+					$I1567:
+;|*** 
+;|*** 				--pos;
+; Line 177
+	*** 00009d	4e 			dec	si
+;|*** 			}
+;|*** 			continue;
+; Line 179
+	*** 00009e	eb d4 			jmp	SHORT $L1995
+;|*** 
+;|*** 		default:
+;|*** 			if (scanCode == TC_BIOS_KEY_ESC || IsMenuKey (scanCode))
+; Line 182
+					$I1570:
+;|*** 			{
+;|*** 				burn (password.Text, sizeof (password.Text));
+; Line 184
+	*** 0000a0	6a 41 			push	65	;0041H
+	*** 0000a2	8d 45 04 		lea	ax,WORD PTR [di+4]
+	*** 0000a5	50 			push	ax
+	*** 0000a6	e8 00 00 		call	_EraseMemory
+	*** 0000a9	83 c4 04 		add	sp,4
+;|*** 				ClearBiosKeystrokeBuffer();
+; Line 185
+	*** 0000ac	e8 00 00 		call	?ClearBiosKeystrokeBuffer@@YAXXZ	; ClearBiosKeystrokeBuffer
+;|*** 
+;|*** 				PrintEndl();
+; Line 187
+	*** 0000af	e8 00 00 		call	?PrintEndl@@YAXXZ	; PrintEndl
+	*** 0000b2	eb 0d 			jmp	SHORT $L1996
+;|*** 		case TC_BIOS_KEY_ENTER:
+; Line 162
+					$SC1563:
+;|*** 			ClearBiosKeystrokeBuffer();
+; Line 163
+	*** 0000b4	e8 00 00 		call	?ClearBiosKeystrokeBuffer@@YAXXZ	; ClearBiosKeystrokeBuffer
+;|*** 			PrintEndl();
+; Line 164
+	*** 0000b7	e8 00 00 		call	?PrintEndl@@YAXXZ	; PrintEndl
+;|*** 
+;|*** 			password.Length = pos;
+; Line 166
+	*** 0000ba	89 35 			mov	WORD PTR [di],si
+	*** 0000bc	c7 45 02 00 00 		mov	WORD PTR [di+2],0
+;|*** 			return scanCode;
+; Line 167
+					$L1996:
+	*** 0000c1	8a 46 fe 		mov	al,BYTE PTR [bp-2]	;scanCode
+;|*** 
+;|*** 		case TC_BIOS_KEY_BACKSPACE:
+;|*** 			if (pos > 0)
+;|*** 			{
+;|*** 				if (pos < MAX_PASSWORD)
+;|*** 					PrintBackspace();
+;|*** 				else
+;|*** 					PrintCharAtCursor (' ');
+;|*** 
+;|*** 				--pos;
+;|*** 			}
+;|*** 			continue;
+;|*** 
+;|*** 		default:
+;|*** 			if (scanCode == TC_BIOS_KEY_ESC || IsMenuKey (scanCode))
+;|*** 			{
+;|*** 				burn (password.Text, sizeof (password.Text));
+;|*** 				ClearBiosKeystrokeBuffer();
+;|*** 
+;|*** 				PrintEndl();
+;|*** 				return scanCode;
+;|*** 			}
+;|*** 		}
+;|*** 
+;|*** 		if (!IsPrintable (asciiCode) || pos == MAX_PASSWORD)
+;|*** 		{
+;|*** 			Beep();
+;|*** 			continue;
+;|*** 		}
+;|*** 
+;|*** 		password.Text[pos++] = asciiCode;
+;|*** 		if (pos < MAX_PASSWORD)
+;|*** 			PrintChar ('*');
+;|*** 		else
+;|*** 			PrintCharAtCursor ('*');
+;|*** 	}
+;|*** }
+; Line 204
+	*** 0000c4	5e 			pop	si
+	*** 0000c5	5f 			pop	di
+	*** 0000c6	c9 			leave	
+	*** 0000c7	c3 			ret	
+
+?AskPassword@@YAEAAUPassword@@@Z	ENDP
+
+?ExecuteBootSector@@YAXEPAE@Z	PROC NEAR	; ExecuteBootSector COMDAT
+;|*** 
+;|*** 
+;|*** static void ExecuteBootSector (byte drive, byte *sectorBuffer)
+;|*** {
+; Line 208
+	*** 000000	c8 04 00 00 		enter	4,0
+	*** 000004	56 			push	si
+;	addr = -4
+;	sectorBuffer = 6
+;	drive = 4
+;|*** 	Print ("Booting...\r\n");
+; Line 209
+	*** 000005	68 00 00 		push	OFFSET DGROUP:??_C@_0N@DGHN@Booting?4?4?4?$AN?6?$AA@
+	*** 000008	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00000b	5b 			pop	bx
+;|*** 	CopyMemory (sectorBuffer, 0x0000, 0x7c00, TC_LB_SIZE);
+; Line 210
+	*** 00000c	66 68 00 7c 00 02 	push	DWORD PTR 33586176	;02007c00H
+	*** 000012	6a 00 			push	0
+	*** 000014	ff 76 06 		push	WORD PTR [bp+6]	;sectorBuffer
+	*** 000017	e8 00 00 		call	?CopyMemory@@YAXPAXIII@Z	; CopyMemory
+	*** 00001a	83 c4 08 		add	sp,8
+;|*** 
+;|*** 	BootStarted = true;
+; Line 212
+	*** 00001d	c6 06 00 00 01 		mov	BYTE PTR ?BootStarted@@3DA,1	;BootStarted
+;|*** 
+;|*** 	uint32 addr = 0x7c00;
+; Line 214
+	*** 000022	66 c7 46 fc 00 7c 00 00 mov	DWORD PTR [bp-4],31744	;00007c00H	;addr
+;|*** 	__asm
+;|*** 	{
+;|*** 		cli
+; Line 217
+	*** 00002a	fa 			cli	
+;|*** 		mov dl, drive	// Boot drive
+; Line 218
+	*** 00002b	8a 56 04 		mov	dl,BYTE PTR [bp+4]	;drive
+;|*** 		mov dh, 0
+; Line 219
+	*** 00002e	b6 00 			mov	dh,0
+;|*** 		xor ax, ax
+; Line 220
+	*** 000030	33 c0 			xor	ax,ax
+;|*** 		mov si, ax
+; Line 221
+	*** 000032	8b f0 			mov	si,ax
+;|*** 		mov ds, ax
+; Line 222
+	*** 000034	8e d8 			mov	ds,ax
+;|*** 		mov es, ax
+; Line 223
+	*** 000036	8e c0 			mov	es,ax
+;|*** 		mov ss, ax
+; Line 224
+	*** 000038	8e d0 			mov	ss,ax
+;|*** 		mov sp, 0x7c00
+; Line 225
+	*** 00003a	bc 00 7c 		mov	sp,31744	;7c00H
+;|*** 		sti
+; Line 226
+	*** 00003d	fb 			sti	
+;|*** 
+;|*** 		jmp cs:addr
+; Line 228
+	*** 00003e	2e ff 6e fc 		jmp	DWORD PTR cs:[bp-4]	;addr
+;|*** 	}
+; Line 229
+;|*** }
+; Line 230
+	*** 000042	5e 			pop	si
+	*** 000043	c9 			leave	
+	*** 000044	c3 			ret	
+
+?ExecuteBootSector@@YAXEPAE@Z	ENDP
+
+?OpenVolume@@YADEAAUPassword@@PAPAUCRYPTO_INFO_t@@PAKDD@Z	PROC NEAR	; OpenVolume COMDAT
+;|*** 
+;|*** 
+;|*** static bool OpenVolume (byte drive, Password &password, CRYPTO_INFO **cryptoInfo, uint32 *headerSaltCrc32, bool skipNormal, bool skipHidden)
+;|*** {
+; Line 234
+	*** 000000	c8 14 00 00 		enter	20,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	drive = 4
+;	password = 6
+;	cryptoInfo = 8
+;	headerSaltCrc32 = 10
+;	skipNormal = 12
+;	skipHidden = 14
+;	volumeType = -4
+;	hiddenVolume = -1
+;	headerSec = -12
+;|*** 	int volumeType;
+;|*** 	bool hiddenVolume;
+;|*** 	uint64 headerSec;
+;|*** 	
+;|*** 	AcquireSectorBuffer();
+;|*** 
+;|*** 	for (volumeType = 1; volumeType <= 2; ++volumeType)
+; Line 241
+	*** 000006	c7 46 fc 01 00 		mov	WORD PTR [bp-4],1	;volumeType
+					$F1590:
+	*** 00000b	83 7e fc 02 		cmp	WORD PTR [bp-4],2	;volumeType
+	*** 00000f	0f 8f d5 00 		jg	$FB1592
+;|*** 	{
+;|*** 		hiddenVolume = (volumeType == 2);
+;|*** 
+;|*** 		if (hiddenVolume)
+; Line 245
+	*** 000013	75 04 			jne	SHORT $L1945
+	*** 000015	b0 01 			mov	al,1
+	*** 000017	eb 02 			jmp	SHORT $L1946
+					$L1945:
+	*** 000019	32 c0 			xor	al,al
+					$L1946:
+	*** 00001b	88 46 ff 		mov	BYTE PTR [bp-1],al	;hiddenVolume
+	*** 00001e	0a c0 			or	al,al
+	*** 000020	74 43 			je	SHORT $I1593
+;|*** 		{
+;|*** 			if (skipHidden || PartitionFollowingActive.Drive != drive || PartitionFollowingActive.SectorCount <= ActivePartition.SectorCount)
+; Line 247
+	*** 000022	80 7e 0e 00 		cmp	BYTE PTR [bp+14],0	;skipHidden
+	*** 000026	0f 85 a0 00 		jne	$FC1591
+	*** 00002a	a0 01 00 		mov	al,BYTE PTR ?PartitionFollowingActive@@3UPartition@@A+1	;PartitionFollowingActive
+	*** 00002d	38 46 04 		cmp	BYTE PTR [bp+4],al	;drive
+	*** 000030	0f 85 96 00 		jne	$FC1591
+	*** 000034	68 0e 00 		push	OFFSET ?ActivePartition@@3UPartition@@A+14	;ActivePartition
+	*** 000037	68 0e 00 		push	OFFSET ?PartitionFollowingActive@@3UPartition@@A+14	;PartitionFollowingActive
+	*** 00003a	e8 00 00 		call	??N@YADABTUINT64_STRUCT@@0@Z	; operator<=
+	*** 00003d	83 c4 04 		add	sp,4
+	*** 000040	0a c0 			or	al,al
+	*** 000042	0f 85 84 00 		jne	$FC1591
+;|*** 				continue;
+;|*** 
+;|*** 			headerSec = PartitionFollowingActive.StartSector + TC_HIDDEN_VOLUME_HEADER_OFFSET / TC_LB_SIZE;
+; Line 250
+	*** 000046	6a 00 			push	0
+	*** 000048	68 80 00 		push	128	;0080H
+	*** 00004b	68 16 00 		push	OFFSET ?PartitionFollowingActive@@3UPartition@@A+22	;PartitionFollowingActive
+	*** 00004e	8d 46 ec 		lea	ax,WORD PTR [bp-20]
+	*** 000051	50 			push	ax
+	*** 000052	e8 00 00 		call	??H@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator+
+	*** 000055	83 c4 08 		add	sp,8
+	*** 000058	8d 7e f4 		lea	di,WORD PTR [bp-12]	;headerSec
+	*** 00005b	8b f0 			mov	si,ax
+	*** 00005d	16 			push	ss
+	*** 00005e	07 			pop	es
+	*** 00005f	66 a5 			movsd
+	*** 000061	66 a5 			movsd
+;|*** 		}
+;|*** 		else
+; Line 252
+	*** 000063	eb 15 			jmp	SHORT $I1597
+					$I1593:
+;|*** 		{
+;|*** 			if (skipNormal)
+; Line 254
+	*** 000065	80 7e 0c 00 		cmp	BYTE PTR [bp+12],0	;skipNormal
+	*** 000069	75 5f 			jne	SHORT $FC1591
+;|*** 				continue;
+;|*** 
+;|*** 			headerSec.HighPart = 0;
+; Line 257
+	*** 00006b	66 2b c0 		sub	eax,eax
+	*** 00006e	66 89 46 f8 		mov	DWORD PTR [bp-8],eax
+;|*** 			headerSec.LowPart = TC_BOOT_VOLUME_HEADER_SECTOR;
+; Line 258
+	*** 000072	c7 46 f4 3e 00 		mov	WORD PTR [bp-12],62	;003eH	;headerSec
+	*** 000077	89 46 f6 		mov	WORD PTR [bp-10],ax
+;|*** 		}
+; Line 259
+					$I1597:
+;|*** 
+;|*** 		if (ReadSectors (SectorBuffer, drive, headerSec, 1) != BiosResultSuccess)
+; Line 261
+	*** 00007a	6a 00 			push	0
+	*** 00007c	6a 01 			push	1
+	*** 00007e	8d 46 f4 		lea	ax,WORD PTR [bp-12]	;headerSec
+	*** 000081	50 			push	ax
+	*** 000082	8a 46 04 		mov	al,BYTE PTR [bp+4]	;drive
+	*** 000085	50 			push	ax
+	*** 000086	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000089	e8 00 00 		call	?ReadSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z	; ReadSectors
+	*** 00008c	83 c4 0a 		add	sp,10	;000aH
+	*** 00008f	0a c0 			or	al,al
+	*** 000091	75 37 			jne	SHORT $FC1591
+;|*** 			continue;
+;|*** 
+;|*** 		if (ReadVolumeHeader (!hiddenVolume, (char *) SectorBuffer, &password, cryptoInfo, nullptr) == ERR_SUCCESS)
+; Line 264
+	*** 000093	6a 00 			push	0
+	*** 000095	66 ff 76 06 		push	DWORD PTR [bp+6]	;password
+	*** 000099	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 00009c	80 7e ff 01 		cmp	BYTE PTR [bp-1],1	;hiddenVolume
+	*** 0000a0	1a c0 			sbb	al,al
+	*** 0000a2	f6 d8 			neg	al
+	*** 0000a4	50 			push	ax
+	*** 0000a5	e8 00 00 		call	_ReadVolumeHeader
+	*** 0000a8	83 c4 0a 		add	sp,10	;000aH
+	*** 0000ab	0b c0 			or	ax,ax
+	*** 0000ad	75 1b 			jne	SHORT $FC1591
+;|*** 		{
+;|*** 			// Prevent opening a non-system hidden volume
+;|*** 			if (hiddenVolume && !((*cryptoInfo)->HeaderFlags & TC_HEADER_FLAG_ENCRYPTED_SYSTEM))
+; Line 267
+	*** 0000af	80 7e ff 00 		cmp	BYTE PTR [bp-1],0	;hiddenVolume
+	*** 0000b3	74 1b 			je	SHORT $I1602
+	*** 0000b5	8b 5e 08 		mov	bx,WORD PTR [bp+8]	;cryptoInfo
+	*** 0000b8	8b 1f 			mov	bx,WORD PTR [bx]
+	*** 0000ba	f6 87 7e 04 01 		test	BYTE PTR [bx+1150],1
+	*** 0000bf	75 0f 			jne	SHORT $I1602
+;|*** 			{
+;|*** 				crypto_close (*cryptoInfo);
+; Line 269
+	*** 0000c1	8b 5e 08 		mov	bx,WORD PTR [bp+8]	;cryptoInfo
+	*** 0000c4	ff 37 			push	WORD PTR [bx]
+	*** 0000c6	e8 00 00 		call	_crypto_close
+	*** 0000c9	5b 			pop	bx
+;|*** 	for (volumeType = 1; volumeType <= 2; ++volumeType)
+; Line 241
+					$FC1591:
+	*** 0000ca	ff 46 fc 		inc	WORD PTR [bp-4]	;volumeType
+	*** 0000cd	e9 3b ff 		jmp	$F1590
+;|*** 	{
+;|*** 		hiddenVolume = (volumeType == 2);
+;|*** 
+;|*** 		if (hiddenVolume)
+;|*** 		{
+;|*** 			if (skipHidden || PartitionFollowingActive.Drive != drive || PartitionFollowingActive.SectorCount <= ActivePartition.SectorCount)
+;|*** 				continue;
+;|*** 
+;|*** 			headerSec = PartitionFollowingActive.StartSector + TC_HIDDEN_VOLUME_HEADER_OFFSET / TC_LB_SIZE;
+;|*** 		}
+;|*** 		else
+;|*** 		{
+;|*** 			if (skipNormal)
+;|*** 				continue;
+;|*** 
+;|*** 			headerSec.HighPart = 0;
+;|*** 			headerSec.LowPart = TC_BOOT_VOLUME_HEADER_SECTOR;
+;|*** 		}
+;|*** 
+;|*** 		if (ReadSectors (SectorBuffer, drive, headerSec, 1) != BiosResultSuccess)
+;|*** 			continue;
+;|*** 
+;|*** 		if (ReadVolumeHeader (!hiddenVolume, (char *) SectorBuffer, &password, cryptoInfo, nullptr) == ERR_SUCCESS)
+;|*** 		{
+;|*** 			// Prevent opening a non-system hidden volume
+;|*** 			if (hiddenVolume && !((*cryptoInfo)->HeaderFlags & TC_HEADER_FLAG_ENCRYPTED_SYSTEM))
+;|*** 			{
+;|*** 				crypto_close (*cryptoInfo);
+;|*** 				continue;
+;|*** 			}
+;|*** 
+;|*** 			if (headerSaltCrc32)
+; Line 273
+					$I1602:
+	*** 0000d0	39 46 0a 		cmp	WORD PTR [bp+10],ax	;headerSaltCrc32
+	*** 0000d3	74 13 			je	SHORT $FB1592
+;|*** 				*headerSaltCrc32 = GetCrc32 (SectorBuffer, PKCS5_SALT_SIZE);
+; Line 274
+	*** 0000d5	6a 40 			push	64	;0040H
+	*** 0000d7	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 0000da	e8 00 00 		call	_GetCrc32
+	*** 0000dd	8b 5e 0a 		mov	bx,WORD PTR [bp+10]	;headerSaltCrc32
+	*** 0000e0	83 c4 04 		add	sp,4
+	*** 0000e3	89 07 			mov	WORD PTR [bx],ax
+	*** 0000e5	89 57 02 		mov	WORD PTR [bx+2],dx
+;|*** 
+;|*** 			break;
+;|*** 		}
+;|*** 	}
+; Line 278
+					$FB1592:
+;|*** 
+;|*** 	ReleaseSectorBuffer();
+;|*** 	return volumeType != 3;
+; Line 281
+	*** 0000e8	83 7e fc 03 		cmp	WORD PTR [bp-4],3	;volumeType
+	*** 0000ec	74 04 			je	SHORT $L1949
+	*** 0000ee	b0 01 			mov	al,1
+	*** 0000f0	eb 02 			jmp	SHORT $L1950
+					$L1949:
+	*** 0000f2	32 c0 			xor	al,al
+					$L1950:
+;|*** }
+; Line 282
+	*** 0000f4	5e 			pop	si
+	*** 0000f5	5f 			pop	di
+	*** 0000f6	c9 			leave	
+	*** 0000f7	c3 			ret	
+
+?OpenVolume@@YADEAAUPassword@@PAPAUCRYPTO_INFO_t@@PAKDD@Z	ENDP
+
+?CheckMemoryRequirements@@YADXZ	PROC NEAR	; CheckMemoryRequirements COMDAT
+;|*** 
+;|*** 
+;|*** static bool CheckMemoryRequirements ()
+;|*** {
+; Line 286
+	*** 000000	c8 04 00 00 		enter	4,0
+;	codeSeg = -2
+;|*** 	uint16 codeSeg;
+;|*** 	__asm mov codeSeg, cs
+; Line 288
+	*** 000004	8c 4e fe 		mov	WORD PTR [bp-2],cs	;codeSeg
+;|*** 	if (codeSeg == TC_BOOT_LOADER_LOWMEM_SEGMENT)
+; Line 289
+	*** 000007	81 7e fe 00 20 		cmp	WORD PTR [bp-2],8192	;2000H	;codeSeg
+	*** 00000c	75 2e 			jne	SHORT $I1608
+;|*** 	{
+; Line 290
+;	memFree = -4
+;|*** 		PrintErrorNoEndl ("BIOS reserved too much memory: ");
+; Line 291
+	*** 00000e	68 00 00 		push	OFFSET DGROUP:??_C@_0CA@FBFB@BIOS?5reserved?5too?5much?5memory?3?5?$AA@
+	*** 000011	e8 00 00 		call	?PrintErrorNoEndl@@YAXPBD@Z	; PrintErrorNoEndl
+	*** 000014	5b 			pop	bx
+;|*** 
+;|*** 		uint16 memFree;
+;|*** 		__asm
+;|*** 		{
+;|*** 			push es
+; Line 296
+	*** 000015	06 			push	es
+;|*** 			xor ax, ax
+; Line 297
+	*** 000016	33 c0 			xor	ax,ax
+;|*** 			mov es, ax
+; Line 298
+	*** 000018	8e c0 			mov	es,ax
+;|*** 			mov ax, es:[0x413]
+; Line 299
+	*** 00001a	26 8b 06 13 04 		mov	ax,WORD PTR es:1043
+;|*** 			mov memFree, ax
+; Line 300
+	*** 00001f	89 46 fc 		mov	WORD PTR [bp-4],ax	;memFree
+;|*** 			pop es
+; Line 301
+	*** 000022	07 			pop	es
+;|*** 		}
+; Line 302
+;|*** 
+;|*** 		Print (memFree);
+; Line 304
+	*** 000023	6a 00 			push	0
+	*** 000025	ff 76 fc 		push	WORD PTR [bp-4]	;memFree
+	*** 000028	e8 00 00 		call	?Print@@YAXK@Z	; Print
+	*** 00002b	83 c4 04 		add	sp,4
+;|*** 		PrintEndl();
+; Line 305
+	*** 00002e	e8 00 00 		call	?PrintEndl@@YAXXZ	; PrintEndl
+;|*** 		Print (TC_BOOT_STR_UPGRADE_BIOS);
+; Line 306
+	*** 000031	68 00 00 		push	OFFSET DGROUP:??_C@_0DM@HBD@?9?5Upgrade?5BIOS?$AN?6?9?5Use?5a?5differen@
+	*** 000034	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000037	5b 			pop	bx
+;|*** 
+;|*** 		return false;
+; Line 308
+	*** 000038	32 c0 			xor	al,al
+	*** 00003a	c9 			leave	
+	*** 00003b	c3 			ret	
+;|*** 	}
+;|*** 
+;|*** 	return true;
+; Line 311
+					$I1608:
+	*** 00003c	b0 01 			mov	al,1
+;|*** }
+; Line 312
+	*** 00003e	c9 			leave	
+	*** 00003f	c3 			ret	
+
+?CheckMemoryRequirements@@YADXZ	ENDP
+
+?MountVolume@@YADEAAEDD@Z	PROC NEAR	; MountVolume COMDAT
+;|*** 
+;|*** 
+;|*** static bool MountVolume (byte drive, byte &exitKey, bool skipNormal, bool skipHidden)
+;|*** {
+; Line 316
+	*** 000000	c8 0a 00 00 		enter	10,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	drive = 4
+;	exitKey = 6
+;	skipNormal = 8
+;	skipHidden = 10
+;	bootArguments = -2
+;	register di = incorrectPasswordCount
+;|*** 	BootArguments *bootArguments = (BootArguments *) TC_BOOT_LOADER_ARGS_OFFSET;
+;|*** 	int incorrectPasswordCount = 0;
+; Line 318
+	*** 000006	33 ff 			xor	di,di
+;|*** 
+;|*** 	EraseMemory (bootArguments, sizeof (*bootArguments));
+; Line 320
+	*** 000008	6a 76 			push	118	;0076H
+	*** 00000a	b8 10 00 		mov	ax,16	;0010H
+	*** 00000d	89 46 fe 		mov	WORD PTR [bp-2],ax	;bootArguments
+	*** 000010	50 			push	ax
+	*** 000011	e8 00 00 		call	_EraseMemory
+	*** 000014	83 c4 04 		add	sp,4
+	*** 000017	8b 76 06 		mov	si,WORD PTR [bp+6]	;exitKey
+;|*** 
+;|*** 	// Open volume header
+;|*** 	while (true)
+; Line 323
+	*** 00001a	eb 3f 			jmp	SHORT $L1997
+					$FC1622:
+;|*** 	{
+;|*** 		exitKey = AskPassword (bootArguments->BootPassword);
+;|*** 
+;|*** 		if (exitKey != TC_BIOS_KEY_ENTER)
+;|*** 			return false;
+;|*** 
+;|*** 		if (OpenVolume (BootDrive, bootArguments->BootPassword, &BootCryptoInfo, &bootArguments->HeaderSaltCrc32, skipNormal, skipHidden))
+; Line 330
+	*** 00001c	8a 46 0a 		mov	al,BYTE PTR [bp+10]	;skipHidden
+	*** 00001f	50 			push	ax
+	*** 000020	8a 46 08 		mov	al,BYTE PTR [bp+8]	;skipNormal
+	*** 000023	50 			push	ax
+	*** 000024	6a 1e 			push	30	;001eH
+	*** 000026	68 00 00 		push	OFFSET ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 000029	6a 22 			push	34	;0022H
+	*** 00002b	a0 00 00 		mov	al,BYTE PTR ?BootDrive@@3EA	;BootDrive
+	*** 00002e	50 			push	ax
+	*** 00002f	e8 00 00 		call	?OpenVolume@@YADEAAUPassword@@PAPAUCRYPTO_INFO_t@@PAKDD@Z	; OpenVolume
+	*** 000032	83 c4 0c 		add	sp,12	;000cH
+	*** 000035	0a c0 			or	al,al
+	*** 000037	75 33 			jne	SHORT $L1955
+;|*** 			break;
+;|*** 
+;|*** 		if (GetShiftFlags() & TC_BIOS_SHIFTMASK_CAPSLOCK)
+; Line 333
+	*** 000039	e8 00 00 		call	?GetShiftFlags@@YAEXZ	; GetShiftFlags
+	*** 00003c	a8 40 			test	al,64	;0040H
+	*** 00003e	74 07 			je	SHORT $I1626
+;|*** 			Print ("Warning: Caps Lock is on.\r\n");
+; Line 334
+	*** 000040	68 00 00 		push	OFFSET DGROUP:??_C@_0BM@NMNK@Warning?3?5Caps?5Lock?5is?5on?4?$AN?6?$AA@
+	*** 000043	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000046	5b 			pop	bx
+;|*** 
+;|*** 		Print ("Incorrect password.\r\n\r\n");
+; Line 336
+					$I1626:
+	*** 000047	68 00 00 		push	OFFSET DGROUP:??_C@_0BI@KFOG@Incorrect?5password?4?$AN?6?$AN?6?$AA@
+	*** 00004a	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00004d	5b 			pop	bx
+;|*** 
+;|*** 		if (++incorrectPasswordCount == 4)
+; Line 338
+	*** 00004e	47 			inc	di
+	*** 00004f	83 ff 04 		cmp	di,4
+	*** 000052	75 07 			jne	SHORT $L1997
+;|*** 		{
+;|*** #ifdef TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 			Print ("If you are sure the password is correct, the key data may be damaged.\r\n"
+;|*** 				   "If so, use 'Repair Options' > 'Restore key data'.\r\n\r\n");
+; Line 342
+	*** 000054	68 00 00 		push	OFFSET DGROUP:??_C@_0HN@LBMO@If?5you?5are?5sure?5the?5password?5is?5@
+	*** 000057	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00005a	5b 			pop	bx
+;|*** #else
+;|*** 			Print ("If you are sure the password is correct, the key data may be damaged. Boot your\r\n"
+;|*** 				   "CipherShed Rescue Disk and select 'Repair Options' > 'Restore key data'.\r\n\r\n");
+;|*** #endif
+;|*** 		}
+;|*** 	}
+; Line 348
+					$L1997:
+	*** 00005b	6a 22 			push	34	;0022H
+	*** 00005d	e8 00 00 		call	?AskPassword@@YAEAAUPassword@@@Z	; AskPassword
+	*** 000060	5b 			pop	bx
+	*** 000061	88 04 			mov	BYTE PTR [si],al
+;|*** 		if (exitKey != TC_BIOS_KEY_ENTER)
+; Line 327
+	*** 000063	3c 1c 			cmp	al,28	;001cH
+	*** 000065	74 b5 			je	SHORT $FC1622
+;|*** 			return false;
+; Line 328
+	*** 000067	32 c0 			xor	al,al
+	*** 000069	e9 17 01 		jmp	$EX1617
+					$L1955:
+;|*** 
+;|*** 		if (OpenVolume (BootDrive, bootArguments->BootPassword, &BootCryptoInfo, &bootArguments->HeaderSaltCrc32, skipNormal, skipHidden))
+;|*** 			break;
+;|*** 
+;|*** 		if (GetShiftFlags() & TC_BIOS_SHIFTMASK_CAPSLOCK)
+;|*** 			Print ("Warning: Caps Lock is on.\r\n");
+;|*** 
+;|*** 		Print ("Incorrect password.\r\n\r\n");
+;|*** 
+;|*** 		if (++incorrectPasswordCount == 4)
+;|*** 		{
+;|*** #ifdef TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 			Print ("If you are sure the password is correct, the key data may be damaged.\r\n"
+;|*** 				   "If so, use 'Repair Options' > 'Restore key data'.\r\n\r\n");
+;|*** #else
+;|*** 			Print ("If you are sure the password is correct, the key data may be damaged. Boot your\r\n"
+;|*** 				   "CipherShed Rescue Disk and select 'Repair Options' > 'Restore key data'.\r\n\r\n");
+;|*** #endif
+;|*** 		}
+;|*** 	}
+;|*** 
+;|*** 	// Setup boot arguments
+;|*** 	bootArguments->BootLoaderVersion = VERSION_NUM;
+; Line 351
+	*** 00006c	c7 06 18 00 30 07 	mov	WORD PTR 24,1840	;0730H
+;|*** 	bootArguments->CryptoInfoOffset = (uint16) BootCryptoInfo;
+; Line 352
+	*** 000072	a1 00 00 		mov	ax,WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 000075	89 06 1a 00 		mov	WORD PTR 26,ax
+;|*** 	bootArguments->CryptoInfoLength = sizeof (*BootCryptoInfo);
+; Line 353
+	*** 000079	c7 06 1c 00 82 04 	mov	WORD PTR 28,1154	;0482H
+;|*** 
+;|*** 	if (BootCryptoInfo->hiddenVolume)
+; Line 355
+	*** 00007f	8b 1e 00 00 		mov	bx,WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 000083	80 bf 64 04 00 		cmp	BYTE PTR [bx+1124],0
+	*** 000088	74 1c 			je	SHORT $I1632
+;|*** 		bootArguments->HiddenSystemPartitionStart = PartitionFollowingActive.StartSector << TC_LB_SIZE_BIT_SHIFT_DIVISOR;
+; Line 356
+	*** 00008a	6a 09 			push	9
+	*** 00008c	68 16 00 		push	OFFSET ?PartitionFollowingActive@@3UPartition@@A+22	;PartitionFollowingActive
+	*** 00008f	8d 46 f6 		lea	ax,WORD PTR [bp-10]
+	*** 000092	50 			push	ax
+	*** 000093	e8 00 00 		call	??6@YA?ATUINT64_STRUCT@@ABT0@H@Z	; operator<<
+	*** 000096	83 c4 06 		add	sp,6
+	*** 000099	ba 6a 00 		mov	dx,106	;006aH
+	*** 00009c	8b fa 			mov	di,dx
+	*** 00009e	8b f0 			mov	si,ax
+	*** 0000a0	1e 			push	ds
+	*** 0000a1	07 			pop	es
+	*** 0000a2	66 a5 			movsd
+	*** 0000a4	66 a5 			movsd
+;|*** 
+;|*** 	if (ExtraBootPartitionPresent)
+; Line 358
+					$I1632:
+	*** 0000a6	80 3e 00 00 00 		cmp	BYTE PTR ?ExtraBootPartitionPresent@@3DA,0	;ExtraBootPartitionPresent
+	*** 0000ab	74 05 			je	SHORT $D1635
+;|*** 		bootArguments->Flags |= TC_BOOT_ARGS_FLAG_EXTRA_BOOT_PARTITION;
+; Line 359
+	*** 0000ad	80 0e 7a 00 01 		or	BYTE PTR 122,1
+;|*** 
+;|*** 	TC_SET_BOOT_ARGUMENTS_SIGNATURE	(bootArguments->Signature);
+; Line 361
+					$D1635:
+	*** 0000b2	c6 06 10 00 54 		mov	BYTE PTR 16,84	;0054H
+	*** 0000b7	c6 06 11 00 52 		mov	BYTE PTR 17,82	;0052H
+	*** 0000bc	c6 06 12 00 55 		mov	BYTE PTR 18,85	;0055H
+	*** 0000c1	c6 06 13 00 45 		mov	BYTE PTR 19,69	;0045H
+	*** 0000c6	c6 06 14 00 11 		mov	BYTE PTR 20,17	;0011H
+	*** 0000cb	c6 06 15 00 23 		mov	BYTE PTR 21,35	;0023H
+	*** 0000d0	c6 06 16 00 45 		mov	BYTE PTR 22,69	;0045H
+	*** 0000d5	c6 06 17 00 66 		mov	BYTE PTR 23,102	;0066H
+;|*** 
+;|*** 	// Setup virtual encrypted partition
+;|*** 	if (BootCryptoInfo->EncryptedAreaLength.HighPart != 0 || BootCryptoInfo->EncryptedAreaLength.LowPart != 0)
+; Line 364
+	*** 0000da	8b 1e 00 00 		mov	bx,WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 0000de	66 83 bf 7a 04 00 	cmp	DWORD PTR [bx+1146],0
+	*** 0000e4	75 12 			jne	SHORT $I1639
+	*** 0000e6	8b 87 78 04 		mov	ax,WORD PTR [bx+1144]
+	*** 0000ea	0b 87 76 04 		or	ax,WORD PTR [bx+1142]
+	*** 0000ee	75 08 			jne	SHORT $I1639
+;|*** 	{
+;|*** 		EncryptedVirtualPartition.Drive = BootDrive;
+;|*** 
+;|*** 		EncryptedVirtualPartition.StartSector = BootCryptoInfo->EncryptedAreaStart >> TC_LB_SIZE_BIT_SHIFT_DIVISOR;
+;|*** 		
+;|*** 		HiddenVolumeStartUnitNo = EncryptedVirtualPartition.StartSector;
+;|*** 		HiddenVolumeStartSector = PartitionFollowingActive.StartSector;
+;|*** 		HiddenVolumeStartSector += EncryptedVirtualPartition.StartSector;
+;|*** 
+;|*** 		EncryptedVirtualPartition.SectorCount = BootCryptoInfo->EncryptedAreaLength >> TC_LB_SIZE_BIT_SHIFT_DIVISOR;
+;|*** 
+;|*** 		EncryptedVirtualPartition.EndSector = EncryptedVirtualPartition.SectorCount - 1;
+;|*** 		EncryptedVirtualPartition.EndSector += EncryptedVirtualPartition.StartSector;
+;|*** 	}
+;|*** 	else
+;|*** 	{
+;|*** 		// Drive not encrypted
+;|*** 		EncryptedVirtualPartition.Drive = TC_INVALID_BIOS_DRIVE;
+; Line 382
+	*** 0000f0	c6 06 01 00 7f 		mov	BYTE PTR ?EncryptedVirtualPartition@@3UPartition@@A+1,127	;007fH	;EncryptedVirtualPartition
+	*** 0000f5	e9 89 00 		jmp	$I1643
+;|*** 	if (BootCryptoInfo->EncryptedAreaLength.HighPart != 0 || BootCryptoInfo->EncryptedAreaLength.LowPart != 0)
+; Line 364
+					$I1639:
+;|*** 	{
+;|*** 		EncryptedVirtualPartition.Drive = BootDrive;
+; Line 366
+	*** 0000f8	a0 00 00 		mov	al,BYTE PTR ?BootDrive@@3EA	;BootDrive
+	*** 0000fb	a2 01 00 		mov	BYTE PTR ?EncryptedVirtualPartition@@3UPartition@@A+1,al	;EncryptedVirtualPartition
+;|*** 
+;|*** 		EncryptedVirtualPartition.StartSector = BootCryptoInfo->EncryptedAreaStart >> TC_LB_SIZE_BIT_SHIFT_DIVISOR;
+; Line 368
+	*** 0000fe	6a 09 			push	9
+	*** 000100	8d 87 6e 04 		lea	ax,WORD PTR [bx+1134]
+	*** 000104	50 			push	ax
+	*** 000105	8d 46 f6 		lea	ax,WORD PTR [bp-10]
+	*** 000108	50 			push	ax
+	*** 000109	e8 00 00 		call	??5@YA?ATUINT64_STRUCT@@ABT0@H@Z	; operator>>
+	*** 00010c	83 c4 06 		add	sp,6
+	*** 00010f	ba 16 00 		mov	dx,OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+22	;EncryptedVirtualPartition
+	*** 000112	8b fa 			mov	di,dx
+	*** 000114	8b f0 			mov	si,ax
+	*** 000116	1e 			push	ds
+	*** 000117	07 			pop	es
+	*** 000118	66 a5 			movsd
+	*** 00011a	66 a5 			movsd
+;|*** 		
+;|*** 		HiddenVolumeStartUnitNo = EncryptedVirtualPartition.StartSector;
+; Line 370
+	*** 00011c	b8 00 00 		mov	ax,OFFSET ?HiddenVolumeStartUnitNo@@3TUINT64_STRUCT@@A	;HiddenVolumeStartUnitNo
+	*** 00011f	8b f8 			mov	di,ax
+	*** 000121	8b f2 			mov	si,dx
+	*** 000123	66 a5 			movsd
+	*** 000125	66 a5 			movsd
+;|*** 		HiddenVolumeStartSector = PartitionFollowingActive.StartSector;
+; Line 371
+	*** 000127	b8 00 00 		mov	ax,OFFSET ?HiddenVolumeStartSector@@3TUINT64_STRUCT@@A	;HiddenVolumeStartSector
+	*** 00012a	8b f8 			mov	di,ax
+	*** 00012c	be 16 00 		mov	si,OFFSET ?PartitionFollowingActive@@3UPartition@@A+22	;PartitionFollowingActive
+	*** 00012f	66 a5 			movsd
+	*** 000131	66 a5 			movsd
+;|*** 		HiddenVolumeStartSector += EncryptedVirtualPartition.StartSector;
+; Line 372
+	*** 000133	52 			push	dx
+	*** 000134	50 			push	ax
+	*** 000135	e8 00 00 		call	??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator+=
+	*** 000138	83 c4 04 		add	sp,4
+;|*** 
+;|*** 		EncryptedVirtualPartition.SectorCount = BootCryptoInfo->EncryptedAreaLength >> TC_LB_SIZE_BIT_SHIFT_DIVISOR;
+; Line 374
+	*** 00013b	6a 09 			push	9
+	*** 00013d	a1 00 00 		mov	ax,WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 000140	05 76 04 		add	ax,1142	;0476H
+	*** 000143	50 			push	ax
+	*** 000144	8d 46 f6 		lea	ax,WORD PTR [bp-10]
+	*** 000147	50 			push	ax
+	*** 000148	e8 00 00 		call	??5@YA?ATUINT64_STRUCT@@ABT0@H@Z	; operator>>
+	*** 00014b	83 c4 06 		add	sp,6
+	*** 00014e	ba 0e 00 		mov	dx,OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+14	;EncryptedVirtualPartition
+	*** 000151	8b fa 			mov	di,dx
+	*** 000153	8b f0 			mov	si,ax
+	*** 000155	1e 			push	ds
+	*** 000156	07 			pop	es
+	*** 000157	66 a5 			movsd
+	*** 000159	66 a5 			movsd
+;|*** 
+;|*** 		EncryptedVirtualPartition.EndSector = EncryptedVirtualPartition.SectorCount - 1;
+; Line 376
+	*** 00015b	6a 00 			push	0
+	*** 00015d	6a 01 			push	1
+	*** 00015f	52 			push	dx
+	*** 000160	8d 46 f6 		lea	ax,WORD PTR [bp-10]
+	*** 000163	50 			push	ax
+	*** 000164	e8 00 00 		call	??G@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator-
+	*** 000167	83 c4 08 		add	sp,8
+	*** 00016a	ba 04 00 		mov	dx,OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+4	;EncryptedVirtualPartition
+	*** 00016d	8b fa 			mov	di,dx
+	*** 00016f	8b f0 			mov	si,ax
+	*** 000171	1e 			push	ds
+	*** 000172	07 			pop	es
+	*** 000173	66 a5 			movsd
+	*** 000175	66 a5 			movsd
+;|*** 		EncryptedVirtualPartition.EndSector += EncryptedVirtualPartition.StartSector;
+; Line 377
+	*** 000177	68 16 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+22	;EncryptedVirtualPartition
+	*** 00017a	52 			push	dx
+	*** 00017b	e8 00 00 		call	??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator+=
+	*** 00017e	83 c4 04 		add	sp,4
+;|*** 	}
+;|*** 	else
+;|*** 	{
+;|*** 		// Drive not encrypted
+;|*** 		EncryptedVirtualPartition.Drive = TC_INVALID_BIOS_DRIVE;
+;|*** 	}
+; Line 383
+					$I1643:
+;|*** 
+;|*** 	return true;
+; Line 385
+	*** 000181	b0 01 			mov	al,1
+;|*** }
+; Line 386
+					$EX1617:
+	*** 000183	5e 			pop	si
+	*** 000184	5f 			pop	di
+	*** 000185	c9 			leave	
+	*** 000186	c3 			ret	
+
+?MountVolume@@YADEAAEDD@Z	ENDP
+
+?GetSystemPartitions@@YADE@Z	PROC NEAR	; GetSystemPartitions COMDAT
+;|*** 
+;|*** 
+;|*** static bool GetSystemPartitions (byte drive)
+;|*** {
+; Line 390
+	*** 000000	c8 02 00 00 		enter	2,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	drive = 4
+;	partCount = -2
+;|*** 	size_t partCount;
+;|*** 
+;|*** 	if (!GetActivePartition (drive))
+; Line 393
+	*** 000006	8a 46 04 		mov	al,BYTE PTR [bp+4]	;drive
+	*** 000009	50 			push	ax
+	*** 00000a	e8 00 00 		call	?GetActivePartition@@YADE@Z	; GetActivePartition
+	*** 00000d	5b 			pop	bx
+	*** 00000e	0a c0 			or	al,al
+	*** 000010	74 63 			je	SHORT $EX1646
+;|*** 		return false;
+;|*** 
+;|*** 	// Find partition following the active one
+;|*** 	GetDrivePartitions (drive, &PartitionFollowingActive, 1, partCount, false, &ActivePartition);
+; Line 397
+	*** 000012	6a 00 			push	0
+	*** 000014	68 00 00 		push	OFFSET ?ActivePartition@@3UPartition@@A	;ActivePartition
+	*** 000017	6a 00 			push	0
+	*** 000019	8d 46 fe 		lea	ax,WORD PTR [bp-2]	;partCount
+	*** 00001c	50 			push	ax
+	*** 00001d	6a 01 			push	1
+	*** 00001f	68 00 00 		push	OFFSET ?PartitionFollowingActive@@3UPartition@@A	;PartitionFollowingActive
+	*** 000022	8a 46 04 		mov	al,BYTE PTR [bp+4]	;drive
+	*** 000025	50 			push	ax
+	*** 000026	e8 00 00 		call	?GetDrivePartitions@@YAEEPAUPartition@@IAAID0D@Z	; GetDrivePartitions
+	*** 000029	83 c4 0e 		add	sp,14	;000eH
+;|*** 
+;|*** 	// If there is an extra boot partition, use the partitions following it.
+;|*** 	// The real boot partition is determined in BootEncryptedDrive().
+;|*** 	if (ActivePartition.SectorCount.HighPart == 0 && ActivePartition.SectorCount.LowPart <= TC_MAX_EXTRA_BOOT_PARTITION_SIZE / TC_LB_SIZE
+;|*** 		&& PartitionFollowingActive.Drive != TC_INVALID_BIOS_DRIVE)
+; Line 402
+	*** 00002c	a1 14 00 		mov	ax,WORD PTR ?ActivePartition@@3UPartition@@A+20	;ActivePartition
+	*** 00002f	0b 06 12 00 		or	ax,WORD PTR ?ActivePartition@@3UPartition@@A+18	;ActivePartition
+	*** 000033	75 3e 			jne	SHORT $I1649
+	*** 000035	66 81 3e 0e 00 00 00 10 00 cmp	DWORD PTR ?ActivePartition@@3UPartition@@A+14,1048576	;00100000H	;ActivePartition
+	*** 00003e	77 33 			ja	SHORT $I1649
+					$L1956:
+	*** 000040	80 3e 01 00 7f 		cmp	BYTE PTR ?PartitionFollowingActive@@3UPartition@@A+1,127	;007fH	;PartitionFollowingActive
+	*** 000045	74 2c 			je	SHORT $I1649
+;|*** 	{
+;|*** 		ExtraBootPartitionPresent = true;
+; Line 404
+	*** 000047	c6 06 00 00 01 		mov	BYTE PTR ?ExtraBootPartitionPresent@@3DA,1	;ExtraBootPartitionPresent
+;|*** 
+;|*** 		ActivePartition = PartitionFollowingActive;
+; Line 406
+	*** 00004c	b8 00 00 		mov	ax,OFFSET ?ActivePartition@@3UPartition@@A	;ActivePartition
+	*** 00004f	8b f8 			mov	di,ax
+	*** 000051	be 00 00 		mov	si,OFFSET ?PartitionFollowingActive@@3UPartition@@A	;PartitionFollowingActive
+	*** 000054	1e 			push	ds
+	*** 000055	07 			pop	es
+	*** 000056	b9 10 00 		mov	cx,16	;0010H
+	*** 000059	f3 			rep
+	*** 00005a	a5 			movsw
+;|*** 		GetDrivePartitions (drive, &PartitionFollowingActive, 1, partCount, false, &ActivePartition);
+; Line 407
+	*** 00005b	6a 00 			push	0
+	*** 00005d	50 			push	ax
+	*** 00005e	6a 00 			push	0
+	*** 000060	8d 46 fe 		lea	ax,WORD PTR [bp-2]	;partCount
+	*** 000063	50 			push	ax
+	*** 000064	6a 01 			push	1
+	*** 000066	68 00 00 		push	OFFSET ?PartitionFollowingActive@@3UPartition@@A	;PartitionFollowingActive
+	*** 000069	8a 46 04 		mov	al,BYTE PTR [bp+4]	;drive
+	*** 00006c	50 			push	ax
+	*** 00006d	e8 00 00 		call	?GetDrivePartitions@@YAEEPAUPartition@@IAAID0D@Z	; GetDrivePartitions
+	*** 000070	83 c4 0e 		add	sp,14	;000eH
+;|*** 	}
+;|*** 
+;|*** 	return true;
+; Line 410
+					$I1649:
+	*** 000073	b0 01 			mov	al,1
+;|*** }
+; Line 411
+					$EX1646:
+	*** 000075	5e 			pop	si
+	*** 000076	5f 			pop	di
+	*** 000077	c9 			leave	
+	*** 000078	c3 			ret	
+
+?GetSystemPartitions@@YADE@Z	ENDP
+
+?BootEncryptedDrive@@YAEXZ	PROC NEAR	; BootEncryptedDrive COMDAT
+;|*** 
+;|*** 
+;|*** static byte BootEncryptedDrive ()
+;|*** {
+; Line 415
+	*** 000000	c8 0c 00 00 		enter	12,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	scanCode = -2
+;	bootArguments = -4
+;	exitKey = -1
+;|*** 	BootArguments *bootArguments = (BootArguments *) TC_BOOT_LOADER_ARGS_OFFSET;
+; Line 416
+	*** 000006	c7 46 fc 10 00 		mov	WORD PTR [bp-4],16	;0010H	;bootArguments
+;|*** 	byte exitKey;
+;|*** 	BootCryptoInfo = NULL;
+; Line 418
+	*** 00000b	c7 06 00 00 00 00 	mov	WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A,0	;BootCryptoInfo
+;|*** 
+;|*** 	if (!GetSystemPartitions (BootDrive))
+; Line 420
+	*** 000011	a0 00 00 		mov	al,BYTE PTR ?BootDrive@@3EA	;BootDrive
+	*** 000014	50 			push	ax
+	*** 000015	e8 00 00 		call	?GetSystemPartitions@@YADE@Z	; GetSystemPartitions
+	*** 000018	5b 			pop	bx
+	*** 000019	0a c0 			or	al,al
+	*** 00001b	0f 84 90 00 		je	$err1656
+;|*** 		goto err;
+;|*** 
+;|*** 	if (!MountVolume (BootDrive, exitKey, PreventNormalSystemBoot, false))
+; Line 423
+	*** 00001f	6a 00 			push	0
+	*** 000021	a0 00 00 		mov	al,BYTE PTR ?PreventNormalSystemBoot@@3DA	;PreventNormalSystemBoot
+	*** 000024	50 			push	ax
+	*** 000025	8d 46 ff 		lea	ax,WORD PTR [bp-1]	;exitKey
+	*** 000028	50 			push	ax
+	*** 000029	a0 00 00 		mov	al,BYTE PTR ?BootDrive@@3EA	;BootDrive
+	*** 00002c	50 			push	ax
+	*** 00002d	e8 00 00 		call	?MountVolume@@YADEAAEDD@Z	; MountVolume
+	*** 000030	83 c4 08 		add	sp,8
+	*** 000033	0a c0 			or	al,al
+	*** 000035	75 06 			jne	SHORT $I1658
+;|*** 		return exitKey;
+; Line 424
+	*** 000037	8a 46 ff 		mov	al,BYTE PTR [bp-1]	;exitKey
+	*** 00003a	e9 f1 00 		jmp	$EX1651
+;|*** 	
+;|*** 	if (!CheckMemoryRequirements ())
+; Line 426
+					$I1658:
+	*** 00003d	e8 00 00 		call	?CheckMemoryRequirements@@YADXZ	; CheckMemoryRequirements
+	*** 000040	0a c0 			or	al,al
+	*** 000042	74 6b 			je	SHORT $err1656
+;|*** 		goto err;
+;|*** 
+;|*** 	if (BootCryptoInfo->hiddenVolume)
+; Line 429
+	*** 000044	8b 1e 00 00 		mov	bx,WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 000048	80 bf 64 04 00 		cmp	BYTE PTR [bx+1124],0
+	*** 00004d	74 2b 			je	SHORT $I1661
+;|*** 	{
+;|*** 		EncryptedVirtualPartition = ActivePartition;
+; Line 431
+	*** 00004f	b8 00 00 		mov	ax,OFFSET ?EncryptedVirtualPartition@@3UPartition@@A	;EncryptedVirtualPartition
+	*** 000052	8b f8 			mov	di,ax
+	*** 000054	be 00 00 		mov	si,OFFSET ?ActivePartition@@3UPartition@@A	;ActivePartition
+	*** 000057	1e 			push	ds
+	*** 000058	07 			pop	es
+	*** 000059	b9 10 00 		mov	cx,16	;0010H
+	*** 00005c	f3 			rep
+	*** 00005d	a5 			movsw
+;|*** 		bootArguments->DecoySystemPartitionStart = ActivePartition.StartSector << TC_LB_SIZE_BIT_SHIFT_DIVISOR;
+; Line 432
+	*** 00005e	6a 09 			push	9
+	*** 000060	68 16 00 		push	OFFSET ?ActivePartition@@3UPartition@@A+22	;ActivePartition
+	*** 000063	8d 46 f4 		lea	ax,WORD PTR [bp-12]
+	*** 000066	50 			push	ax
+	*** 000067	e8 00 00 		call	??6@YA?ATUINT64_STRUCT@@ABT0@H@Z	; operator<<
+	*** 00006a	83 c4 06 		add	sp,6
+	*** 00006d	ba 72 00 		mov	dx,114	;0072H
+	*** 000070	8b fa 			mov	di,dx
+	*** 000072	8b f0 			mov	si,ax
+	*** 000074	1e 			push	ds
+	*** 000075	07 			pop	es
+	*** 000076	66 a5 			movsd
+	*** 000078	66 a5 			movsd
+;|*** 	}
+;|*** 
+;|*** 	if (ExtraBootPartitionPresent && !GetActivePartition (BootDrive))
+; Line 435
+					$I1661:
+	*** 00007a	80 3e 00 00 00 		cmp	BYTE PTR ?ExtraBootPartitionPresent@@3DA,0	;ExtraBootPartitionPresent
+	*** 00007f	74 0c 			je	SHORT $I1663
+	*** 000081	a0 00 00 		mov	al,BYTE PTR ?BootDrive@@3EA	;BootDrive
+	*** 000084	50 			push	ax
+	*** 000085	e8 00 00 		call	?GetActivePartition@@YADE@Z	; GetActivePartition
+	*** 000088	5b 			pop	bx
+	*** 000089	0a c0 			or	al,al
+	*** 00008b	74 22 			je	SHORT $err1656
+;|*** 		goto err;
+;|*** 
+;|*** 	if (ReadWriteMBR (false, ActivePartition.Drive) != BiosResultSuccess)
+; Line 438
+					$I1663:
+	*** 00008d	6a 00 			push	0
+	*** 00008f	a0 01 00 		mov	al,BYTE PTR ?ActivePartition@@3UPartition@@A+1	;ActivePartition
+	*** 000092	50 			push	ax
+	*** 000093	6a 00 			push	0
+	*** 000095	e8 00 00 		call	?ReadWriteMBR@@YAEDED@Z	; ReadWriteMBR
+	*** 000098	83 c4 06 		add	sp,6
+	*** 00009b	0a c0 			or	al,al
+	*** 00009d	75 10 			jne	SHORT $err1656
+;|*** 		goto err;
+;|*** 
+;|*** 	bootArguments->BootDriveSignature = *(uint32 *) (SectorBuffer + 0x1b8);
+; Line 441
+	*** 00009f	66 a1 b8 01 		mov	eax,DWORD PTR ?SectorBuffer@@3QAEA+440	;SectorBuffer
+	*** 0000a3	66 89 06 7e 00 		mov	DWORD PTR 126,eax
+;|*** 
+;|*** 	if (!InstallInterruptFilters())
+; Line 443
+	*** 0000a8	e8 00 00 		call	?InstallInterruptFilters@@YADXZ	; InstallInterruptFilters
+	*** 0000ab	0a c0 			or	al,al
+	*** 0000ad	75 31 			jne	SHORT $I1668
+;|*** 		goto err;
+;|*** 
+;|*** 	bootArguments->BootArgumentsCrc32 = GetCrc32 ((byte *) bootArguments, (byte *) &bootArguments->BootArgumentsCrc32 - (byte *) bootArguments);
+;|*** 
+;|*** 	while (true)
+;|*** 	{
+;|*** 		// Execute boot sector of the active partition
+;|*** 		if (ReadSectors (SectorBuffer, ActivePartition.Drive, ActivePartition.StartSector, 1) == BiosResultSuccess)
+;|*** 		{
+;|*** 			if (*(uint16 *) (SectorBuffer + 510) != 0xaa55)
+;|*** 			{
+;|*** 				PrintError (TC_BOOT_STR_NO_BOOT_PARTITION);
+;|*** 				GetKeyboardChar();
+;|*** 			}
+;|*** 
+;|*** 			ExecuteBootSector (ActivePartition.Drive, SectorBuffer);
+;|*** 		}
+;|*** 
+;|*** 		GetKeyboardChar();
+;|*** 	}
+;|*** 
+;|*** err:
+; Line 465
+					$err1656:
+;|*** 	if (BootCryptoInfo)
+; Line 466
+	*** 0000af	83 3e 00 00 00 		cmp	WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A,0	;BootCryptoInfo
+	*** 0000b4	74 0e 			je	SHORT $I1680
+;|*** 	{
+;|*** 		crypto_close (BootCryptoInfo);
+; Line 468
+	*** 0000b6	ff 36 00 00 		push	WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 0000ba	e8 00 00 		call	_crypto_close
+	*** 0000bd	5b 			pop	bx
+;|*** 		BootCryptoInfo = NULL;
+; Line 469
+	*** 0000be	c7 06 00 00 00 00 	mov	WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A,0	;BootCryptoInfo
+;|*** 	}
+;|*** 
+;|*** 	EncryptedVirtualPartition.Drive = TC_INVALID_BIOS_DRIVE;
+; Line 472
+					$I1680:
+	*** 0000c4	c6 06 01 00 7f 		mov	BYTE PTR ?EncryptedVirtualPartition@@3UPartition@@A+1,127	;007fH	;EncryptedVirtualPartition
+;|*** 	EraseMemory ((void *) TC_BOOT_LOADER_ARGS_OFFSET, sizeof (BootArguments));
+; Line 473
+	*** 0000c9	6a 76 			push	118	;0076H
+	*** 0000cb	6a 10 			push	16	;0010H
+	*** 0000cd	e8 00 00 		call	_EraseMemory
+	*** 0000d0	83 c4 04 		add	sp,4
+;|*** 
+;|*** 	byte scanCode;
+;|*** 	GetKeyboardChar (&scanCode);
+; Line 476
+	*** 0000d3	8d 46 fe 		lea	ax,WORD PTR [bp-2]	;scanCode
+	*** 0000d6	50 			push	ax
+	*** 0000d7	e8 00 00 		call	?GetKeyboardChar@@YAEPAE@Z	; GetKeyboardChar
+	*** 0000da	5b 			pop	bx
+;|*** 	return scanCode;
+; Line 477
+	*** 0000db	8a 46 fe 		mov	al,BYTE PTR [bp-2]	;scanCode
+	*** 0000de	eb 4e 			jmp	SHORT $EX1651
+;|*** 	bootArguments->BootArgumentsCrc32 = GetCrc32 ((byte *) bootArguments, (byte *) &bootArguments->BootArgumentsCrc32 - (byte *) bootArguments);
+; Line 446
+					$I1668:
+	*** 0000e0	6a 72 			push	114	;0072H
+	*** 0000e2	6a 10 			push	16	;0010H
+	*** 0000e4	e8 00 00 		call	_GetCrc32
+	*** 0000e7	83 c4 04 		add	sp,4
+	*** 0000ea	89 06 82 00 		mov	WORD PTR 130,ax
+	*** 0000ee	89 16 84 00 		mov	WORD PTR 132,dx
+;|*** 
+;|*** 	while (true)
+; Line 448
+					$FC1674:
+;|*** 	{
+;|*** 		// Execute boot sector of the active partition
+;|*** 		if (ReadSectors (SectorBuffer, ActivePartition.Drive, ActivePartition.StartSector, 1) == BiosResultSuccess)
+; Line 451
+	*** 0000f2	6a 00 			push	0
+	*** 0000f4	6a 01 			push	1
+	*** 0000f6	68 16 00 		push	OFFSET ?ActivePartition@@3UPartition@@A+22	;ActivePartition
+	*** 0000f9	a0 01 00 		mov	al,BYTE PTR ?ActivePartition@@3UPartition@@A+1	;ActivePartition
+	*** 0000fc	50 			push	ax
+	*** 0000fd	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000100	e8 00 00 		call	?ReadSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z	; ReadSectors
+	*** 000103	83 c4 0a 		add	sp,10	;000aH
+	*** 000106	0a c0 			or	al,al
+	*** 000108	75 1f 			jne	SHORT $I1676
+;|*** 		{
+;|*** 			if (*(uint16 *) (SectorBuffer + 510) != 0xaa55)
+; Line 453
+	*** 00010a	81 3e fe 01 55 aa 	cmp	WORD PTR ?SectorBuffer@@3QAEA+510,-21931	;aa55H	;SectorBuffer
+	*** 000110	74 0a 			je	SHORT $I1678
+;|*** 			{
+;|*** 				PrintError (TC_BOOT_STR_NO_BOOT_PARTITION);
+; Line 455
+	*** 000112	68 00 00 		push	OFFSET DGROUP:??_C@_0BM@IDKA@No?5bootable?5partition?5found?$AA@
+	*** 000115	e8 00 00 		call	?PrintError@@YAXPBD@Z	; PrintError
+	*** 000118	5b 			pop	bx
+;|*** 				GetKeyboardChar();
+; Line 456
+	*** 000119	e8 00 00 		call	?GetKeyboardChar@@YAEXZ	; GetKeyboardChar
+;|*** 			}
+;|*** 
+;|*** 			ExecuteBootSector (ActivePartition.Drive, SectorBuffer);
+; Line 459
+					$I1678:
+	*** 00011c	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 00011f	a0 01 00 		mov	al,BYTE PTR ?ActivePartition@@3UPartition@@A+1	;ActivePartition
+	*** 000122	50 			push	ax
+	*** 000123	e8 00 00 		call	?ExecuteBootSector@@YAXEPAE@Z	; ExecuteBootSector
+	*** 000126	83 c4 04 		add	sp,4
+;|*** 		}
+;|*** 
+;|*** 		GetKeyboardChar();
+; Line 462
+					$I1676:
+	*** 000129	e8 00 00 		call	?GetKeyboardChar@@YAEXZ	; GetKeyboardChar
+;|*** 	}
+; Line 463
+	*** 00012c	eb c4 			jmp	SHORT $FC1674
+;|*** 
+;|*** err:
+;|*** 	if (BootCryptoInfo)
+;|*** 	{
+;|*** 		crypto_close (BootCryptoInfo);
+;|*** 		BootCryptoInfo = NULL;
+;|*** 	}
+;|*** 
+;|*** 	EncryptedVirtualPartition.Drive = TC_INVALID_BIOS_DRIVE;
+;|*** 	EraseMemory ((void *) TC_BOOT_LOADER_ARGS_OFFSET, sizeof (BootArguments));
+;|*** 
+;|*** 	byte scanCode;
+;|*** 	GetKeyboardChar (&scanCode);
+;|*** 	return scanCode;
+;|*** }
+; Line 478
+					$EX1651:
+	*** 00012e	5e 			pop	si
+	*** 00012f	5f 			pop	di
+	*** 000130	c9 			leave	
+	*** 000131	c3 			ret	
+
+?BootEncryptedDrive@@YAEXZ	ENDP
+
+?BootMenu@@YAXXZ	PROC NEAR	; BootMenu COMDAT
+;|*** 
+;|*** 
+;|*** static void BootMenu ()
+;|*** {
+; Line 482
+	*** 000000	c8 2e 03 00 		enter	814,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	register si = partition
+;	result = -2
+;	partitions = -812
+;	bootablePartitions = -300
+;	partitionCount = -12
+;	bootablePartitionCount = -10
+;	drive = -7
+;	i = -6
+;	partition = -2
+;	partChar = -8
+;	register si = i
+;	partition = -2
+;|*** 	BiosResult result;
+;|*** 	Partition partitions[16];
+;|*** 	Partition bootablePartitions[9];
+;|*** 	size_t partitionCount;
+;|*** 	size_t bootablePartitionCount = 0;
+; Line 487
+	*** 000006	33 ff 			xor	di,di
+;|*** 
+;|*** 	for (byte drive = TC_FIRST_BIOS_DRIVE; drive <= TC_LAST_BIOS_DRIVE; ++drive)
+; Line 489
+	*** 000008	c6 46 f9 80 		mov	BYTE PTR [bp-7],128	;0080H	;drive
+					$F1692:
+;|*** 	{
+;|*** 		if (GetDrivePartitions (drive, partitions, array_capacity (partitions), partitionCount, false, nullptr, true) == BiosResultSuccess)
+; Line 491
+	*** 00000c	6a 01 			push	1
+	*** 00000e	6a 00 			push	0
+	*** 000010	6a 00 			push	0
+	*** 000012	8d 46 f4 		lea	ax,WORD PTR [bp-12]	;partitionCount
+	*** 000015	50 			push	ax
+	*** 000016	6a 10 			push	16	;0010H
+	*** 000018	8d 86 d4 fc 		lea	ax,WORD PTR [bp-812]	;partitions
+	*** 00001c	50 			push	ax
+	*** 00001d	8a 46 f9 		mov	al,BYTE PTR [bp-7]	;drive
+	*** 000020	50 			push	ax
+	*** 000021	e8 00 00 		call	?GetDrivePartitions@@YAEEPAUPartition@@IAAID0D@Z	; GetDrivePartitions
+	*** 000024	83 c4 0e 		add	sp,14	;000eH
+	*** 000027	0a c0 			or	al,al
+	*** 000029	0f 85 b1 00 		jne	$FC1693
+	*** 00002d	89 7e f6 		mov	WORD PTR [bp-10],di	;bootablePartitionCount
+;|*** 		{
+;|*** 			for (size_t i = 0; i < partitionCount; ++i)
+; Line 493
+	*** 000030	c7 46 fa 00 00 		mov	WORD PTR [bp-6],0	;i
+	*** 000035	e9 99 00 		jmp	$L2000
+					$F1697:
+;|*** 			{
+;|*** 				const Partition &partition = partitions[i];
+;|*** 				result = ReadSectors (SectorBuffer, drive, partition.StartSector, 1);
+;|*** 
+;|*** 				if (result == BiosResultSuccess && *(uint16 *) (SectorBuffer + TC_LB_SIZE - 2) == 0xaa55)
+; Line 498
+	*** 000038	6a 00 			push	0
+	*** 00003a	6a 01 			push	1
+	*** 00003c	8b 76 fa 		mov	si,WORD PTR [bp-6]	;i
+	*** 00003f	c1 e6 05 		shl	si,5
+	*** 000042	8d 82 d4 fc 		lea	ax,WORD PTR [bp-812][si]
+	*** 000046	89 46 fe 		mov	WORD PTR [bp-2],ax	;result
+	*** 000049	05 16 00 		add	ax,22	;0016H
+	*** 00004c	50 			push	ax
+	*** 00004d	8a 46 f9 		mov	al,BYTE PTR [bp-7]	;drive
+	*** 000050	50 			push	ax
+	*** 000051	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000054	e8 00 00 		call	?ReadSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z	; ReadSectors
+	*** 000057	83 c4 0a 		add	sp,10	;000aH
+	*** 00005a	0a c0 			or	al,al
+	*** 00005c	75 70 			jne	SHORT $FC1698
+	*** 00005e	81 3e fe 01 55 aa 	cmp	WORD PTR ?SectorBuffer@@3QAEA+510,-21931	;aa55H	;SectorBuffer
+	*** 000064	75 68 			jne	SHORT $FC1698
+;|*** 				{
+;|*** 					// Windows writes boot loader on all NTFS/FAT filesytems it creates and, therefore,
+;|*** 					// NTFS/FAT partitions must have the boot indicator set to be considered bootable.
+;|*** 					if (!partition.Active
+;|*** 						&& (*(uint32 *) (SectorBuffer + 3) == 0x5346544e  // 'NTFS'
+;|*** 							|| *(uint32 *) (SectorBuffer + 3) == 0x41465845	&& SectorBuffer[7] == 'T' // 'exFAT'
+;|*** 							|| *(uint16 *) (SectorBuffer + 54) == 0x4146 && SectorBuffer[56] == 'T' // 'FAT'
+;|*** 							|| *(uint16 *) (SectorBuffer + 82) == 0x4146 && SectorBuffer[84] == 'T'))
+; Line 506
+	*** 000066	8b 5e fe 		mov	bx,WORD PTR [bp-2]	;result
+	*** 000069	38 47 02 		cmp	BYTE PTR [bx+2],al
+	*** 00006c	75 3b 			jne	SHORT $I1707
+	*** 00006e	66 81 3e 03 00 4e 54 46 53 cmp	DWORD PTR ?SectorBuffer@@3QAEA+3,1397118030	;5346544eH	;SectorBuffer
+	*** 000077	74 55 			je	SHORT $FC1698
+					$L1968:
+	*** 000079	66 81 3e 03 00 45 58 46 41 cmp	DWORD PTR ?SectorBuffer@@3QAEA+3,1095129157	;41465845H	;SectorBuffer
+	*** 000082	75 07 			jne	SHORT $I1709
+	*** 000084	80 3e 07 00 54 		cmp	BYTE PTR ?SectorBuffer@@3QAEA+7,84	;0054H	;SectorBuffer
+	*** 000089	74 43 			je	SHORT $FC1698
+					$I1709:
+	*** 00008b	81 3e 36 00 46 41 	cmp	WORD PTR ?SectorBuffer@@3QAEA+54,16710	;4146H	;SectorBuffer
+	*** 000091	75 07 			jne	SHORT $I1710
+	*** 000093	80 3e 38 00 54 		cmp	BYTE PTR ?SectorBuffer@@3QAEA+56,84	;0054H	;SectorBuffer
+	*** 000098	74 34 			je	SHORT $FC1698
+					$I1710:
+	*** 00009a	81 3e 52 00 46 41 	cmp	WORD PTR ?SectorBuffer@@3QAEA+82,16710	;4146H	;SectorBuffer
+	*** 0000a0	75 07 			jne	SHORT $I1707
+	*** 0000a2	80 3e 54 00 54 		cmp	BYTE PTR ?SectorBuffer@@3QAEA+84,84	;0054H	;SectorBuffer
+	*** 0000a7	74 25 			je	SHORT $FC1698
+;|*** 					{
+;|*** 						continue;
+;|*** 					}
+;|*** 
+;|*** 					// Bootable sector found
+;|*** 					if (bootablePartitionCount < array_capacity (bootablePartitions))
+; Line 512
+					$I1707:
+	*** 0000a9	83 7e f6 09 		cmp	WORD PTR [bp-10],9	;bootablePartitionCount
+	*** 0000ad	73 1f 			jae	SHORT $FC1698
+;|*** 						bootablePartitions[bootablePartitionCount++] = partition;
+; Line 513
+	*** 0000af	8b 76 f6 		mov	si,WORD PTR [bp-10]	;bootablePartitionCount
+	*** 0000b2	c1 e6 05 		shl	si,5
+	*** 0000b5	8d 82 d4 fe 		lea	ax,WORD PTR [bp-300][si]
+	*** 0000b9	89 46 fc 		mov	WORD PTR [bp-4],ax
+	*** 0000bc	ff 46 f6 		inc	WORD PTR [bp-10]	;bootablePartitionCount
+	*** 0000bf	8b 46 fe 		mov	ax,WORD PTR [bp-2]	;result
+	*** 0000c2	8b f0 			mov	si,ax
+	*** 0000c4	1e 			push	ds
+	*** 0000c5	07 			pop	es
+	*** 0000c6	8b 7e fc 		mov	di,WORD PTR [bp-4]
+	*** 0000c9	b9 10 00 		mov	cx,16	;0010H
+	*** 0000cc	f3 			rep
+	*** 0000cd	a5 			movsw
+;|*** 			for (size_t i = 0; i < partitionCount; ++i)
+; Line 493
+					$FC1698:
+	*** 0000ce	ff 46 fa 		inc	WORD PTR [bp-6]	;i
+					$L2000:
+	*** 0000d1	8b 46 f4 		mov	ax,WORD PTR [bp-12]	;partitionCount
+	*** 0000d4	39 46 fa 		cmp	WORD PTR [bp-6],ax	;i
+	*** 0000d7	0f 82 5d ff 		jb	$F1697
+	*** 0000db	8b 7e f6 		mov	di,WORD PTR [bp-10]	;bootablePartitionCount
+;|*** 	for (byte drive = TC_FIRST_BIOS_DRIVE; drive <= TC_LAST_BIOS_DRIVE; ++drive)
+; Line 489
+					$FC1693:
+	*** 0000de	fe 46 f9 		inc	BYTE PTR [bp-7]	;drive
+	*** 0000e1	80 7e f9 8f 		cmp	BYTE PTR [bp-7],143	;008fH	;drive
+	*** 0000e5	0f 86 23 ff 		jbe	$F1692
+;|*** 	{
+;|*** 		if (GetDrivePartitions (drive, partitions, array_capacity (partitions), partitionCount, false, nullptr, true) == BiosResultSuccess)
+;|*** 		{
+;|*** 			for (size_t i = 0; i < partitionCount; ++i)
+;|*** 			{
+;|*** 				const Partition &partition = partitions[i];
+;|*** 				result = ReadSectors (SectorBuffer, drive, partition.StartSector, 1);
+;|*** 
+;|*** 				if (result == BiosResultSuccess && *(uint16 *) (SectorBuffer + TC_LB_SIZE - 2) == 0xaa55)
+;|*** 				{
+;|*** 					// Windows writes boot loader on all NTFS/FAT filesytems it creates and, therefore,
+;|*** 					// NTFS/FAT partitions must have the boot indicator set to be considered bootable.
+;|*** 					if (!partition.Active
+;|*** 						&& (*(uint32 *) (SectorBuffer + 3) == 0x5346544e  // 'NTFS'
+;|*** 							|| *(uint32 *) (SectorBuffer + 3) == 0x41465845	&& SectorBuffer[7] == 'T' // 'exFAT'
+;|*** 							|| *(uint16 *) (SectorBuffer + 54) == 0x4146 && SectorBuffer[56] == 'T' // 'FAT'
+;|*** 							|| *(uint16 *) (SectorBuffer + 82) == 0x4146 && SectorBuffer[84] == 'T'))
+;|*** 					{
+;|*** 						continue;
+;|*** 					}
+;|*** 
+;|*** 					// Bootable sector found
+;|*** 					if (bootablePartitionCount < array_capacity (bootablePartitions))
+;|*** 						bootablePartitions[bootablePartitionCount++] = partition;
+;|*** 				}
+;|*** 			}
+;|*** 		}
+;|*** 	}
+;|*** 
+;|*** 	if (bootablePartitionCount < 1)
+; Line 519
+	*** 0000e9	83 ff 01 		cmp	di,1
+	*** 0000ec	73 0d 			jae	SHORT $L1967
+;|*** 	{
+;|*** 		PrintError (TC_BOOT_STR_NO_BOOT_PARTITION);
+; Line 521
+	*** 0000ee	68 00 00 		push	OFFSET DGROUP:??_C@_0BM@IDKA@No?5bootable?5partition?5found?$AA@
+	*** 0000f1	e8 00 00 		call	?PrintError@@YAXPBD@Z	; PrintError
+	*** 0000f4	5b 			pop	bx
+;|*** 		GetKeyboardChar();
+; Line 522
+	*** 0000f5	e8 00 00 		call	?GetKeyboardChar@@YAEXZ	; GetKeyboardChar
+;|*** 		return;
+; Line 523
+	*** 0000f8	e9 21 01 		jmp	$EX1685
+					$L1967:
+	*** 0000fb	89 7e f6 		mov	WORD PTR [bp-10],di	;bootablePartitionCount
+;|*** 	}
+;|*** 
+;|*** 	char partChar;
+;|*** 	while (true)
+; Line 527
+					$FC1715:
+;|*** 	{
+;|*** 		InitScreen();
+; Line 529
+	*** 0000fe	e8 00 00 		call	?InitScreen@@YAXXZ	; InitScreen
+;|*** 		Print ("Bootable Partitions:\r\n");
+; Line 530
+	*** 000101	68 00 00 		push	OFFSET DGROUP:??_C@_0BH@CKJE@Bootable?5Partitions?3?$AN?6?$AA@
+	*** 000104	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000107	5b 			pop	bx
+;|*** 		PrintRepeatedChar ('\xC4', 20);
+; Line 531
+	*** 000108	6a 14 			push	20	;0014H
+	*** 00010a	6a c4 			push	-60	;ffc4H
+	*** 00010c	e8 00 00 		call	?PrintRepeatedChar@@YAXDH@Z	; PrintRepeatedChar
+	*** 00010f	83 c4 04 		add	sp,4
+;|*** 		Print ("\r\n");
+; Line 532
+	*** 000112	68 00 00 		push	OFFSET DGROUP:??_C@_02PIMC@?$AN?6?$AA@
+	*** 000115	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000118	5b 			pop	bx
+;|*** 
+;|*** 		for (size_t i = 0; i < bootablePartitionCount; ++i)
+; Line 534
+	*** 000119	33 f6 			xor	si,si
+	*** 00011b	eb 7c 			jmp	SHORT $L1999
+					$F1720:
+;|*** 		{
+;|*** 			const Partition &partition = bootablePartitions[i];
+; Line 536
+	*** 00011d	8b c6 			mov	ax,si
+	*** 00011f	c1 e0 05 		shl	ax,5
+	*** 000122	8d 8e d4 fe 		lea	cx,WORD PTR [bp-300]	;bootablePartitions
+	*** 000126	03 c1 			add	ax,cx
+	*** 000128	89 46 fe 		mov	WORD PTR [bp-2],ax	;result
+;|*** 			Print ("["); Print (i + 1); Print ("]    ");
+; Line 537
+	*** 00012b	68 00 00 		push	OFFSET DGROUP:??_C@_01KHLB@?$FL?$AA@
+	*** 00012e	89 86 d2 fc 		mov	WORD PTR [bp-814],ax
+	*** 000132	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000135	5b 			pop	bx
+	*** 000136	8d 44 01 		lea	ax,WORD PTR [si+1]
+	*** 000139	6a 00 			push	0
+	*** 00013b	50 			push	ax
+	*** 00013c	e8 00 00 		call	?Print@@YAXK@Z	; Print
+	*** 00013f	83 c4 04 		add	sp,4
+	*** 000142	68 00 00 		push	OFFSET DGROUP:??_C@_05EFLO@?$FN?5?5?5?5?$AA@
+	*** 000145	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000148	5b 			pop	bx
+;|*** 			Print ("Drive: "); Print (partition.Drive - TC_FIRST_BIOS_DRIVE);
+; Line 538
+	*** 000149	68 00 00 		push	OFFSET DGROUP:??_C@_07MCKD@Drive?3?5?$AA@
+	*** 00014c	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00014f	5b 			pop	bx
+	*** 000150	8b 9e d2 fc 		mov	bx,WORD PTR [bp-814]
+	*** 000154	2a e4 			sub	ah,ah
+	*** 000156	8a 47 01 		mov	al,BYTE PTR [bx+1]
+	*** 000159	2d 80 00 		sub	ax,128	;0080H
+	*** 00015c	99 			cwd	
+	*** 00015d	52 			push	dx
+	*** 00015e	50 			push	ax
+	*** 00015f	e8 00 00 		call	?Print@@YAXK@Z	; Print
+	*** 000162	83 c4 04 		add	sp,4
+;|*** 			Print (", Partition: "); Print (partition.Number + 1);
+; Line 539
+	*** 000165	68 00 00 		push	OFFSET DGROUP:??_C@_0O@LEMN@?0?5Partition?3?5?$AA@
+	*** 000168	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00016b	5b 			pop	bx
+	*** 00016c	8b 9e d2 fc 		mov	bx,WORD PTR [bp-814]
+	*** 000170	2a e4 			sub	ah,ah
+	*** 000172	8a 07 			mov	al,BYTE PTR [bx]
+	*** 000174	40 			inc	ax
+	*** 000175	99 			cwd	
+	*** 000176	52 			push	dx
+	*** 000177	50 			push	ax
+	*** 000178	e8 00 00 		call	?Print@@YAXK@Z	; Print
+	*** 00017b	83 c4 04 		add	sp,4
+;|*** 			Print (", Size: "); PrintSectorCountInMB (partition.SectorCount); PrintEndl();
+; Line 540
+	*** 00017e	68 00 00 		push	OFFSET DGROUP:??_C@_08PFEJ@?0?5Size?3?5?$AA@
+	*** 000181	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000184	5b 			pop	bx
+	*** 000185	8b 86 d2 fc 		mov	ax,WORD PTR [bp-814]
+	*** 000189	05 0e 00 		add	ax,14	;000eH
+	*** 00018c	50 			push	ax
+	*** 00018d	e8 00 00 		call	?PrintSectorCountInMB@@YAXABTUINT64_STRUCT@@@Z	; PrintSectorCountInMB
+	*** 000190	5b 			pop	bx
+	*** 000191	e8 00 00 		call	?PrintEndl@@YAXXZ	; PrintEndl
+;|*** 		for (size_t i = 0; i < bootablePartitionCount; ++i)
+; Line 534
+	*** 000194	8d 44 01 		lea	ax,WORD PTR [si+1]
+	*** 000197	8b f0 			mov	si,ax
+					$L1999:
+	*** 000199	3b f7 			cmp	si,di
+	*** 00019b	0f 82 7e ff 		jb	$F1720
+;|*** 		{
+;|*** 			const Partition &partition = bootablePartitions[i];
+;|*** 			Print ("["); Print (i + 1); Print ("]    ");
+;|*** 			Print ("Drive: "); Print (partition.Drive - TC_FIRST_BIOS_DRIVE);
+;|*** 			Print (", Partition: "); Print (partition.Number + 1);
+;|*** 			Print (", Size: "); PrintSectorCountInMB (partition.SectorCount); PrintEndl();
+;|*** 		}
+;|*** 
+;|*** 		if (bootablePartitionCount == 1)
+; Line 543
+	*** 00019f	83 ff 01 		cmp	di,1
+	*** 0001a2	75 06 			jne	SHORT $I1727
+;|*** 		{
+;|*** 			// There's only one bootable partition so we'll boot it directly instead of showing boot manager
+;|*** 			partChar = '1';
+; Line 546
+	*** 0001a4	c6 46 f8 31 		mov	BYTE PTR [bp-8],49	;0031H	;partChar
+;|*** 		}
+;|*** 		else
+; Line 548
+	*** 0001a8	eb 32 			jmp	SHORT $I1728
+					$I1727:
+;|*** 		{
+;|*** 			Print ("[Esc]  Cancel\r\n\r\n");
+; Line 550
+	*** 0001aa	68 00 00 		push	OFFSET DGROUP:??_C@_0BC@DHAO@?$FLEsc?$FN?5?5Cancel?$AN?6?$AN?6?$AA@
+	*** 0001ad	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 0001b0	5b 			pop	bx
+;|*** 			Print ("Press 1-9 to select partition: ");
+; Line 551
+	*** 0001b1	68 00 00 		push	OFFSET DGROUP:??_C@_0CA@HAB@Press?51?99?5to?5select?5partition?3?5?$AA@
+	*** 0001b4	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 0001b7	5b 			pop	bx
+;|*** 
+;|*** 			if (GetString (&partChar, 1) == 0)
+; Line 553
+	*** 0001b8	6a 01 			push	1
+	*** 0001ba	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;partChar
+	*** 0001bd	50 			push	ax
+	*** 0001be	e8 00 00 		call	?GetString@@YAHPADI@Z	; GetString
+	*** 0001c1	83 c4 04 		add	sp,4
+	*** 0001c4	0b c0 			or	ax,ax
+	*** 0001c6	74 54 			je	SHORT $EX1685
+;|*** 				return;
+;|*** 
+;|*** 			PrintEndl();
+; Line 556
+	*** 0001c8	e8 00 00 		call	?PrintEndl@@YAXXZ	; PrintEndl
+;|*** 
+;|*** 			if (partChar < '1' || partChar > '0' + bootablePartitionCount)
+; Line 558
+	*** 0001cb	80 7e f8 31 		cmp	BYTE PTR [bp-8],49	;0031H	;partChar
+	*** 0001cf	7c 45 			jl	SHORT $I1732
+	*** 0001d1	8a 46 f8 		mov	al,BYTE PTR [bp-8]	;partChar
+	*** 0001d4	98 			cbw	
+	*** 0001d5	8d 4d 30 		lea	cx,WORD PTR [di+48]
+	*** 0001d8	3b c8 			cmp	cx,ax
+	*** 0001da	72 3a 			jb	SHORT $I1732
+;|*** 			{
+;|*** 				Beep();
+;|*** 				continue;
+;|*** 			}
+;|*** 		}
+; Line 563
+					$I1728:
+;|*** 
+;|*** 		const Partition &partition = bootablePartitions[partChar - '0' - 1];
+; Line 565
+	*** 0001dc	8a 46 f8 		mov	al,BYTE PTR [bp-8]	;partChar
+	*** 0001df	98 			cbw	
+	*** 0001e0	8b f0 			mov	si,ax
+	*** 0001e2	c1 e6 05 		shl	si,5
+	*** 0001e5	8d 86 b4 f8 		lea	ax,WORD PTR [bp-1868]
+	*** 0001e9	03 f0 			add	si,ax
+;|*** 
+;|*** 		if (ReadSectors (SectorBuffer, partition.Drive, partition.StartSector, 1) == BiosResultSuccess)
+; Line 567
+	*** 0001eb	6a 00 			push	0
+	*** 0001ed	6a 01 			push	1
+	*** 0001ef	8d 44 16 		lea	ax,WORD PTR [si+22]
+	*** 0001f2	50 			push	ax
+	*** 0001f3	8a 44 01 		mov	al,BYTE PTR [si+1]
+	*** 0001f6	50 			push	ax
+	*** 0001f7	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 0001fa	e8 00 00 		call	?ReadSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z	; ReadSectors
+	*** 0001fd	83 c4 0a 		add	sp,10	;000aH
+	*** 000200	0a c0 			or	al,al
+	*** 000202	0f 85 f8 fe 		jne	$FC1715
+;|*** 		{
+;|*** 			ExecuteBootSector (partition.Drive, SectorBuffer);
+; Line 569
+	*** 000206	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000209	8a 44 01 		mov	al,BYTE PTR [si+1]
+	*** 00020c	50 			push	ax
+	*** 00020d	e8 00 00 		call	?ExecuteBootSector@@YAXEPAE@Z	; ExecuteBootSector
+	*** 000210	83 c4 04 		add	sp,4
+;|*** 		}
+;|*** 	}
+; Line 571
+	*** 000213	e9 e8 fe 		jmp	$FC1715
+;|*** 			if (partChar < '1' || partChar > '0' + bootablePartitionCount)
+; Line 558
+					$I1732:
+;|*** 			{
+;|*** 				Beep();
+; Line 560
+	*** 000216	e8 00 00 		call	?Beep@@YAXXZ	; Beep
+;|*** 				continue;
+; Line 561
+	*** 000219	e9 e2 fe 		jmp	$FC1715
+;|*** 			}
+;|*** 		}
+;|*** 
+;|*** 		const Partition &partition = bootablePartitions[partChar - '0' - 1];
+;|*** 
+;|*** 		if (ReadSectors (SectorBuffer, partition.Drive, partition.StartSector, 1) == BiosResultSuccess)
+;|*** 		{
+;|*** 			ExecuteBootSector (partition.Drive, SectorBuffer);
+;|*** 		}
+;|*** 	}
+;|*** }
+; Line 572
+					$EX1685:
+	*** 00021c	5e 			pop	si
+	*** 00021d	5f 			pop	di
+	*** 00021e	c9 			leave	
+	*** 00021f	c3 			ret	
+
+?BootMenu@@YAXXZ	ENDP
+
+?DecryptDrive@@YAXE@Z	PROC NEAR	; DecryptDrive COMDAT
+;|*** 
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 
+;|*** static bool CopySystemPartitionToHiddenVolume (byte drive, byte &exitKey)
+;|*** {
+;|*** 	bool status = false;
+;|*** 
+;|*** 	uint64 sectorsRemaining;
+;|*** 	uint64 sectorOffset;
+;|*** 	sectorOffset.LowPart = 0;
+;|*** 	sectorOffset.HighPart = 0;
+;|*** 
+;|*** 	int fragmentSectorCount = 0x7f; // Maximum safe value supported by BIOS
+;|*** 	int statCount;
+;|*** 
+;|*** 	if (!CheckMemoryRequirements ())
+;|*** 		goto err;
+;|*** 
+;|*** 	if (!GetSystemPartitions (drive))
+;|*** 		goto err;
+;|*** 
+;|*** 	if (PartitionFollowingActive.Drive == TC_INVALID_BIOS_DRIVE)
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 
+;|*** 	// Check if BIOS can read the last sector of the hidden system
+;|*** 	AcquireSectorBuffer();
+;|*** 
+;|*** 	if (ReadSectors (SectorBuffer, PartitionFollowingActive.Drive, PartitionFollowingActive.EndSector - (TC_VOLUME_HEADER_GROUP_SIZE / TC_LB_SIZE - 2), 1) != BiosResultSuccess
+;|*** 		|| GetCrc32 (SectorBuffer, sizeof (SectorBuffer)) != OuterVolumeBackupHeaderCrc)
+;|*** 	{
+;|*** 		PrintErrorNoEndl ("Your BIOS does not support large drives");
+;|*** 		Print (IsLbaSupported (PartitionFollowingActive.Drive) ? " due to a bug" : "\r\n- Enable LBA in BIOS");
+;|*** 		PrintEndl();
+;|*** 		Print (TC_BOOT_STR_UPGRADE_BIOS);
+;|*** 
+;|*** 		ReleaseSectorBuffer();
+;|*** 		goto err;
+;|*** 	}
+;|*** 
+;|*** 	ReleaseSectorBuffer();
+;|*** 
+;|*** 	if (!MountVolume (drive, exitKey, true, false))
+;|*** 		return false;
+;|*** 
+;|*** 	sectorsRemaining = EncryptedVirtualPartition.SectorCount;
+;|*** 
+;|*** 	if (!(sectorsRemaining == ActivePartition.SectorCount))
+;|*** 		TC_THROW_FATAL_EXCEPTION;
+;|*** 
+;|*** 	InitScreen();
+;|*** 	Print ("\r\nCopying system to hidden volume. To abort, press Esc.\r\n\r\n");
+;|*** 
+;|*** 	while (sectorsRemaining.HighPart != 0 || sectorsRemaining.LowPart != 0)
+;|*** 	{
+;|*** 		if (EscKeyPressed())
+;|*** 		{
+;|*** 			Print ("\rIf aborted, copying will have to start from the beginning (if attempted again).\r\n");
+;|*** 			if (AskYesNo ("Abort"))
+;|*** 				break;
+;|*** 		}
+;|*** 
+;|*** 		if (sectorsRemaining.HighPart == 0 && sectorsRemaining.LowPart < fragmentSectorCount)
+;|*** 			fragmentSectorCount = (int) sectorsRemaining.LowPart;
+;|*** 
+;|*** 		if (ReadWriteSectors (false, TC_BOOT_LOADER_BUFFER_SEGMENT, 0, drive, ActivePartition.StartSector + sectorOffset, fragmentSectorCount, false) != BiosResultSuccess)
+;|*** 		{
+;|*** 			Print ("To fix bad sectors: 1) Terminate 2) Encrypt and decrypt sys partition 3) Retry\r\n");
+;|*** 			crypto_close (BootCryptoInfo);
+;|*** 			goto err;
+;|*** 		}
+;|*** 
+;|*** 		AcquireSectorBuffer();
+;|*** 
+;|*** 		for (int i = 0; i < fragmentSectorCount; ++i)
+;|*** 		{
+;|*** 			CopyMemory (TC_BOOT_LOADER_BUFFER_SEGMENT, i * TC_LB_SIZE, SectorBuffer, TC_LB_SIZE);
+;|*** 
+;|*** 			uint64 s = HiddenVolumeStartUnitNo + sectorOffset + i;
+;|*** 			EncryptDataUnits (SectorBuffer, &s, 1, BootCryptoInfo);
+;|*** 
+;|*** 			CopyMemory (SectorBuffer, TC_BOOT_LOADER_BUFFER_SEGMENT, i * TC_LB_SIZE, TC_LB_SIZE);
+;|*** 		} 
+;|*** 
+;|*** 		ReleaseSectorBuffer();
+;|*** 
+;|*** 		if (ReadWriteSectors (true, TC_BOOT_LOADER_BUFFER_SEGMENT, 0, drive, HiddenVolumeStartSector + sectorOffset, fragmentSectorCount, false) != BiosResultSuccess)
+;|*** 		{
+;|*** 			crypto_close (BootCryptoInfo);
+;|*** 			goto err;
+;|*** 		}
+;|*** 
+;|*** 		sectorsRemaining = sectorsRemaining - fragmentSectorCount;
+;|*** 		sectorOffset = sectorOffset + fragmentSectorCount;
+;|*** 
+;|*** 		if (!(statCount++ & 0xf))
+;|*** 		{
+;|*** 			Print ("\rRemaining: ");
+;|*** 			PrintSectorCountInMB (sectorsRemaining);
+;|*** 		}
+;|*** 	}
+;|*** 
+;|*** 	crypto_close (BootCryptoInfo);
+;|*** 
+;|*** 	if (sectorsRemaining.HighPart == 0 && sectorsRemaining.LowPart == 0)
+;|*** 	{
+;|*** 		status = true;
+;|*** 		Print ("\rCopying completed.");
+;|*** 	}
+;|*** 
+;|*** 	PrintEndl (2);
+;|*** 	goto ret;
+;|*** 
+;|*** err:
+;|*** 	exitKey = TC_BIOS_KEY_ESC;
+;|*** 	GetKeyboardChar();
+;|*** 
+;|*** ret:
+;|*** 	EraseMemory ((void *) TC_BOOT_LOADER_ARGS_OFFSET, sizeof (BootArguments));
+;|*** 	return status;
+;|*** }
+;|*** 
+;|*** 
+;|*** #else // TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 
+;|*** 
+;|*** static void DecryptDrive (byte drive)
+;|*** {
+; Line 700
+	*** 000000	c8 3a 00 00 		enter	58,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	encryptedAreaLength = -34
+;	i = -6
+;	drive = 4
+;	headerCrc32 = -4
+;	exitKey = -7
+;	bootArguments = -2
+;	headerUpdateRequired = -6
+;	sectorsRemaining = -26
+;	sector = -58
+;	fragmentSectorCount = -4
+;	statCount = -10
+;	skipBadSectors = -5
+;	i = -2
+;	s = -18
+;	headerSector = -18
+;	headerCryptoInfo = -10
+;|*** 	byte exitKey;
+;|*** 	if (!MountVolume (drive, exitKey, false, true))
+; Line 702
+	*** 000006	6a 01 			push	1
+	*** 000008	6a 00 			push	0
+	*** 00000a	8d 46 f9 		lea	ax,WORD PTR [bp-7]	;exitKey
+	*** 00000d	50 			push	ax
+	*** 00000e	8a 46 04 		mov	al,BYTE PTR [bp+4]	;drive
+	*** 000011	50 			push	ax
+	*** 000012	e8 00 00 		call	?MountVolume@@YADEAAEDD@Z	; MountVolume
+	*** 000015	83 c4 08 		add	sp,8
+	*** 000018	0a c0 			or	al,al
+	*** 00001a	0f 84 3f 03 		je	$EX1737
+;|*** 		return;
+;|*** 
+;|*** 	BootArguments *bootArguments = (BootArguments *) TC_BOOT_LOADER_ARGS_OFFSET;
+; Line 705
+	*** 00001e	c7 46 fe 10 00 		mov	WORD PTR [bp-2],16	;0010H	;bootArguments
+;|*** 
+;|*** 	bool headerUpdateRequired = false;
+;|*** 	uint64 sectorsRemaining = EncryptedVirtualPartition.EndSector + 1 - EncryptedVirtualPartition.StartSector;
+; Line 708
+	*** 000023	68 16 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+22	;EncryptedVirtualPartition
+	*** 000026	6a 00 			push	0
+	*** 000028	6a 01 			push	1
+	*** 00002a	68 04 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+4	;EncryptedVirtualPartition
+	*** 00002d	8d 46 d6 		lea	ax,WORD PTR [bp-42]
+	*** 000030	50 			push	ax
+	*** 000031	e8 00 00 		call	??H@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator+
+	*** 000034	83 c4 08 		add	sp,8
+	*** 000037	50 			push	ax
+	*** 000038	8d 46 ce 		lea	ax,WORD PTR [bp-50]
+	*** 00003b	50 			push	ax
+	*** 00003c	e8 00 00 		call	??G@YA?ATUINT64_STRUCT@@ABT0@0@Z	; operator-
+	*** 00003f	83 c4 06 		add	sp,6
+	*** 000042	8d 7e e6 		lea	di,WORD PTR [bp-26]	;sectorsRemaining
+	*** 000045	8b f0 			mov	si,ax
+	*** 000047	16 			push	ss
+	*** 000048	07 			pop	es
+	*** 000049	66 a5 			movsd
+	*** 00004b	66 a5 			movsd
+;|*** 	uint64 sector = EncryptedVirtualPartition.EndSector + 1;
+; Line 709
+	*** 00004d	6a 00 			push	0
+	*** 00004f	6a 01 			push	1
+	*** 000051	68 04 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+4	;EncryptedVirtualPartition
+	*** 000054	8d 46 ce 		lea	ax,WORD PTR [bp-50]
+	*** 000057	50 			push	ax
+	*** 000058	e8 00 00 		call	??H@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator+
+	*** 00005b	83 c4 08 		add	sp,8
+	*** 00005e	8d 7e c6 		lea	di,WORD PTR [bp-58]	;sector
+	*** 000061	8b f0 			mov	si,ax
+	*** 000063	16 			push	ss
+	*** 000064	07 			pop	es
+	*** 000065	66 a5 			movsd
+	*** 000067	66 a5 			movsd
+;|*** 
+;|*** 	int fragmentSectorCount = 0x7f; // Maximum safe value supported by BIOS
+; Line 711
+	*** 000069	c7 46 fc 7f 00 		mov	WORD PTR [bp-4],127	;007fH	;headerCrc32
+;|*** 	int statCount;
+;|*** 
+;|*** 	bool skipBadSectors = false;
+; Line 714
+	*** 00006e	32 c0 			xor	al,al
+	*** 000070	88 46 fa 		mov	BYTE PTR [bp-6],al	;i
+	*** 000073	88 46 fb 		mov	BYTE PTR [bp-5],al	;skipBadSectors
+;|*** 
+;|*** 	Print ("\r\nUse only if Windows cannot start. Decryption under Windows is much faster\r\n"
+;|*** 			"(in CipherShed, select 'System' > 'Permanently Decrypt').\r\n\r\n");
+; Line 717
+	*** 000076	68 00 00 		push	OFFSET DGROUP:??_C@_0IL@JNGI@?$AN?6Use?5only?5if?5Windows?5cannot?5sta@
+	*** 000079	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00007c	5b 			pop	bx
+;|*** 
+;|*** 	if (!AskYesNo ("Decrypt now"))
+; Line 719
+	*** 00007d	68 00 00 		push	OFFSET DGROUP:??_C@_0M@EMPJ@Decrypt?5now?$AA@
+	*** 000080	e8 00 00 		call	?AskYesNo@@YADPBD@Z	; AskYesNo
+	*** 000083	5b 			pop	bx
+	*** 000084	0a c0 			or	al,al
+	*** 000086	75 0b 			jne	SHORT $I1752
+;|*** 	{
+;|*** 		crypto_close (BootCryptoInfo);
+; Line 721
+	*** 000088	ff 36 00 00 		push	WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 00008c	e8 00 00 		call	_crypto_close
+	*** 00008f	5b 			pop	bx
+;|*** 		goto ret;
+; Line 722
+	*** 000090	e9 c0 02 		jmp	$ret1754
+;|*** 	}
+;|*** 
+;|*** 	if (EncryptedVirtualPartition.Drive == TC_INVALID_BIOS_DRIVE)
+; Line 725
+					$I1752:
+	*** 000093	80 3e 01 00 7f 		cmp	BYTE PTR ?EncryptedVirtualPartition@@3UPartition@@A+1,127	;007fH	;EncryptedVirtualPartition
+	*** 000098	75 0d 			jne	SHORT $I1756
+;|*** 	{
+;|*** 		// Drive already decrypted
+;|*** 		sectorsRemaining.HighPart = 0;
+; Line 728
+	*** 00009a	66 2b c0 		sub	eax,eax
+	*** 00009d	66 89 46 ea 		mov	DWORD PTR [bp-22],eax
+;|*** 		sectorsRemaining.LowPart = 0;
+; Line 729
+	*** 0000a1	66 89 46 e6 		mov	DWORD PTR [bp-26],eax	;sectorsRemaining
+;|*** 	}
+;|*** 	else
+; Line 731
+	*** 0000a5	eb 07 			jmp	SHORT $L1971
+					$I1756:
+;|*** 	{
+;|*** 		Print ("\r\nTo safely interrupt and defer decryption, press Esc.\r\n"
+;|*** 			"WARNING: You can turn off power only after you press Esc.\r\n\r\n");
+; Line 734
+	*** 0000a7	68 00 00 		push	OFFSET DGROUP:??_C@_0HG@PFFC@?$AN?6To?5safely?5interrupt?5and?5defer?5@
+	*** 0000aa	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 0000ad	5b 			pop	bx
+					$L1971:
+;|*** 	}
+;|*** 
+;|*** 	while (sectorsRemaining.HighPart != 0 || sectorsRemaining.LowPart != 0)
+; Line 737
+	*** 0000ae	66 83 7e ea 00 		cmp	DWORD PTR [bp-22],0
+	*** 0000b3	75 07 			jne	SHORT $FB1762
+	*** 0000b5	66 83 7e e6 00 		cmp	DWORD PTR [bp-26],0	;sectorsRemaining
+	*** 0000ba	74 07 			je	SHORT $L2006
+					$FB1762:
+;|*** 	{
+;|*** 		if (EscKeyPressed())
+; Line 739
+	*** 0000bc	e8 00 00 		call	?EscKeyPressed@@YADXZ	; EscKeyPressed
+	*** 0000bf	0a c0 			or	al,al
+	*** 0000c1	74 03 			je	SHORT $L2005
+;|*** 			break;
+;|*** 
+;|*** 		if (sectorsRemaining.HighPart == 0 && sectorsRemaining.LowPart < fragmentSectorCount)
+; Line 742
+					$L2006:
+	*** 0000c3	e9 64 01 		jmp	$FB1761
+					$L2005:
+	*** 0000c6	66 83 7e ea 00 		cmp	DWORD PTR [bp-22],0
+	*** 0000cb	75 11 			jne	SHORT $I1764
+	*** 0000cd	66 0f bf 46 fc 		movsx	eax,WORD PTR [bp-4]	;headerCrc32
+	*** 0000d2	66 3b 46 e6 		cmp	eax,DWORD PTR [bp-26]	;sectorsRemaining
+	*** 0000d6	76 06 			jbe	SHORT $I1764
+					$L1977:
+;|*** 			fragmentSectorCount = (int) sectorsRemaining.LowPart;
+; Line 743
+	*** 0000d8	8b 46 e6 		mov	ax,WORD PTR [bp-26]	;sectorsRemaining
+	*** 0000db	89 46 fc 		mov	WORD PTR [bp-4],ax	;headerCrc32
+;|*** 
+;|*** 		sector = sector - fragmentSectorCount;
+; Line 745
+					$I1764:
+	*** 0000de	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;headerCrc32
+	*** 0000e1	99 			cwd	
+	*** 0000e2	52 			push	dx
+	*** 0000e3	50 			push	ax
+	*** 0000e4	8d 46 c6 		lea	ax,WORD PTR [bp-58]	;sector
+	*** 0000e7	50 			push	ax
+	*** 0000e8	8d 4e d6 		lea	cx,WORD PTR [bp-42]
+	*** 0000eb	51 			push	cx
+	*** 0000ec	e8 00 00 		call	??G@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator-
+	*** 0000ef	83 c4 08 		add	sp,8
+	*** 0000f2	8d 7e c6 		lea	di,WORD PTR [bp-58]	;sector
+	*** 0000f5	8b f0 			mov	si,ax
+	*** 0000f7	16 			push	ss
+	*** 0000f8	07 			pop	es
+	*** 0000f9	66 a5 			movsd
+	*** 0000fb	66 a5 			movsd
+;|*** 
+;|*** 		if (!(statCount++ & 0xf))
+; Line 747
+	*** 0000fd	8b 46 f6 		mov	ax,WORD PTR [bp-10]	;statCount
+	*** 000100	ff 46 f6 		inc	WORD PTR [bp-10]	;statCount
+	*** 000103	a8 0f 			test	al,15	;000fH
+	*** 000105	75 0f 			jne	SHORT $I1767
+;|*** 		{
+;|*** 			Print ("\rRemaining: ");
+; Line 749
+	*** 000107	68 00 00 		push	OFFSET DGROUP:??_C@_0N@BNAP@?$ANRemaining?3?5?$AA@
+	*** 00010a	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00010d	5b 			pop	bx
+;|*** 			PrintSectorCountInMB (sectorsRemaining);
+; Line 750
+	*** 00010e	8d 46 e6 		lea	ax,WORD PTR [bp-26]	;sectorsRemaining
+	*** 000111	50 			push	ax
+	*** 000112	e8 00 00 		call	?PrintSectorCountInMB@@YAXABTUINT64_STRUCT@@@Z	; PrintSectorCountInMB
+	*** 000115	5b 			pop	bx
+;|*** 		}
+;|*** 
+;|*** 		if (ReadWriteSectors (false, TC_BOOT_LOADER_BUFFER_SEGMENT, 0, drive, sector, fragmentSectorCount, skipBadSectors) == BiosResultSuccess)
+; Line 753
+					$I1767:
+	*** 000116	8a 46 fb 		mov	al,BYTE PTR [bp-5]	;skipBadSectors
+	*** 000119	50 			push	ax
+	*** 00011a	ff 76 fc 		push	WORD PTR [bp-4]	;headerCrc32
+	*** 00011d	8d 46 c6 		lea	ax,WORD PTR [bp-58]	;sector
+	*** 000120	50 			push	ax
+	*** 000121	8a 46 04 		mov	al,BYTE PTR [bp+4]	;drive
+	*** 000124	50 			push	ax
+	*** 000125	6a 00 			push	0
+	*** 000127	68 00 40 		push	16384	;4000H
+	*** 00012a	6a 00 			push	0
+	*** 00012c	e8 00 00 		call	?ReadWriteSectors@@YAEDIIEABTUINT64_STRUCT@@ID@Z	; ReadWriteSectors
+	*** 00012f	83 c4 0e 		add	sp,14	;000eH
+	*** 000132	0a c0 			or	al,al
+	*** 000134	0f 85 90 00 		jne	$I1769
+;|*** 		{
+;|*** 			AcquireSectorBuffer();
+;|*** 
+;|*** 			for (int i = 0; i < fragmentSectorCount; ++i)
+; Line 757
+	*** 000138	c7 46 fe 00 00 		mov	WORD PTR [bp-2],0	;bootArguments
+	*** 00013d	eb 61 			jmp	SHORT $L2001
+					$F1771:
+;|*** 			{
+;|*** 				CopyMemory (TC_BOOT_LOADER_BUFFER_SEGMENT, i * TC_LB_SIZE, SectorBuffer, TC_LB_SIZE);
+; Line 759
+	*** 00013f	68 00 02 		push	512	;0200H
+	*** 000142	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000145	8b 46 fe 		mov	ax,WORD PTR [bp-2]	;bootArguments
+	*** 000148	c1 e0 09 		shl	ax,9
+	*** 00014b	50 			push	ax
+	*** 00014c	68 00 40 		push	16384	;4000H
+	*** 00014f	8b f0 			mov	si,ax
+	*** 000151	e8 00 00 		call	?CopyMemory@@YAXIIPAXI@Z	; CopyMemory
+	*** 000154	83 c4 08 		add	sp,8
+;|*** 
+;|*** 				uint64 s = sector + i;
+; Line 761
+	*** 000157	8b 46 fe 		mov	ax,WORD PTR [bp-2]	;bootArguments
+	*** 00015a	99 			cwd	
+	*** 00015b	52 			push	dx
+	*** 00015c	50 			push	ax
+	*** 00015d	8d 46 c6 		lea	ax,WORD PTR [bp-58]	;sector
+	*** 000160	50 			push	ax
+	*** 000161	8d 46 ce 		lea	ax,WORD PTR [bp-50]
+	*** 000164	50 			push	ax
+	*** 000165	e8 00 00 		call	??H@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator+
+	*** 000168	83 c4 08 		add	sp,8
+	*** 00016b	56 			push	si
+	*** 00016c	8d 7e ee 		lea	di,WORD PTR [bp-18]	;s
+	*** 00016f	8b f0 			mov	si,ax
+	*** 000171	16 			push	ss
+	*** 000172	07 			pop	es
+	*** 000173	66 a5 			movsd
+	*** 000175	66 a5 			movsd
+	*** 000177	5e 			pop	si
+;|*** 				DecryptDataUnits (SectorBuffer, &s, 1, BootCryptoInfo);
+; Line 762
+	*** 000178	ff 36 00 00 		push	WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 00017c	6a 00 			push	0
+	*** 00017e	6a 01 			push	1
+	*** 000180	8d 46 ee 		lea	ax,WORD PTR [bp-18]	;s
+	*** 000183	50 			push	ax
+	*** 000184	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000187	e8 00 00 		call	_DecryptDataUnits
+	*** 00018a	83 c4 0a 		add	sp,10	;000aH
+;|*** 
+;|*** 				CopyMemory (SectorBuffer, TC_BOOT_LOADER_BUFFER_SEGMENT, i * TC_LB_SIZE, TC_LB_SIZE);
+; Line 764
+	*** 00018d	68 00 02 		push	512	;0200H
+	*** 000190	56 			push	si
+	*** 000191	68 00 40 		push	16384	;4000H
+	*** 000194	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000197	e8 00 00 		call	?CopyMemory@@YAXPAXIII@Z	; CopyMemory
+	*** 00019a	83 c4 08 		add	sp,8
+;|*** 			for (int i = 0; i < fragmentSectorCount; ++i)
+; Line 757
+	*** 00019d	ff 46 fe 		inc	WORD PTR [bp-2]	;bootArguments
+					$L2001:
+	*** 0001a0	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;headerCrc32
+	*** 0001a3	39 46 fe 		cmp	WORD PTR [bp-2],ax	;bootArguments
+	*** 0001a6	7c 97 			jl	SHORT $F1771
+;|*** 			{
+;|*** 				CopyMemory (TC_BOOT_LOADER_BUFFER_SEGMENT, i * TC_LB_SIZE, SectorBuffer, TC_LB_SIZE);
+;|*** 
+;|*** 				uint64 s = sector + i;
+;|*** 				DecryptDataUnits (SectorBuffer, &s, 1, BootCryptoInfo);
+;|*** 
+;|*** 				CopyMemory (SectorBuffer, TC_BOOT_LOADER_BUFFER_SEGMENT, i * TC_LB_SIZE, TC_LB_SIZE);
+;|*** 			} 
+;|*** 
+;|*** 			ReleaseSectorBuffer();
+;|*** 
+;|*** 			if (ReadWriteSectors (true, TC_BOOT_LOADER_BUFFER_SEGMENT, 0, drive, sector, fragmentSectorCount, skipBadSectors) != BiosResultSuccess && !skipBadSectors)
+; Line 769
+	*** 0001a8	8a 46 fb 		mov	al,BYTE PTR [bp-5]	;skipBadSectors
+	*** 0001ab	50 			push	ax
+	*** 0001ac	ff 76 fc 		push	WORD PTR [bp-4]	;headerCrc32
+	*** 0001af	8d 46 c6 		lea	ax,WORD PTR [bp-58]	;sector
+	*** 0001b2	50 			push	ax
+	*** 0001b3	8a 46 04 		mov	al,BYTE PTR [bp+4]	;drive
+	*** 0001b6	50 			push	ax
+	*** 0001b7	6a 00 			push	0
+	*** 0001b9	68 00 40 		push	16384	;4000H
+	*** 0001bc	6a 01 			push	1
+	*** 0001be	e8 00 00 		call	?ReadWriteSectors@@YAEDIIEABTUINT64_STRUCT@@ID@Z	; ReadWriteSectors
+	*** 0001c1	83 c4 0e 		add	sp,14	;000eH
+	*** 0001c4	0a c0 			or	al,al
+	*** 0001c6	74 3c 			je	SHORT $I1779
+;|*** 				goto askBadSectorSkip;
+;|*** 		}
+;|*** 		else if (!skipBadSectors)
+; Line 772
+					$I1769:
+	*** 0001c8	80 7e fb 00 		cmp	BYTE PTR [bp-5],0	;skipBadSectors
+	*** 0001cc	75 36 			jne	SHORT $I1779
+;|*** 			goto askBadSectorSkip;
+;|*** 
+;|*** 		sectorsRemaining = sectorsRemaining - fragmentSectorCount;
+;|*** 		headerUpdateRequired = true;
+;|*** 		continue;
+;|*** 
+;|*** askBadSectorSkip:
+;|*** 		if (!AskYesNo ("Skip all bad sectors"))
+; Line 780
+	*** 0001ce	68 00 00 		push	OFFSET DGROUP:??_C@_0BF@LODE@Skip?5all?5bad?5sectors?$AA@
+	*** 0001d1	e8 00 00 		call	?AskYesNo@@YADPBD@Z	; AskYesNo
+	*** 0001d4	5b 			pop	bx
+	*** 0001d5	0a c0 			or	al,al
+	*** 0001d7	74 51 			je	SHORT $FB1761
+;|*** 			break;
+;|*** 
+;|*** 		skipBadSectors = true;
+; Line 783
+	*** 0001d9	c6 46 fb 01 		mov	BYTE PTR [bp-5],1	;skipBadSectors
+;|*** 		sector = sector + fragmentSectorCount;
+; Line 784
+	*** 0001dd	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;headerCrc32
+	*** 0001e0	99 			cwd	
+	*** 0001e1	52 			push	dx
+	*** 0001e2	50 			push	ax
+	*** 0001e3	8d 46 c6 		lea	ax,WORD PTR [bp-58]	;sector
+	*** 0001e6	50 			push	ax
+	*** 0001e7	8d 4e ce 		lea	cx,WORD PTR [bp-50]
+	*** 0001ea	51 			push	cx
+	*** 0001eb	e8 00 00 		call	??H@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator+
+	*** 0001ee	83 c4 08 		add	sp,8
+	*** 0001f1	8d 7e c6 		lea	di,WORD PTR [bp-58]	;sector
+	*** 0001f4	8b f0 			mov	si,ax
+	*** 0001f6	16 			push	ss
+	*** 0001f7	07 			pop	es
+	*** 0001f8	66 a5 			movsd
+	*** 0001fa	66 a5 			movsd
+;|*** 		fragmentSectorCount = 1;
+; Line 785
+	*** 0001fc	c7 46 fc 01 00 		mov	WORD PTR [bp-4],1	;headerCrc32
+;|*** 	}
+; Line 786
+	*** 000201	e9 aa fe 		jmp	$L1971
+;|*** 		sectorsRemaining = sectorsRemaining - fragmentSectorCount;
+; Line 775
+					$I1779:
+	*** 000204	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;headerCrc32
+	*** 000207	99 			cwd	
+	*** 000208	52 			push	dx
+	*** 000209	50 			push	ax
+	*** 00020a	8d 46 e6 		lea	ax,WORD PTR [bp-26]	;sectorsRemaining
+	*** 00020d	50 			push	ax
+	*** 00020e	8d 4e d6 		lea	cx,WORD PTR [bp-42]
+	*** 000211	51 			push	cx
+	*** 000212	e8 00 00 		call	??G@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator-
+	*** 000215	83 c4 08 		add	sp,8
+	*** 000218	8d 7e e6 		lea	di,WORD PTR [bp-26]	;sectorsRemaining
+	*** 00021b	8b f0 			mov	si,ax
+	*** 00021d	16 			push	ss
+	*** 00021e	07 			pop	es
+	*** 00021f	66 a5 			movsd
+	*** 000221	66 a5 			movsd
+;|*** 		headerUpdateRequired = true;
+; Line 776
+	*** 000223	c6 46 fa 01 		mov	BYTE PTR [bp-6],1	;i
+;|*** 		continue;
+; Line 777
+	*** 000227	e9 84 fe 		jmp	$L1971
+;|*** 
+;|*** askBadSectorSkip:
+;|*** 		if (!AskYesNo ("Skip all bad sectors"))
+;|*** 			break;
+;|*** 
+;|*** 		skipBadSectors = true;
+;|*** 		sector = sector + fragmentSectorCount;
+;|*** 		fragmentSectorCount = 1;
+;|*** 	}
+; Line 786
+					$FB1761:
+;|*** 
+;|*** 	crypto_close (BootCryptoInfo);
+; Line 788
+	*** 00022a	ff 36 00 00 		push	WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 00022e	e8 00 00 		call	_crypto_close
+	*** 000231	5b 			pop	bx
+;|*** 
+;|*** 	if (headerUpdateRequired)
+; Line 790
+	*** 000232	80 7e fa 00 		cmp	BYTE PTR [bp-6],0	;i
+	*** 000236	0f 84 fc 00 		je	$I1786
+;|*** 	{
+;|*** 		AcquireSectorBuffer();
+;|*** 		uint64 headerSector;
+;|*** 		headerSector.HighPart = 0;
+; Line 794
+	*** 00023a	66 2b c0 		sub	eax,eax
+	*** 00023d	66 89 46 f2 		mov	DWORD PTR [bp-14],eax
+;|*** 		headerSector.LowPart = TC_BOOT_VOLUME_HEADER_SECTOR;
+; Line 795
+	*** 000241	c7 46 ee 3e 00 		mov	WORD PTR [bp-18],62	;003eH	;s
+	*** 000246	89 46 f0 		mov	WORD PTR [bp-16],ax
+;|*** 
+;|*** 		// Update encrypted area size in volume header
+;|*** 
+;|*** 		CRYPTO_INFO *headerCryptoInfo = crypto_open();
+; Line 799
+	*** 000249	e8 00 00 		call	_crypto_open
+	*** 00024c	89 46 f6 		mov	WORD PTR [bp-10],ax	;statCount
+;|*** 		while (ReadSectors (SectorBuffer, drive, headerSector, 1) != BiosResultSuccess);
+; Line 800
+					$FC1790:
+	*** 00024f	6a 00 			push	0
+	*** 000251	6a 01 			push	1
+	*** 000253	8d 46 ee 		lea	ax,WORD PTR [bp-18]	;s
+	*** 000256	50 			push	ax
+	*** 000257	8a 46 04 		mov	al,BYTE PTR [bp+4]	;drive
+	*** 00025a	50 			push	ax
+	*** 00025b	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 00025e	e8 00 00 		call	?ReadSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z	; ReadSectors
+	*** 000261	83 c4 0a 		add	sp,10	;000aH
+	*** 000264	0a c0 			or	al,al
+	*** 000266	75 e7 			jne	SHORT $FC1790
+;|*** 
+;|*** 		if (ReadVolumeHeader (TRUE, (char *) SectorBuffer, &bootArguments->BootPassword, NULL, headerCryptoInfo) == 0)
+; Line 802
+	*** 000268	ff 76 f6 		push	WORD PTR [bp-10]	;statCount
+	*** 00026b	6a 00 			push	0
+	*** 00026d	6a 22 			push	34	;0022H
+	*** 00026f	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000272	6a 01 			push	1
+	*** 000274	e8 00 00 		call	_ReadVolumeHeader
+	*** 000277	83 c4 0a 		add	sp,10	;000aH
+	*** 00027a	0b c0 			or	ax,ax
+	*** 00027c	0f 85 96 00 		jne	$I1793
+;|*** 		{
+;|*** 			DecryptBuffer (SectorBuffer + HEADER_ENCRYPTED_DATA_OFFSET, HEADER_ENCRYPTED_DATA_SIZE, headerCryptoInfo);
+; Line 804
+	*** 000280	ff 76 f6 		push	WORD PTR [bp-10]	;statCount
+	*** 000283	50 			push	ax
+	*** 000284	68 c0 01 		push	448	;01c0H
+	*** 000287	68 40 00 		push	OFFSET ?SectorBuffer@@3QAEA+64	;SectorBuffer
+	*** 00028a	e8 00 00 		call	_DecryptBuffer
+	*** 00028d	83 c4 08 		add	sp,8
+;|*** 
+;|*** 			uint64 encryptedAreaLength = sectorsRemaining << TC_LB_SIZE_BIT_SHIFT_DIVISOR;
+; Line 806
+	*** 000290	6a 09 			push	9
+	*** 000292	8d 46 e6 		lea	ax,WORD PTR [bp-26]	;sectorsRemaining
+	*** 000295	50 			push	ax
+	*** 000296	8d 46 d6 		lea	ax,WORD PTR [bp-42]
+	*** 000299	50 			push	ax
+	*** 00029a	e8 00 00 		call	??6@YA?ATUINT64_STRUCT@@ABT0@H@Z	; operator<<
+	*** 00029d	83 c4 06 		add	sp,6
+	*** 0002a0	8d 7e de 		lea	di,WORD PTR [bp-34]	;encryptedAreaLength
+	*** 0002a3	8b f0 			mov	si,ax
+	*** 0002a5	16 			push	ss
+	*** 0002a6	07 			pop	es
+	*** 0002a7	66 a5 			movsd
+	*** 0002a9	66 a5 			movsd
+;|*** 
+;|*** 			for (int i = 7; i >= 0; --i)
+; Line 808
+	*** 0002ab	c7 46 fa 07 00 		mov	WORD PTR [bp-6],7	;i
+					$F1797:
+;|*** 			{
+;|*** 				SectorBuffer[TC_HEADER_OFFSET_ENCRYPTED_AREA_LENGTH + i] = (byte) encryptedAreaLength.LowPart;
+; Line 810
+	*** 0002b0	8b 5e fa 		mov	bx,WORD PTR [bp-6]	;i
+	*** 0002b3	8a 46 de 		mov	al,BYTE PTR [bp-34]	;encryptedAreaLength
+	*** 0002b6	88 87 74 00 		mov	BYTE PTR ?SectorBuffer@@3QAEA[bx+116],al	;SectorBuffer
+;|*** 				encryptedAreaLength = encryptedAreaLength >> 8;
+; Line 811
+	*** 0002ba	6a 08 			push	8
+	*** 0002bc	8d 46 de 		lea	ax,WORD PTR [bp-34]	;encryptedAreaLength
+	*** 0002bf	50 			push	ax
+	*** 0002c0	8d 4e ce 		lea	cx,WORD PTR [bp-50]
+	*** 0002c3	51 			push	cx
+	*** 0002c4	e8 00 00 		call	??5@YA?ATUINT64_STRUCT@@ABT0@H@Z	; operator>>
+	*** 0002c7	83 c4 06 		add	sp,6
+	*** 0002ca	8d 7e de 		lea	di,WORD PTR [bp-34]	;encryptedAreaLength
+	*** 0002cd	8b f0 			mov	si,ax
+	*** 0002cf	16 			push	ss
+	*** 0002d0	07 			pop	es
+	*** 0002d1	66 a5 			movsd
+	*** 0002d3	66 a5 			movsd
+;|*** 			for (int i = 7; i >= 0; --i)
+; Line 808
+	*** 0002d5	ff 4e fa 		dec	WORD PTR [bp-6]	;i
+	*** 0002d8	79 d6 			jns	SHORT $F1797
+;|*** 			{
+;|*** 				SectorBuffer[TC_HEADER_OFFSET_ENCRYPTED_AREA_LENGTH + i] = (byte) encryptedAreaLength.LowPart;
+;|*** 				encryptedAreaLength = encryptedAreaLength >> 8;
+;|*** 			}
+;|*** 
+;|*** 			uint32 headerCrc32 = GetCrc32 (SectorBuffer + TC_HEADER_OFFSET_MAGIC, TC_HEADER_OFFSET_HEADER_CRC - TC_HEADER_OFFSET_MAGIC);
+; Line 814
+	*** 0002da	68 bc 00 		push	188	;00bcH
+	*** 0002dd	68 40 00 		push	OFFSET ?SectorBuffer@@3QAEA+64	;SectorBuffer
+	*** 0002e0	e8 00 00 		call	_GetCrc32
+	*** 0002e3	83 c4 04 		add	sp,4
+	*** 0002e6	89 46 fc 		mov	WORD PTR [bp-4],ax	;headerCrc32
+	*** 0002e9	89 56 fe 		mov	WORD PTR [bp-2],dx	;bootArguments
+;|*** 
+;|*** 			for (i = 3; i >= 0; --i)
+; Line 816
+	*** 0002ec	be 03 00 		mov	si,3
+					$F1803:
+;|*** 			{
+;|*** 				SectorBuffer[TC_HEADER_OFFSET_HEADER_CRC + i] = (byte) headerCrc32;
+; Line 818
+	*** 0002ef	8a 46 fc 		mov	al,BYTE PTR [bp-4]	;headerCrc32
+	*** 0002f2	88 84 fc 00 		mov	BYTE PTR ?SectorBuffer@@3QAEA[si+252],al	;SectorBuffer
+;|*** 				headerCrc32 >>= 8;
+; Line 819
+	*** 0002f6	66 8b 46 fc 		mov	eax,DWORD PTR [bp-4]	;headerCrc32
+	*** 0002fa	66 c1 e8 08 		shr	eax,8
+	*** 0002fe	66 89 46 fc 		mov	DWORD PTR [bp-4],eax	;headerCrc32
+;|*** 			for (i = 3; i >= 0; --i)
+; Line 816
+	*** 000302	4e 			dec	si
+	*** 000303	79 ea 			jns	SHORT $F1803
+;|*** 			{
+;|*** 				SectorBuffer[TC_HEADER_OFFSET_HEADER_CRC + i] = (byte) headerCrc32;
+;|*** 				headerCrc32 >>= 8;
+;|*** 			}
+;|*** 
+;|*** 			EncryptBuffer (SectorBuffer + HEADER_ENCRYPTED_DATA_OFFSET, HEADER_ENCRYPTED_DATA_SIZE, headerCryptoInfo);
+; Line 822
+	*** 000305	ff 76 f6 		push	WORD PTR [bp-10]	;statCount
+	*** 000308	6a 00 			push	0
+	*** 00030a	68 c0 01 		push	448	;01c0H
+	*** 00030d	68 40 00 		push	OFFSET ?SectorBuffer@@3QAEA+64	;SectorBuffer
+	*** 000310	e8 00 00 		call	_EncryptBuffer
+	*** 000313	83 c4 08 		add	sp,8
+;|*** 		}
+;|*** 
+;|*** 		crypto_close (headerCryptoInfo);
+; Line 825
+					$I1793:
+	*** 000316	ff 76 f6 		push	WORD PTR [bp-10]	;statCount
+	*** 000319	e8 00 00 		call	_crypto_close
+	*** 00031c	5b 			pop	bx
+;|*** 
+;|*** 		while (WriteSectors (SectorBuffer, drive, headerSector, 1) != BiosResultSuccess);
+; Line 827
+					$FC1808:
+	*** 00031d	6a 00 			push	0
+	*** 00031f	6a 01 			push	1
+	*** 000321	8d 46 ee 		lea	ax,WORD PTR [bp-18]	;s
+	*** 000324	50 			push	ax
+	*** 000325	8a 46 04 		mov	al,BYTE PTR [bp+4]	;drive
+	*** 000328	50 			push	ax
+	*** 000329	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 00032c	e8 00 00 		call	?WriteSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z	; WriteSectors
+	*** 00032f	83 c4 0a 		add	sp,10	;000aH
+	*** 000332	0a c0 			or	al,al
+	*** 000334	75 e7 			jne	SHORT $FC1808
+;|*** 		ReleaseSectorBuffer();
+;|*** 	}
+;|*** 
+;|*** 	if (sectorsRemaining.HighPart == 0 && sectorsRemaining.LowPart == 0)
+; Line 831
+					$I1786:
+	*** 000336	66 83 7e ea 00 		cmp	DWORD PTR [bp-22],0
+	*** 00033b	75 0c 			jne	SHORT $I1810
+	*** 00033d	66 83 7e e6 00 		cmp	DWORD PTR [bp-26],0	;sectorsRemaining
+	*** 000342	75 05 			jne	SHORT $I1810
+;|*** 		Print ("\rDrive decrypted.\r\n");
+; Line 832
+	*** 000344	68 00 00 		push	OFFSET DGROUP:??_C@_0BE@LMLE@?$ANDrive?5decrypted?4?$AN?6?$AA@
+	*** 000347	eb 03 			jmp	SHORT $L2004
+					$I1810:
+;|*** 	else
+;|*** 		Print ("\r\nDecryption deferred.\r\n");
+; Line 834
+	*** 000349	68 00 00 		push	OFFSET DGROUP:??_C@_0BJ@HKIB@?$AN?6Decryption?5deferred?4?$AN?6?$AA@
+					$L2004:
+	*** 00034c	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00034f	5b 			pop	bx
+;|*** 
+;|*** 	GetKeyboardChar();
+; Line 836
+	*** 000350	e8 00 00 		call	?GetKeyboardChar@@YAEXZ	; GetKeyboardChar
+;|*** ret:
+; Line 837
+					$ret1754:
+;|*** 	EraseMemory (bootArguments, sizeof (*bootArguments));
+; Line 838
+	*** 000353	6a 76 			push	118	;0076H
+	*** 000355	6a 10 			push	16	;0010H
+	*** 000357	e8 00 00 		call	_EraseMemory
+	*** 00035a	83 c4 04 		add	sp,4
+;|*** }
+; Line 839
+					$EX1737:
+	*** 00035d	5e 			pop	si
+	*** 00035e	5f 			pop	di
+	*** 00035f	c9 			leave	
+	*** 000360	c3 			ret	
+
+?DecryptDrive@@YAXE@Z	ENDP
+
+?RepairMenu@@YAXXZ	PROC NEAR	; RepairMenu COMDAT
+;|*** 
+;|*** 
+;|*** static void RepairMenu ()
+;|*** {
+; Line 843
+	*** 000000	c8 ac 00 00 		enter	172,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	validHeaderPresent = -1
+;	masterKeyScheduleCrc = -12
+;	password = -172
+;	exitKey = -176
+;	cryptoInfo = -8
+;	bootLoaderDriveGeometry = -16
+;	selection = -6
+;	writeConfirmed = -2
+;	result = -10
+;	sector = -28
+;	chs = -20
+;	mbrPartTable = -100
+;	i = -4
+;|*** 	DriveGeometry bootLoaderDriveGeometry;
+;|*** 
+;|*** 	if (GetDriveGeometry (BootLoaderDrive, bootLoaderDriveGeometry, true) != BiosResultSuccess)
+; Line 846
+	*** 000006	6a 01 			push	1
+	*** 000008	8d 46 f0 		lea	ax,WORD PTR [bp-16]	;bootLoaderDriveGeometry
+	*** 00000b	50 			push	ax
+	*** 00000c	a0 00 00 		mov	al,BYTE PTR ?BootLoaderDrive@@3EA	;BootLoaderDrive
+	*** 00000f	50 			push	ax
+	*** 000010	e8 00 00 		call	?GetDriveGeometry@@YAEEAAUDriveGeometry@@D@Z	; GetDriveGeometry
+	*** 000013	83 c4 06 		add	sp,6
+	*** 000016	0a c0 			or	al,al
+	*** 000018	74 0d 			je	SHORT $L1979
+;|*** 	{
+;|*** 		// Some BIOSes may fail to get the geometry of an emulated floppy drive
+;|*** 		bootLoaderDriveGeometry.Cylinders = 80;
+; Line 849
+	*** 00001a	c7 46 f0 50 00 		mov	WORD PTR [bp-16],80	;0050H	;bootLoaderDriveGeometry
+;|*** 		bootLoaderDriveGeometry.Heads = 2;
+; Line 850
+	*** 00001f	c6 46 f2 02 		mov	BYTE PTR [bp-14],2
+;|*** 		bootLoaderDriveGeometry.Sectors = 18;
+; Line 851
+	*** 000023	c6 46 f3 12 		mov	BYTE PTR [bp-13],18	;0012H
+					$L1979:
+;|*** 	}
+;|*** 
+;|*** 	while (true)
+;|*** 	{
+;|*** 		InitScreen();
+; Line 856
+	*** 000027	e8 00 00 		call	?InitScreen@@YAXXZ	; InitScreen
+;|*** 		Print ("Available "); Print ("Repair Options"); Print (":\r\n");
+; Line 857
+	*** 00002a	68 00 00 		push	OFFSET DGROUP:??_C@_0L@CGGC@Available?5?$AA@
+	*** 00002d	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000030	5b 			pop	bx
+	*** 000031	68 00 00 		push	OFFSET DGROUP:??_C@_0P@KAON@Repair?5Options?$AA@
+	*** 000034	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000037	5b 			pop	bx
+	*** 000038	68 00 00 		push	OFFSET DGROUP:??_C@_03KPOF@?3?$AN?6?$AA@
+	*** 00003b	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00003e	5b 			pop	bx
+;|*** 		PrintRepeatedChar ('\xC4', 25);
+; Line 858
+	*** 00003f	6a 19 			push	25	;0019H
+	*** 000041	6a c4 			push	-60	;ffc4H
+	*** 000043	e8 00 00 		call	?PrintRepeatedChar@@YAXDH@Z	; PrintRepeatedChar
+	*** 000046	83 c4 04 		add	sp,4
+;|*** 		PrintEndl();
+; Line 859
+	*** 000049	e8 00 00 		call	?PrintEndl@@YAXXZ	; PrintEndl
+;|*** 
+;|*** 		enum
+;|*** 		{
+;|*** 			RestoreNone = 0,
+;|*** 			DecryptVolume,
+;|*** 			RestoreCipherShedLoader,
+;|*** 			RestoreVolumeHeader,
+;|*** 			RestoreOriginalSystemLoader
+;|*** 		};
+;|*** 
+;|*** 		static const char *options[] = { "Permanently decrypt system partition/drive", "Restore CipherShed Boot Loader", "Restore key data (volume header)", "Restore original system loader" };
+;|*** 
+;|*** 		int selection = AskSelection (options,
+;|*** 			(BootSectorFlags & TC_BOOT_CFG_FLAG_RESCUE_DISK_ORIG_SYS_LOADER) ? array_capacity (options) : array_capacity (options) - 1);
+; Line 873
+	*** 00004c	a0 00 00 		mov	al,BYTE PTR ?BootSectorFlags@@3EA	;BootSectorFlags
+	*** 00004f	24 20 			and	al,32	;0020H
+	*** 000051	3c 01 			cmp	al,1
+	*** 000053	1b c0 			sbb	ax,ax
+	*** 000055	05 04 00 		add	ax,4
+	*** 000058	50 			push	ax
+	*** 000059	68 00 00 		push	OFFSET DGROUP:$S1830_?options@?3??RepairMenu@@YAXXZ@4QAPBDA
+	*** 00005c	e8 00 00 		call	?AskSelection@@YAHQAPBDI@Z	; AskSelection
+	*** 00005f	83 c4 04 		add	sp,4
+	*** 000062	8b f8 			mov	di,ax
+;|*** 
+;|*** 		PrintEndl();
+; Line 875
+	*** 000064	e8 00 00 		call	?PrintEndl@@YAXXZ	; PrintEndl
+;|*** 
+;|*** 		switch (selection)
+; Line 877
+	*** 000067	8b c7 			mov	ax,di
+;|*** 		{
+;|*** 			case RestoreNone:
+;|*** 				return;
+;|*** 
+;|*** 			case DecryptVolume:
+;|*** 				DecryptDrive (BootDrive);
+;|*** 				continue;
+;|*** 
+;|*** 			case RestoreOriginalSystemLoader:
+;|*** 				if (!AskYesNo ("Is the system partition/drive decrypted"))
+;|*** 				{
+;|*** 					Print ("Please decrypt it first.\r\n");
+;|*** 					GetKeyboardChar();
+;|*** 					continue;
+;|*** 				}
+;|*** 				break;
+;|*** 		}
+; Line 894
+	*** 000069	0b c7 			or	ax,di
+	*** 00006b	0f 84 1d 02 		je	$EX1815
+	*** 00006f	48 			dec	ax
+	*** 000070	74 1b 			je	SHORT $SC1841
+	*** 000072	2d 03 00 		sub	ax,3
+	*** 000075	74 20 			je	SHORT $SC1842
+					$SB1837:
+;|*** 
+;|*** 		bool writeConfirmed = false;
+; Line 896
+	*** 000077	c6 46 fe 00 		mov	BYTE PTR [bp-2],0	;writeConfirmed
+;|*** 		BiosResult result;
+;|*** 
+;|*** 		uint64 sector;
+;|*** 		sector.HighPart = 0;
+; Line 900
+	*** 00007b	66 c7 46 e8 00 00 00 00 mov	DWORD PTR [bp-24],0
+;|*** 		ChsAddress chs;
+;|*** 
+;|*** 		byte mbrPartTable[TC_LB_SIZE - TC_MAX_MBR_BOOT_CODE_SIZE];
+;|*** 		AcquireSectorBuffer();
+;|*** 
+;|*** 		for (int i = (selection == RestoreVolumeHeader ? TC_BOOT_VOLUME_HEADER_SECTOR : TC_MBR_SECTOR);
+; Line 906
+	*** 000083	83 ff 03 		cmp	di,3
+	*** 000086	75 27 			jne	SHORT $L1988
+	*** 000088	be 3e 00 		mov	si,62	;003eH
+	*** 00008b	eb 24 			jmp	SHORT $L1989
+;|*** 			case DecryptVolume:
+; Line 882
+					$SC1841:
+;|*** 				DecryptDrive (BootDrive);
+; Line 883
+	*** 00008d	a0 00 00 		mov	al,BYTE PTR ?BootDrive@@3EA	;BootDrive
+	*** 000090	50 			push	ax
+	*** 000091	e8 00 00 		call	?DecryptDrive@@YAXE@Z	; DecryptDrive
+	*** 000094	5b 			pop	bx
+;|*** 				continue;
+; Line 884
+	*** 000095	eb 90 			jmp	SHORT $L1979
+;|*** 
+;|*** 			case RestoreOriginalSystemLoader:
+; Line 886
+					$SC1842:
+;|*** 				if (!AskYesNo ("Is the system partition/drive decrypted"))
+; Line 887
+	*** 000097	68 00 00 		push	OFFSET DGROUP:??_C@_0CI@CJAH@Is?5the?5system?5partition?1drive?5de@
+	*** 00009a	e8 00 00 		call	?AskYesNo@@YADPBD@Z	; AskYesNo
+	*** 00009d	5b 			pop	bx
+	*** 00009e	0a c0 			or	al,al
+	*** 0000a0	75 d5 			jne	SHORT $SB1837
+;|*** 				{
+;|*** 					Print ("Please decrypt it first.\r\n");
+; Line 889
+	*** 0000a2	68 00 00 		push	OFFSET DGROUP:??_C@_0BL@HDPH@Please?5decrypt?5it?5first?4?$AN?6?$AA@
+					$L2009:
+	*** 0000a5	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 0000a8	5b 			pop	bx
+;|*** 					GetKeyboardChar();
+; Line 890
+					$L2007:
+	*** 0000a9	e8 00 00 		call	?GetKeyboardChar@@YAEXZ	; GetKeyboardChar
+;|*** 					continue;
+; Line 891
+	*** 0000ac	e9 78 ff 		jmp	$L1979
+;|*** 				}
+;|*** 				break;
+;|*** 		}
+; Line 894
+					$L1988:
+	*** 0000af	33 f6 			xor	si,si
+					$L1989:
+	*** 0000b1	89 7e fa 		mov	WORD PTR [bp-6],di	;selection
+;|*** 
+;|*** 		bool writeConfirmed = false;
+;|*** 		BiosResult result;
+;|*** 
+;|*** 		uint64 sector;
+;|*** 		sector.HighPart = 0;
+;|*** 		ChsAddress chs;
+;|*** 
+;|*** 		byte mbrPartTable[TC_LB_SIZE - TC_MAX_MBR_BOOT_CODE_SIZE];
+;|*** 		AcquireSectorBuffer();
+;|*** 
+;|*** 		for (int i = (selection == RestoreVolumeHeader ? TC_BOOT_VOLUME_HEADER_SECTOR : TC_MBR_SECTOR);
+;|*** 			i < TC_BOOT_LOADER_AREA_SECTOR_COUNT; ++i)
+; Line 907
+					$F1852:
+	*** 0000b4	83 fe 3f 		cmp	si,63	;003fH
+	*** 0000b7	0f 8d ac 01 		jge	$done1892
+;|*** 		{
+;|*** 			sector.LowPart = i;
+; Line 909
+	*** 0000bb	8b c6 			mov	ax,si
+	*** 0000bd	99 			cwd	
+	*** 0000be	89 76 e4 		mov	WORD PTR [bp-28],si	;sector
+	*** 0000c1	89 56 e6 		mov	WORD PTR [bp-26],dx
+;|*** 
+;|*** 			if (selection == RestoreOriginalSystemLoader)
+; Line 911
+	*** 0000c4	83 ff 04 		cmp	di,4
+	*** 0000c7	75 06 			jne	SHORT $I1855
+;|*** 				sector.LowPart += TC_ORIG_BOOT_LOADER_BACKUP_SECTOR;
+; Line 912
+	*** 0000c9	83 46 e4 3f 		add	WORD PTR [bp-28],63	;003fH	;sector
+	*** 0000cd	eb 09 			jmp	SHORT $L2008
+					$I1855:
+	*** 0000cf	83 ff 02 		cmp	di,2
+	*** 0000d2	75 08 			jne	SHORT $I1856
+;|*** 			else if (selection == RestoreCipherShedLoader)
+;|*** 				sector.LowPart += TC_BOOT_LOADER_BACKUP_RESCUE_DISK_SECTOR;
+; Line 914
+	*** 0000d4	83 46 e4 7e 		add	WORD PTR [bp-28],126	;007eH	;sector
+					$L2008:
+	*** 0000d8	83 56 e6 00 		adc	WORD PTR [bp-26],0
+;|*** 
+;|*** 			// The backup medium may be a floppy-emulated bootable CD. The emulation may fail if LBA addressing is used.
+;|*** 			// Therefore, only CHS addressing can be used.
+;|*** 			LbaToChs (bootLoaderDriveGeometry, sector, chs);
+; Line 918
+					$I1856:
+	*** 0000dc	8d 46 ec 		lea	ax,WORD PTR [bp-20]	;chs
+	*** 0000df	50 			push	ax
+	*** 0000e0	8d 46 e4 		lea	ax,WORD PTR [bp-28]	;sector
+	*** 0000e3	50 			push	ax
+	*** 0000e4	8d 4e f0 		lea	cx,WORD PTR [bp-16]	;bootLoaderDriveGeometry
+	*** 0000e7	51 			push	cx
+	*** 0000e8	e8 00 00 		call	?LbaToChs@@YAXABUDriveGeometry@@ABTUINT64_STRUCT@@AAUChsAddress@@@Z	; LbaToChs
+	*** 0000eb	83 c4 06 		add	sp,6
+;|*** 			sector.LowPart = i;
+; Line 919
+	*** 0000ee	8b c6 			mov	ax,si
+	*** 0000f0	99 			cwd	
+	*** 0000f1	89 76 e4 		mov	WORD PTR [bp-28],si	;sector
+	*** 0000f4	89 56 e6 		mov	WORD PTR [bp-26],dx
+;|*** 
+;|*** 			if (i == TC_MBR_SECTOR)
+; Line 921
+	*** 0000f7	0b f6 			or	si,si
+	*** 0000f9	75 26 			jne	SHORT $I1858
+;|*** 			{
+;|*** 				// Read current partition table
+;|*** 				result = ReadSectors (SectorBuffer, TC_FIRST_BIOS_DRIVE, sector, 1);
+;|*** 				if (result != BiosResultSuccess)
+; Line 925
+	*** 0000fb	56 			push	si
+	*** 0000fc	6a 01 			push	1
+	*** 0000fe	8d 46 e4 		lea	ax,WORD PTR [bp-28]	;sector
+	*** 000101	50 			push	ax
+	*** 000102	68 80 00 		push	128	;0080H
+	*** 000105	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000108	e8 00 00 		call	?ReadSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z	; ReadSectors
+	*** 00010b	83 c4 0a 		add	sp,10	;000aH
+	*** 00010e	0a c0 			or	al,al
+	*** 000110	75 28 			jne	SHORT $L2012
+;|*** 					goto err;
+;|*** 
+;|*** 				memcpy (mbrPartTable, SectorBuffer + TC_MAX_MBR_BOOT_CODE_SIZE, sizeof (mbrPartTable));
+; Line 928
+	*** 000112	6a 48 			push	72	;0048H
+	*** 000114	68 b8 01 		push	OFFSET ?SectorBuffer@@3QAEA+440	;SectorBuffer
+	*** 000117	8d 46 9c 		lea	ax,WORD PTR [bp-100]	;mbrPartTable
+	*** 00011a	50 			push	ax
+	*** 00011b	e8 00 00 		call	_memcpy
+	*** 00011e	83 c4 06 		add	sp,6
+;|*** 			}
+;|*** 
+;|*** 			result = ReadSectors (SectorBuffer, BootLoaderDrive, chs, 1);
+; Line 931
+					$I1858:
+;|*** 			if (result != BiosResultSuccess)
+; Line 932
+	*** 000121	6a 00 			push	0
+	*** 000123	6a 01 			push	1
+	*** 000125	8d 46 ec 		lea	ax,WORD PTR [bp-20]	;chs
+	*** 000128	50 			push	ax
+	*** 000129	a0 00 00 		mov	al,BYTE PTR ?BootLoaderDrive@@3EA	;BootLoaderDrive
+	*** 00012c	50 			push	ax
+	*** 00012d	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000130	e8 00 00 		call	?ReadSectors@@YAEPAEEABUChsAddress@@ED@Z	; ReadSectors
+	*** 000133	83 c4 0a 		add	sp,10	;000aH
+	*** 000136	0a c0 			or	al,al
+	*** 000138	74 03 			je	SHORT $L2011
+;|*** 				goto err;
+;|*** 
+;|*** 			if (i == TC_MBR_SECTOR)
+; Line 935
+					$L2012:
+	*** 00013a	e9 6c ff 		jmp	$L2007
+					$L2011:
+	*** 00013d	0b f6 			or	si,si
+	*** 00013f	75 0f 			jne	SHORT $I1864
+;|*** 			{
+;|*** 				// Preserve current partition table
+;|*** 				memcpy (SectorBuffer + TC_MAX_MBR_BOOT_CODE_SIZE, mbrPartTable, sizeof (mbrPartTable));
+; Line 938
+	*** 000141	6a 48 			push	72	;0048H
+	*** 000143	8d 46 9c 		lea	ax,WORD PTR [bp-100]	;mbrPartTable
+	*** 000146	50 			push	ax
+	*** 000147	68 b8 01 		push	OFFSET ?SectorBuffer@@3QAEA+440	;SectorBuffer
+	*** 00014a	e8 00 00 		call	_memcpy
+	*** 00014d	83 c4 06 		add	sp,6
+;|*** 			}
+;|*** 
+;|*** 			// Volume header
+;|*** 			if (i == TC_BOOT_VOLUME_HEADER_SECTOR)
+; Line 942
+					$I1864:
+	*** 000150	83 fe 3e 		cmp	si,62	;003eH
+	*** 000153	0f 85 d5 00 		jne	$I1865
+;|*** 			{
+;|*** 				if (selection == RestoreCipherShedLoader)
+; Line 944
+	*** 000157	83 ff 02 		cmp	di,2
+	*** 00015a	0f 84 ff 00 		je	$FC1853
+;|*** 					continue;
+;|*** 
+;|*** 				if (selection == RestoreVolumeHeader)
+; Line 947
+	*** 00015e	83 ff 03 		cmp	di,3
+	*** 000161	0f 85 c7 00 		jne	$I1865
+	*** 000165	89 76 fc 		mov	WORD PTR [bp-4],si	;i
+;|*** 				{
+;|*** 					while (true)
+; Line 949
+					$FC1869:
+;|*** 					{
+;|*** 						bool validHeaderPresent = false;
+; Line 951
+	*** 000168	c6 46 ff 00 		mov	BYTE PTR [bp-1],0	;validHeaderPresent
+;|*** 						uint32 masterKeyScheduleCrc;
+;|*** 
+;|*** 						Password password;
+;|*** 						byte exitKey = AskPassword (password);
+;|*** 
+;|*** 						if (exitKey != TC_BIOS_KEY_ENTER)
+; Line 957
+	*** 00016c	8d 86 54 ff 		lea	ax,WORD PTR [bp-172]	;password
+	*** 000170	50 			push	ax
+	*** 000171	e8 00 00 		call	?AskPassword@@YAEAAUPassword@@@Z	; AskPassword
+	*** 000174	5b 			pop	bx
+	*** 000175	3c 1c 			cmp	al,28	;001cH
+	*** 000177	0f 85 ac fe 		jne	$L1979
+;|*** 							goto abort;
+;|*** 
+;|*** 						CRYPTO_INFO *cryptoInfo;
+;|*** 
+;|*** 						CopyMemory (SectorBuffer, TC_BOOT_LOADER_BUFFER_SEGMENT, 0, TC_LB_SIZE);
+; Line 962
+	*** 00017b	68 00 02 		push	512	;0200H
+	*** 00017e	6a 00 			push	0
+	*** 000180	68 00 40 		push	16384	;4000H
+	*** 000183	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000186	e8 00 00 		call	?CopyMemory@@YAXPAXIII@Z	; CopyMemory
+	*** 000189	83 c4 08 		add	sp,8
+;|*** 						ReleaseSectorBuffer();
+;|*** 
+;|*** 						// Restore volume header only if the current one cannot be used
+;|*** 						if (OpenVolume (TC_FIRST_BIOS_DRIVE, password, &cryptoInfo, nullptr, false, true))
+; Line 966
+	*** 00018c	6a 01 			push	1
+	*** 00018e	6a 00 			push	0
+	*** 000190	6a 00 			push	0
+	*** 000192	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;cryptoInfo
+	*** 000195	50 			push	ax
+	*** 000196	8d 86 54 ff 		lea	ax,WORD PTR [bp-172]	;password
+	*** 00019a	50 			push	ax
+	*** 00019b	68 80 00 		push	128	;0080H
+	*** 00019e	e8 00 00 		call	?OpenVolume@@YADEAAUPassword@@PAPAUCRYPTO_INFO_t@@PAKDD@Z	; OpenVolume
+	*** 0001a1	83 c4 0c 		add	sp,12	;000cH
+	*** 0001a4	0a c0 			or	al,al
+	*** 0001a6	74 21 			je	SHORT $I1879
+;|*** 						{
+;|*** 							validHeaderPresent = true;
+; Line 968
+	*** 0001a8	c6 46 ff 01 		mov	BYTE PTR [bp-1],1	;validHeaderPresent
+;|*** 							masterKeyScheduleCrc = GetCrc32 (cryptoInfo->ks, sizeof (cryptoInfo->ks));
+; Line 969
+	*** 0001ac	68 30 02 		push	560	;0230H
+	*** 0001af	8b 46 f8 		mov	ax,WORD PTR [bp-8]	;cryptoInfo
+	*** 0001b2	05 04 00 		add	ax,4
+	*** 0001b5	50 			push	ax
+	*** 0001b6	e8 00 00 		call	_GetCrc32
+	*** 0001b9	83 c4 04 		add	sp,4
+	*** 0001bc	89 46 f4 		mov	WORD PTR [bp-12],ax	;masterKeyScheduleCrc
+	*** 0001bf	89 56 f6 		mov	WORD PTR [bp-10],dx	;result
+;|*** 							crypto_close (cryptoInfo);
+; Line 970
+	*** 0001c2	ff 76 f8 		push	WORD PTR [bp-8]	;cryptoInfo
+	*** 0001c5	e8 00 00 		call	_crypto_close
+	*** 0001c8	5b 			pop	bx
+;|*** 						}
+;|*** 
+;|*** 						AcquireSectorBuffer();
+; Line 973
+					$I1879:
+;|*** 						CopyMemory (TC_BOOT_LOADER_BUFFER_SEGMENT, 0, SectorBuffer, TC_LB_SIZE);
+; Line 974
+	*** 0001c9	68 00 02 		push	512	;0200H
+	*** 0001cc	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 0001cf	6a 00 			push	0
+	*** 0001d1	68 00 40 		push	16384	;4000H
+	*** 0001d4	e8 00 00 		call	?CopyMemory@@YAXIIPAXI@Z	; CopyMemory
+	*** 0001d7	83 c4 08 		add	sp,8
+;|*** 
+;|*** 						if (ReadVolumeHeader (TRUE, (char *) SectorBuffer, &password, &cryptoInfo, nullptr) == 0)
+; Line 976
+	*** 0001da	6a 00 			push	0
+	*** 0001dc	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;cryptoInfo
+	*** 0001df	50 			push	ax
+	*** 0001e0	8d 86 54 ff 		lea	ax,WORD PTR [bp-172]	;password
+	*** 0001e4	50 			push	ax
+	*** 0001e5	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 0001e8	6a 01 			push	1
+	*** 0001ea	e8 00 00 		call	_ReadVolumeHeader
+	*** 0001ed	83 c4 0a 		add	sp,10	;000aH
+	*** 0001f0	0b c0 			or	ax,ax
+	*** 0001f2	74 0a 			je	SHORT $L1982
+;|*** 						{
+;|*** 							if (validHeaderPresent)
+;|*** 							{
+;|*** 								if (masterKeyScheduleCrc == GetCrc32 (cryptoInfo->ks, sizeof (cryptoInfo->ks)))
+;|*** 								{
+;|*** 									Print ("Original header preserved.\r\n");
+;|*** 									goto err;
+;|*** 								}
+;|*** 
+;|*** 								Print ("WARNING: Drive 0 contains a valid header!\r\n");
+;|*** 							}
+;|*** 
+;|*** 							crypto_close (cryptoInfo);
+;|*** 							break;
+;|*** 						}
+;|*** 
+;|*** 						Print ("Incorrect password.\r\n\r\n");
+; Line 993
+	*** 0001f4	68 00 00 		push	OFFSET DGROUP:??_C@_0BI@KFOG@Incorrect?5password?4?$AN?6?$AN?6?$AA@
+	*** 0001f7	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 0001fa	5b 			pop	bx
+;|*** 					}
+; Line 994
+	*** 0001fb	e9 6a ff 		jmp	$FC1869
+					$L1982:
+;|*** 							if (validHeaderPresent)
+; Line 978
+	*** 0001fe	80 7e ff 00 		cmp	BYTE PTR [bp-1],0	;validHeaderPresent
+	*** 000202	74 21 			je	SHORT $I1882
+;|*** 							{
+;|*** 								if (masterKeyScheduleCrc == GetCrc32 (cryptoInfo->ks, sizeof (cryptoInfo->ks)))
+; Line 980
+	*** 000204	68 30 02 		push	560	;0230H
+	*** 000207	8b 46 f8 		mov	ax,WORD PTR [bp-8]	;cryptoInfo
+	*** 00020a	05 04 00 		add	ax,4
+	*** 00020d	50 			push	ax
+	*** 00020e	e8 00 00 		call	_GetCrc32
+	*** 000211	83 c4 04 		add	sp,4
+	*** 000214	3b 46 f4 		cmp	ax,WORD PTR [bp-12]	;masterKeyScheduleCrc
+	*** 000217	75 05 			jne	SHORT $L1990
+	*** 000219	3b 56 f6 		cmp	dx,WORD PTR [bp-10]	;result
+	*** 00021c	74 43 			je	SHORT $L1983
+					$L1990:
+;|*** 								{
+;|*** 									Print ("Original header preserved.\r\n");
+;|*** 									goto err;
+;|*** 								}
+;|*** 
+;|*** 								Print ("WARNING: Drive 0 contains a valid header!\r\n");
+; Line 986
+	*** 00021e	68 00 00 		push	OFFSET DGROUP:??_C@_0CM@CODF@WARNING?3?5Drive?50?5contains?5a?5vali@
+	*** 000221	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000224	5b 			pop	bx
+;|*** 							}
+;|*** 
+;|*** 							crypto_close (cryptoInfo);
+; Line 989
+					$I1882:
+	*** 000225	ff 76 f8 		push	WORD PTR [bp-8]	;cryptoInfo
+	*** 000228	e8 00 00 		call	_crypto_close
+	*** 00022b	5b 			pop	bx
+;|*** 							break;
+;|*** 						}
+;|*** 
+;|*** 						Print ("Incorrect password.\r\n\r\n");
+;|*** 					}
+;|*** 				}
+;|*** 			}
+;|*** 
+;|*** 			if (!writeConfirmed && !AskYesNo ("Modify drive 0"))
+; Line 998
+					$I1865:
+	*** 00022c	80 7e fe 00 		cmp	BYTE PTR [bp-2],0	;writeConfirmed
+	*** 000230	75 0d 			jne	SHORT $I1887
+	*** 000232	68 00 00 		push	OFFSET DGROUP:??_C@_0P@JAC@Modify?5drive?50?$AA@
+	*** 000235	e8 00 00 		call	?AskYesNo@@YADPBD@Z	; AskYesNo
+	*** 000238	5b 			pop	bx
+	*** 000239	0a c0 			or	al,al
+	*** 00023b	0f 84 e8 fd 		je	$L1979
+;|*** 				goto abort;
+;|*** 			writeConfirmed = true;
+; Line 1000
+					$I1887:
+	*** 00023f	c6 46 fe 01 		mov	BYTE PTR [bp-2],1	;writeConfirmed
+;|*** 
+;|*** 			if (WriteSectors (SectorBuffer, TC_FIRST_BIOS_DRIVE, sector, 1) != BiosResultSuccess)
+; Line 1002
+	*** 000243	6a 00 			push	0
+	*** 000245	6a 01 			push	1
+	*** 000247	8d 46 e4 		lea	ax,WORD PTR [bp-28]	;sector
+	*** 00024a	50 			push	ax
+	*** 00024b	68 80 00 		push	128	;0080H
+	*** 00024e	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000251	e8 00 00 		call	?WriteSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z	; WriteSectors
+	*** 000254	83 c4 0a 		add	sp,10	;000aH
+	*** 000257	0a c0 			or	al,al
+	*** 000259	0f 85 4c fe 		jne	$L2007
+;|*** 			i < TC_BOOT_LOADER_AREA_SECTOR_COUNT; ++i)
+; Line 907
+					$FC1853:
+	*** 00025d	46 			inc	si
+	*** 00025e	e9 53 fe 		jmp	$F1852
+					$L1983:
+;|*** 		{
+;|*** 			sector.LowPart = i;
+;|*** 
+;|*** 			if (selection == RestoreOriginalSystemLoader)
+;|*** 				sector.LowPart += TC_ORIG_BOOT_LOADER_BACKUP_SECTOR;
+;|*** 			else if (selection == RestoreCipherShedLoader)
+;|*** 				sector.LowPart += TC_BOOT_LOADER_BACKUP_RESCUE_DISK_SECTOR;
+;|*** 
+;|*** 			// The backup medium may be a floppy-emulated bootable CD. The emulation may fail if LBA addressing is used.
+;|*** 			// Therefore, only CHS addressing can be used.
+;|*** 			LbaToChs (bootLoaderDriveGeometry, sector, chs);
+;|*** 			sector.LowPart = i;
+;|*** 
+;|*** 			if (i == TC_MBR_SECTOR)
+;|*** 			{
+;|*** 				// Read current partition table
+;|*** 				result = ReadSectors (SectorBuffer, TC_FIRST_BIOS_DRIVE, sector, 1);
+;|*** 				if (result != BiosResultSuccess)
+;|*** 					goto err;
+;|*** 
+;|*** 				memcpy (mbrPartTable, SectorBuffer + TC_MAX_MBR_BOOT_CODE_SIZE, sizeof (mbrPartTable));
+;|*** 			}
+;|*** 
+;|*** 			result = ReadSectors (SectorBuffer, BootLoaderDrive, chs, 1);
+;|*** 			if (result != BiosResultSuccess)
+;|*** 				goto err;
+;|*** 
+;|*** 			if (i == TC_MBR_SECTOR)
+;|*** 			{
+;|*** 				// Preserve current partition table
+;|*** 				memcpy (SectorBuffer + TC_MAX_MBR_BOOT_CODE_SIZE, mbrPartTable, sizeof (mbrPartTable));
+;|*** 			}
+;|*** 
+;|*** 			// Volume header
+;|*** 			if (i == TC_BOOT_VOLUME_HEADER_SECTOR)
+;|*** 			{
+;|*** 				if (selection == RestoreCipherShedLoader)
+;|*** 					continue;
+;|*** 
+;|*** 				if (selection == RestoreVolumeHeader)
+;|*** 				{
+;|*** 					while (true)
+;|*** 					{
+;|*** 						bool validHeaderPresent = false;
+;|*** 						uint32 masterKeyScheduleCrc;
+;|*** 
+;|*** 						Password password;
+;|*** 						byte exitKey = AskPassword (password);
+;|*** 
+;|*** 						if (exitKey != TC_BIOS_KEY_ENTER)
+;|*** 							goto abort;
+;|*** 
+;|*** 						CRYPTO_INFO *cryptoInfo;
+;|*** 
+;|*** 						CopyMemory (SectorBuffer, TC_BOOT_LOADER_BUFFER_SEGMENT, 0, TC_LB_SIZE);
+;|*** 						ReleaseSectorBuffer();
+;|*** 
+;|*** 						// Restore volume header only if the current one cannot be used
+;|*** 						if (OpenVolume (TC_FIRST_BIOS_DRIVE, password, &cryptoInfo, nullptr, false, true))
+;|*** 						{
+;|*** 							validHeaderPresent = true;
+;|*** 							masterKeyScheduleCrc = GetCrc32 (cryptoInfo->ks, sizeof (cryptoInfo->ks));
+;|*** 							crypto_close (cryptoInfo);
+;|*** 						}
+;|*** 
+;|*** 						AcquireSectorBuffer();
+;|*** 						CopyMemory (TC_BOOT_LOADER_BUFFER_SEGMENT, 0, SectorBuffer, TC_LB_SIZE);
+;|*** 
+;|*** 						if (ReadVolumeHeader (TRUE, (char *) SectorBuffer, &password, &cryptoInfo, nullptr) == 0)
+;|*** 						{
+;|*** 							if (validHeaderPresent)
+;|*** 							{
+;|*** 								if (masterKeyScheduleCrc == GetCrc32 (cryptoInfo->ks, sizeof (cryptoInfo->ks)))
+;|*** 								{
+;|*** 									Print ("Original header preserved.\r\n");
+; Line 982
+	*** 000261	68 00 00 		push	OFFSET DGROUP:??_C@_0BN@MGAM@Original?5header?5preserved?4?$AN?6?$AA@
+	*** 000264	e9 3e fe 		jmp	$L2009
+;|*** 									goto err;
+;|*** 								}
+;|*** 
+;|*** 								Print ("WARNING: Drive 0 contains a valid header!\r\n");
+;|*** 							}
+;|*** 
+;|*** 							crypto_close (cryptoInfo);
+;|*** 							break;
+;|*** 						}
+;|*** 
+;|*** 						Print ("Incorrect password.\r\n\r\n");
+;|*** 					}
+;|*** 				}
+;|*** 			}
+;|*** 
+;|*** 			if (!writeConfirmed && !AskYesNo ("Modify drive 0"))
+;|*** 				goto abort;
+;|*** 			writeConfirmed = true;
+;|*** 
+;|*** 			if (WriteSectors (SectorBuffer, TC_FIRST_BIOS_DRIVE, sector, 1) != BiosResultSuccess)
+;|*** 				goto err;
+;|*** 		}
+;|*** done:
+; Line 1005
+					$done1892:
+;|*** 		switch (selection)
+; Line 1006
+	*** 000267	8b c7 			mov	ax,di
+;|*** 		{
+;|*** 		case RestoreCipherShedLoader:
+;|*** 			Print ("CipherShed Boot Loader");
+;|*** 			break;
+;|*** 
+;|*** 		case RestoreVolumeHeader:
+;|*** 			Print ("Header");
+;|*** 			break;
+;|*** 
+;|*** 		case RestoreOriginalSystemLoader:
+;|*** 			Print ("System loader");
+;|*** 			break;
+;|*** 		}
+; Line 1019
+	*** 000269	48 			dec	ax
+	*** 00026a	48 			dec	ax
+	*** 00026b	74 08 			je	SHORT $SC1897
+	*** 00026d	48 			dec	ax
+	*** 00026e	74 0a 			je	SHORT $SC1899
+	*** 000270	48 			dec	ax
+	*** 000271	74 0c 			je	SHORT $SC1901
+	*** 000273	eb 11 			jmp	SHORT $SB1894
+;|*** 		case RestoreCipherShedLoader:
+; Line 1008
+					$SC1897:
+;|*** 			Print ("CipherShed Boot Loader");
+; Line 1009
+	*** 000275	68 00 00 		push	OFFSET DGROUP:??_C@_0BH@PMEC@CipherShed?5Boot?5Loader?$AA@
+	*** 000278	eb 08 			jmp	SHORT $L2010
+;|*** 			break;
+;|*** 
+;|*** 		case RestoreVolumeHeader:
+; Line 1012
+					$SC1899:
+;|*** 			Print ("Header");
+; Line 1013
+	*** 00027a	68 00 00 		push	OFFSET DGROUP:??_C@_06IEHP@Header?$AA@
+	*** 00027d	eb 03 			jmp	SHORT $L2010
+;|*** 			break;
+;|*** 
+;|*** 		case RestoreOriginalSystemLoader:
+; Line 1016
+					$SC1901:
+;|*** 			Print ("System loader");
+; Line 1017
+	*** 00027f	68 00 00 		push	OFFSET DGROUP:??_C@_0O@MJLK@System?5loader?$AA@
+					$L2010:
+	*** 000282	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 000285	5b 			pop	bx
+;|*** 			break;
+;|*** 		}
+; Line 1019
+					$SB1894:
+;|*** 		Print (" restored.\r\n");
+; Line 1020
+	*** 000286	68 00 00 		push	OFFSET DGROUP:??_C@_0N@HIBI@?5restored?4?$AN?6?$AA@
+	*** 000289	e9 19 fe 		jmp	$L2009
+;|*** 
+;|*** err:	GetKeyboardChar();
+;|*** abort:	ReleaseSectorBuffer();
+;|*** 	}
+;|*** }
+; Line 1025
+					$EX1815:
+	*** 00028c	5e 			pop	si
+	*** 00028d	5f 			pop	di
+	*** 00028e	c9 			leave	
+	*** 00028f	c3 			ret	
+
+?RepairMenu@@YAXXZ	ENDP
+	PUBLIC	__acrtused
+__acrtused	PROC NEAR	;  COMDAT
+;|*** 
+;|*** #endif // TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 
+;|*** 
+;|*** #ifndef DEBUG
+;|*** extern "C" void _acrtused () { }  // Required by linker
+; Line 1031
+	*** 000000	c3 			ret	
+
+__acrtused	ENDP
+	PUBLIC	_main
+_main	PROC NEAR	;  COMDAT
+;|*** #endif
+;|*** 
+;|*** 
+;|*** void main ()
+;|*** {
+; Line 1036
+	*** 000000	c8 02 00 00 		enter	2,0
+;|*** 	__asm mov BootLoaderDrive, dl
+; Line 1037
+	*** 000004	88 16 00 00 		mov	BYTE PTR ?BootLoaderDrive@@3EA,dl	;BootLoaderDrive
+;|*** 	__asm mov BootSectorFlags, dh
+; Line 1038
+	*** 000008	88 36 00 00 		mov	BYTE PTR ?BootSectorFlags@@3EA,dh	;BootSectorFlags
+;|*** 
+;|*** #ifdef TC_BOOT_TRACING_ENABLED
+;|*** 	InitDebugPort();
+;|*** #endif
+;|*** 
+;|*** #ifdef TC_BOOT_STACK_CHECKING_ENABLED
+;|*** 	InitStackChecker();
+;|*** #endif
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 	ReadBootSectorUserConfiguration();
+;|*** #elif defined (TC_WINDOWS_BOOT_AES)
+;|*** 	EnableHwEncryption (!(BootSectorFlags & TC_BOOT_CFG_FLAG_RESCUE_DISABLE_HW_ENCRYPTION));
+;|*** #endif
+;|*** 
+;|*** 	InitVideoMode();
+; Line 1054
+	*** 00000c	e8 00 00 		call	?InitVideoMode@@YAXXZ	; InitVideoMode
+;|*** 	InitScreen();
+; Line 1055
+	*** 00000f	e8 00 00 		call	?InitScreen@@YAXXZ	; InitScreen
+;|*** 
+;|*** 	// Determine boot drive
+;|*** 	BootDrive = BootLoaderDrive;
+;|*** 	if (BootDrive < TC_FIRST_BIOS_DRIVE)
+; Line 1059
+	*** 000012	a0 00 00 		mov	al,BYTE PTR ?BootLoaderDrive@@3EA	;BootLoaderDrive
+	*** 000015	a2 00 00 		mov	BYTE PTR ?BootDrive@@3EA,al	;BootDrive
+	*** 000018	3c 80 			cmp	al,128	;0080H
+	*** 00001a	73 05 			jae	SHORT $I1910
+;|*** 		BootDrive = TC_FIRST_BIOS_DRIVE;
+; Line 1060
+	*** 00001c	c6 06 00 00 80 		mov	BYTE PTR ?BootDrive@@3EA,128	;0080H	;BootDrive
+;|*** 
+;|*** 	// Query boot drive geometry
+;|*** 	if (GetDriveGeometry (BootDrive, BootDriveGeometry) != BiosResultSuccess)
+; Line 1063
+					$I1910:
+	*** 000021	6a 00 			push	0
+	*** 000023	68 00 00 		push	OFFSET ?BootDriveGeometry@@3UDriveGeometry@@A	;BootDriveGeometry
+	*** 000026	a0 00 00 		mov	al,BYTE PTR ?BootDrive@@3EA	;BootDrive
+	*** 000029	50 			push	ax
+	*** 00002a	e8 00 00 		call	?GetDriveGeometry@@YAEEAAUDriveGeometry@@D@Z	; GetDriveGeometry
+	*** 00002d	83 c4 06 		add	sp,6
+	*** 000030	0a c0 			or	al,al
+	*** 000032	74 21 			je	SHORT $I1911
+;|*** 	{
+;|*** 		BootDrive = TC_FIRST_BIOS_DRIVE;
+;|*** 		if (GetDriveGeometry (BootDrive, BootDriveGeometry) != BiosResultSuccess)
+; Line 1066
+	*** 000034	6a 00 			push	0
+	*** 000036	68 00 00 		push	OFFSET ?BootDriveGeometry@@3UDriveGeometry@@A	;BootDriveGeometry
+	*** 000039	b0 80 			mov	al,128	;0080H
+	*** 00003b	a2 00 00 		mov	BYTE PTR ?BootDrive@@3EA,al	;BootDrive
+	*** 00003e	50 			push	ax
+	*** 00003f	e8 00 00 		call	?GetDriveGeometry@@YAEEAAUDriveGeometry@@D@Z	; GetDriveGeometry
+	*** 000042	83 c4 06 		add	sp,6
+	*** 000045	0a c0 			or	al,al
+	*** 000047	74 0c 			je	SHORT $I1911
+;|*** 		{
+;|*** #ifdef TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 			Print ("- Connect system drive to (SATA) port 1\r\n");
+; Line 1069
+	*** 000049	68 00 00 		push	OFFSET DGROUP:??_C@_0CK@MNCE@?9?5Connect?5system?5drive?5to?5?$CISATA?$CJ@
+	*** 00004c	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00004f	5b 			pop	bx
+;|*** #endif
+;|*** 			GetKeyboardChar();
+; Line 1071
+	*** 000050	e8 00 00 		call	?GetKeyboardChar@@YAEXZ	; GetKeyboardChar
+;|*** 		}
+;|*** 		else
+; Line 1073
+	*** 000053	eb 05 			jmp	SHORT $I1915
+					$I1911:
+;|*** 			BootDriveGeometryValid = true;
+;|*** 	}
+;|*** 	else
+;|*** 		BootDriveGeometryValid = true;
+; Line 1077
+	*** 000055	c6 06 00 00 01 		mov	BYTE PTR ?BootDriveGeometryValid@@3DA,1	;BootDriveGeometryValid
+					$I1915:
+;|*** 
+;|*** #ifdef TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 
+;|*** 	// Check whether the user is not using the Rescue Disk to create a hidden system
+;|*** 
+;|*** 	if (ReadWriteMBR (false, BootDrive, true) == BiosResultSuccess
+;|*** 		&& *(uint32 *) (SectorBuffer + 6) == 0x65757254
+;|*** 		&& *(uint32 *) (SectorBuffer + 10) == 0x70797243
+;|*** 		&& (SectorBuffer[TC_BOOT_SECTOR_CONFIG_OFFSET] & TC_BOOT_CFG_MASK_HIDDEN_OS_CREATION_PHASE) != TC_HIDDEN_OS_CREATION_PHASE_NONE)
+; Line 1086
+	*** 00005a	6a 01 			push	1
+	*** 00005c	a0 00 00 		mov	al,BYTE PTR ?BootDrive@@3EA	;BootDrive
+	*** 00005f	50 			push	ax
+	*** 000060	6a 00 			push	0
+	*** 000062	e8 00 00 		call	?ReadWriteMBR@@YAEDED@Z	; ReadWriteMBR
+	*** 000065	83 c4 06 		add	sp,6
+	*** 000068	0a c0 			or	al,al
+	*** 00006a	75 3b 			jne	SHORT $L2013
+	*** 00006c	66 81 3e 06 00 54 72 75 65 cmp	DWORD PTR ?SectorBuffer@@3QAEA+6,1702195796	;65757254H	;SectorBuffer
+	*** 000075	75 30 			jne	SHORT $L2013
+	*** 000077	66 81 3e 0a 00 43 72 79 70 cmp	DWORD PTR ?SectorBuffer@@3QAEA+10,1887007299	;70797243H	;SectorBuffer
+	*** 000080	75 25 			jne	SHORT $L2013
+	*** 000082	f6 06 b7 01 c0 		test	BYTE PTR ?SectorBuffer@@3QAEA+439,192	;00c0H	;SectorBuffer
+	*** 000087	74 1e 			je	SHORT $L2013
+;|*** 	{
+;|*** 		PrintError ("It appears you are creating a hidden OS.");
+; Line 1088
+	*** 000089	68 00 00 		push	OFFSET DGROUP:??_C@_0CJ@BABO@It?5appears?5you?5are?5creating?5a?5hi@
+	*** 00008c	e8 00 00 		call	?PrintError@@YAXPBD@Z	; PrintError
+	*** 00008f	5b 			pop	bx
+;|*** 		if (AskYesNo ("Is this correct"))
+; Line 1089
+	*** 000090	68 00 00 		push	OFFSET DGROUP:??_C@_0BA@LKAJ@Is?5this?5correct?$AA@
+	*** 000093	e8 00 00 		call	?AskYesNo@@YADPBD@Z	; AskYesNo
+	*** 000096	5b 			pop	bx
+	*** 000097	0a c0 			or	al,al
+	*** 000099	74 0c 			je	SHORT $L2013
+;|*** 		{
+;|*** 			Print ("Please remove the Rescue Disk from the drive and restart.");
+; Line 1091
+	*** 00009b	68 00 00 		push	OFFSET DGROUP:??_C@_0DK@PFGO@Please?5remove?5the?5Rescue?5Disk?5fr@
+	*** 00009e	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 0000a1	5b 			pop	bx
+;|*** 			while (true);
+; Line 1092
+					$FC1924:
+	*** 0000a2	eb fe 			jmp	SHORT $FC1924
+					$FC1927:
+;|*** 		}
+;|*** 	}
+;|*** 
+;|*** #endif // TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 
+;|*** 
+;|*** 	// Main menu
+;|*** 
+;|*** 	while (true)
+;|*** 	{
+; Line 1102
+;	exitKey = -2
+;|*** 		byte exitKey;
+;|*** 		InitScreen();
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 
+;|*** 		// Hidden system setup
+;|*** 		byte hiddenSystemCreationPhase = BootSectorFlags & TC_BOOT_CFG_MASK_HIDDEN_OS_CREATION_PHASE;
+;|*** 
+;|*** 		if (hiddenSystemCreationPhase != TC_HIDDEN_OS_CREATION_PHASE_NONE)
+;|*** 		{
+;|*** 			PreventNormalSystemBoot = true;
+;|*** 			PrintMainMenu();
+;|*** 
+;|*** 			if (hiddenSystemCreationPhase == TC_HIDDEN_OS_CREATION_PHASE_CLONING)
+;|*** 			{
+;|*** 				if (CopySystemPartitionToHiddenVolume (BootDrive, exitKey))
+;|*** 				{
+;|*** 					BootSectorFlags = (BootSectorFlags & ~TC_BOOT_CFG_MASK_HIDDEN_OS_CREATION_PHASE) | TC_HIDDEN_OS_CREATION_PHASE_WIPING;
+;|*** 					UpdateBootSectorConfiguration (BootLoaderDrive);
+;|*** 				}
+;|*** 				else if (exitKey == TC_BIOS_KEY_ESC)
+;|*** 					goto bootMenu;
+;|*** 				else
+;|*** 					continue;
+;|*** 			}
+;|*** 		}
+;|*** 		else
+;|*** 			PrintMainMenu();
+;|*** 
+;|*** 		exitKey = BootEncryptedDrive();
+;|*** 
+;|*** #else // TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 		
+;|*** 		PrintMainMenu();
+;|*** 		exitKey = BootEncryptedDrive();
+;|*** 
+;|*** 		if (exitKey == TC_MENU_KEY_REPAIR)
+;|*** 		{
+;|*** 			RepairMenu();
+; Line 1141
+	*** 0000a4	e8 00 00 		call	?RepairMenu@@YAXXZ	; RepairMenu
+;|*** 			continue;
+; Line 1142
+					$L2013:
+	*** 0000a7	e8 00 00 		call	?InitScreen@@YAXXZ	; InitScreen
+;|*** 		PrintMainMenu();
+; Line 1136
+	*** 0000aa	e8 00 00 		call	?PrintMainMenu@@YAXXZ	; PrintMainMenu
+;|*** 		exitKey = BootEncryptedDrive();
+;|*** 
+;|*** 		if (exitKey == TC_MENU_KEY_REPAIR)
+; Line 1139
+	*** 0000ad	e8 00 00 		call	?BootEncryptedDrive@@YAEXZ	; BootEncryptedDrive
+	*** 0000b0	3c 42 			cmp	al,66	;0042H
+	*** 0000b2	74 f0 			je	SHORT $FC1927
+;|*** 		{
+;|*** 			RepairMenu();
+;|*** 			continue;
+;|*** 		}
+;|*** 
+;|*** #endif // TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 
+;|*** bootMenu:
+;|*** 		if (!PreventBootMenu)
+; Line 1148
+	*** 0000b4	80 3e 00 00 00 		cmp	BYTE PTR ?PreventBootMenu@@3DA,0	;PreventBootMenu
+	*** 0000b9	75 ec 			jne	SHORT $L2013
+;|*** 			BootMenu();
+; Line 1149
+	*** 0000bb	e8 00 00 		call	?BootMenu@@YAXXZ	; BootMenu
+;|*** 	}
+; Line 1150
+	*** 0000be	eb e7 			jmp	SHORT $L2013
+
+_main	ENDP
+_TEXT	ENDS
+END
+;|*** }

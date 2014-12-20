@@ -1,0 +1,22 @@
+
+
+AMD64_OBJECTS=\
+ $(OBJ_PATH)\$O\drivefilter.obj \
+ $(OBJ_PATH)\$O\dumpfilter.obj \
+ $(OBJ_PATH)\$O\encryptedioqueue.obj \
+ $(OBJ_PATH)\$O\ntdriver.obj \
+ $(OBJ_PATH)\$O\ntvol.obj \
+ $(OBJ_PATH)\$O\volumefilter.obj \
+
+
+_RES_FILE=$(OBJ_PATH)\$O\driver.res
+
+
+
+# lowercased
+BASEDIR=c:\winddk\7600.16385.1
+OBJECT_ROOT=c:\winddk\7600.16385.1
+MAKEDIR_LOWERCASE=c:\home\public\desktop\projects\ciphershed\src\driver
+OBJ_PATH=c:\home\public\desktop\projects\ciphershed\src\driver
+CONCURRENT_MIDL=0
+CONCURRENT_MANIFEST_BUILD=0
