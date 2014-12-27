@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['hash_5fenum_5fend_5fid',['HASH_ENUM_END_ID',['../Crypto_8h.html#aae05225933a42f81e7c4a9fb286596f9a3caebe922758b7031fcae65ce407068e',1,'Crypto.h']]],
+  ['help',['Help',['../structCipherShed_1_1CommandId.html#af4a08fc28b820d9123a511c79a3880a6a9cc1e13281bad3676f99f990a5237299',1,'CipherShed::CommandId']]],
+  ['hidden',['Hidden',['../structCipherShed_1_1VolumeType.html#aaf299442587f5cb9f45f0200d1100c4ea5f6f7ebf8c2210c792e0ba791e0e924c',1,'CipherShed::VolumeType']]],
+  ['hidden_5fvol_5fhost_5fpassword_5fpage',['HIDDEN_VOL_HOST_PASSWORD_PAGE',['../Tcformat_8c.html#a490fafca982f8213b708a06020bacbd9a8b7200992341ad9f38df5a10b0b78e76',1,'Tcformat.c']]],
+  ['hidden_5fvol_5fhost_5fpre_5fcipher_5fpage',['HIDDEN_VOL_HOST_PRE_CIPHER_PAGE',['../Tcformat_8c.html#a490fafca982f8213b708a06020bacbd9ac4d4c15d1570a2fb28438f8b72f748f9',1,'Tcformat.c']]],
+  ['hidden_5fvol_5fpre_5fcipher_5fpage',['HIDDEN_VOL_PRE_CIPHER_PAGE',['../Tcformat_8c.html#a490fafca982f8213b708a06020bacbd9a7bd971fb8e53402a0194ac012cd005f2',1,'Tcformat.c']]],
+  ['hidden_5fvol_5fwizard_5fmode_5fpage',['HIDDEN_VOL_WIZARD_MODE_PAGE',['../Tcformat_8c.html#a490fafca982f8213b708a06020bacbd9a808077b13433d3246dda1b8622ea87fc',1,'Tcformat.c']]],
+  ['hiddenvolume',['HiddenVolume',['../structCipherShed_1_1VolumeCreationWizard_1_1Step.html#a7fde8a80c344d7d776326f001e46eebdaee59ef8856e3ae44e2ccbf073590acd1',1,'CipherShed::VolumeCreationWizard::Step']]],
+  ['hiddenvolumereadonly',['HiddenVolumeReadOnly',['../structCipherShed_1_1VolumeProtection.html#a94228af8ba8a4dbd7dc317e61e09f8aca4f2ab706bf06bfca001d9f5d19d5b13b',1,'CipherShed::VolumeProtection']]],
+  ['hidvol_5fprot_5fstatus_5faction_5ftaken',['HIDVOL_PROT_STATUS_ACTION_TAKEN',['../Common_8h.html#adb49720dc49f7d4e4cf9adbf2948e409af1cf56b4d7814fb2e28aa7c291968e28',1,'Common.h']]],
+  ['hidvol_5fprot_5fstatus_5factive',['HIDVOL_PROT_STATUS_ACTIVE',['../Common_8h.html#adb49720dc49f7d4e4cf9adbf2948e409a4be81bb52419387c8968142f845dce1f',1,'Common.h']]],
+  ['hidvol_5fprot_5fstatus_5fnone',['HIDVOL_PROT_STATUS_NONE',['../Common_8h.html#adb49720dc49f7d4e4cf9adbf2948e409ae798600a98e4d5dcfbac451b8e7b3069',1,'Common.h']]],
+  ['hk_5fautomount_5fdevices',['HK_AUTOMOUNT_DEVICES',['../Hotkeys_8h.html#a84627a72058502328269676b81780f89a9819ce24fd788d39db986aa8488514db',1,'Hotkeys.h']]],
+  ['hk_5fclose_5fsecurity_5ftoken_5fsessions',['HK_CLOSE_SECURITY_TOKEN_SESSIONS',['../Hotkeys_8h.html#a84627a72058502328269676b81780f89a16854d4a67a2a4c8d80c9be04e4a0aef',1,'Hotkeys.h']]],
+  ['hk_5fdismount_5fall',['HK_DISMOUNT_ALL',['../Hotkeys_8h.html#a84627a72058502328269676b81780f89aa891788fa564de5b98d6b86733327e84',1,'Hotkeys.h']]],
+  ['hk_5fdismount_5fall_5fand_5fwipe',['HK_DISMOUNT_ALL_AND_WIPE',['../Hotkeys_8h.html#a84627a72058502328269676b81780f89a9abbad8ef8a58ba6514ba4f6295ab314',1,'Hotkeys.h']]],
+  ['hk_5fforce_5fdismount_5fall_5fand_5fwipe',['HK_FORCE_DISMOUNT_ALL_AND_WIPE',['../Hotkeys_8h.html#a84627a72058502328269676b81780f89a41e08c5305aca0a655caa2feea715fa5',1,'Hotkeys.h']]],
+  ['hk_5fforce_5fdismount_5fall_5fand_5fwipe_5fand_5fexit',['HK_FORCE_DISMOUNT_ALL_AND_WIPE_AND_EXIT',['../Hotkeys_8h.html#a84627a72058502328269676b81780f89ac2e6be1c94867ffbcc9dc2844e58cda4',1,'Hotkeys.h']]],
+  ['hk_5fmount_5ffavorite_5fvolumes',['HK_MOUNT_FAVORITE_VOLUMES',['../Hotkeys_8h.html#a84627a72058502328269676b81780f89a8934ed3c01c5f531fe4123e51e1ef9d0',1,'Hotkeys.h']]],
+  ['hk_5fshow_5fhide_5fmain_5fwindow',['HK_SHOW_HIDE_MAIN_WINDOW',['../Hotkeys_8h.html#a84627a72058502328269676b81780f89a60688d062978241b080f47ae06632e9f',1,'Hotkeys.h']]],
+  ['hk_5fwipe_5fcache',['HK_WIPE_CACHE',['../Hotkeys_8h.html#a84627a72058502328269676b81780f89ae11f094ce99dd87a20b9602cae214231',1,'Hotkeys.h']]]
+];

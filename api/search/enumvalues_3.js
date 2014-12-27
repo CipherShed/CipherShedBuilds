@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['decryptdataunits',['DecryptDataUnits',['../structCipherShed_1_1EncryptionThreadPool_1_1WorkType.html#ac958844b7ba5797dda22fa018c033892ab7d6e426e214c4affe804ba29b9ce050',1,'CipherShed::EncryptionThreadPool::WorkType']]],
+  ['decryptdataunitswork',['DecryptDataUnitsWork',['../Common_2EncryptionThreadPool_8h.html#abb21191f5bf5369a5bc901a8968eb2a1a004ad4b00ec2282d173c80e9e6c7a32e',1,'EncryptionThreadPool.h']]],
+  ['deletesecuritytokenkeyfiles',['DeleteSecurityTokenKeyfiles',['../structCipherShed_1_1CommandId.html#af4a08fc28b820d9123a511c79a3880a6af6c814be769609c677c08a30e3b0ffe9',1,'CipherShed::CommandId']]],
+  ['deprecated_5ferr_5finvalid_5fdevice',['DEPRECATED_ERR_INVALID_DEVICE',['../Tcdefs_8h.html#a4790f45dcc812c1b00184a2edccdddf5a081f3014d79cf5b7a5e74e1132cdeecf',1,'Tcdefs.h']]],
+  ['derivekey',['DeriveKey',['../structCipherShed_1_1EncryptionThreadPool_1_1WorkType.html#ac958844b7ba5797dda22fa018c033892a350ef308ff92ffb73d266d6a716abdb9',1,'CipherShed::EncryptionThreadPool::WorkType']]],
+  ['derivekeywork',['DeriveKeyWork',['../Common_2EncryptionThreadPool_8h.html#abb21191f5bf5369a5bc901a8968eb2a1aa1adeacbbe4aeeb3926a0f66eac90f46',1,'EncryptionThreadPool.h']]],
+  ['device',['Device',['../structCipherShed_1_1VolumeHostType.html#a206c3293399ed02575095b74de01ab95a868bbdb21bc22f629f60a940b2d69a91',1,'CipherShed::VolumeHostType']]],
+  ['device_5ftransform_5fmode_5fpage',['DEVICE_TRANSFORM_MODE_PAGE',['../Tcformat_8c.html#a490fafca982f8213b708a06020bacbd9adb5f5dd30d34611857b54bb910087069',1,'Tcformat.c']]],
+  ['device_5fwipe_5fmode_5fpage',['DEVICE_WIPE_MODE_PAGE',['../Tcformat_8c.html#a490fafca982f8213b708a06020bacbd9a622d7f104dd613a32dea7d90877a10a9',1,'Tcformat.c']]],
+  ['device_5fwipe_5fpage',['DEVICE_WIPE_PAGE',['../Tcformat_8c.html#a490fafca982f8213b708a06020bacbd9a1e7c6cae3cea871434f78a72151e6e3b',1,'Tcformat.c']]],
+  ['directory',['Directory',['../structCipherShed_1_1FilesystemPathType.html#a8265576e6b35f11ad6e32ad4a122ccf4a32d820dbf1f4b1839d175c6d2f392340',1,'CipherShed::FilesystemPathType']]],
+  ['disablewritecaching',['DisableWriteCaching',['../classCipherShed_1_1File.html#ad5fb4a8906159fed718c164d6c767d73a0c60d4a2e339a05dfa9850d66ca4d51b',1,'CipherShed::File']]],
+  ['dismountall',['DismountAll',['../structCipherShed_1_1Hotkey_1_1Id.html#aeb5b6a6b30866e5037a8efb8271f38eda6219d322f8898b291723cf162bd6b69d',1,'CipherShed::Hotkey::Id']]],
+  ['dismountallwipecache',['DismountAllWipeCache',['../structCipherShed_1_1Hotkey_1_1Id.html#aeb5b6a6b30866e5037a8efb8271f38eda67d80987751d4a7ea8ddc0ceae274ba5',1,'CipherShed::Hotkey::Id']]],
+  ['dismountvolumes',['DismountVolumes',['../structCipherShed_1_1CommandId.html#af4a08fc28b820d9123a511c79a3880a6a6e3ff21c00fe90b9a2aa9b654e42a00d',1,'CipherShed::CommandId']]],
+  ['displayversion',['DisplayVersion',['../structCipherShed_1_1CommandId.html#af4a08fc28b820d9123a511c79a3880a6a020a81a9df8b30946d1034eae1f28980',1,'CipherShed::CommandId']]],
+  ['displayvolumeproperties',['DisplayVolumeProperties',['../structCipherShed_1_1CommandId.html#af4a08fc28b820d9123a511c79a3880a6ade4386bebb9f7d9cc254c2d4575cc600',1,'CipherShed::CommandId']]],
+  ['donations_5fpage',['DONATIONS_PAGE',['../Wizard_8c.html#a490fafca982f8213b708a06020bacbd9af8df14cd5637fde6771d06376e43feb8',1,'Wizard.c']]],
+  ['drivefilter',['DriveFilter',['../classCipherShed_1_1BootEncryption.html#af0fc477ad3797edf080426c603172deeaaf46b04c2481649e92410b2c472713fb',1,'CipherShed::BootEncryption']]],
+  ['dumpfilter',['DumpFilter',['../classCipherShed_1_1BootEncryption.html#af0fc477ad3797edf080426c603172deea97bfdc09c5369787360152aa12b8e98c',1,'CipherShed::BootEncryption']]]
+];
