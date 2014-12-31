@@ -1,0 +1,1398 @@
+;	Static Name Aliases
+;
+;	$S206_PADDING	EQU	PADDING
+;	$S342_OrderTab	EQU	OrderTab
+;	$S343_RolTab	EQU	RolTab
+;	$S344_KTab	EQU	KTab
+	TITLE   ..\..\..\crypto\rmd160.c
+	.MODEL  SMALL
+	.386p
+	.387
+_TEXT	SEGMENT  WORD USE16 PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD USE16 PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD USE16 PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD USE16 PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	__aNulshr:NEAR
+EXTRN	_memcpy:NEAR
+EXTRN	_memset:NEAR
+_DATA      SEGMENT
+$S342_OrderTab	DB	00H
+	DB	01H
+	DB	02H
+	DB	03H
+	DB	04H
+	DB	05H
+	DB	06H
+	DB	07H
+	DB	08H
+	DB	09H
+	DB	0aH
+	DB	0bH
+	DB	0cH
+	DB	0dH
+	DB	0eH
+	DB	0fH
+	DB	07H
+	DB	04H
+	DB	0dH
+	DB	01H
+	DB	0aH
+	DB	06H
+	DB	0fH
+	DB	03H
+	DB	0cH
+	DB	00H
+	DB	09H
+	DB	05H
+	DB	02H
+	DB	0eH
+	DB	0bH
+	DB	08H
+	DB	03H
+	DB	0aH
+	DB	0eH
+	DB	04H
+	DB	09H
+	DB	0fH
+	DB	08H
+	DB	01H
+	DB	02H
+	DB	07H
+	DB	00H
+	DB	06H
+	DB	0dH
+	DB	0bH
+	DB	05H
+	DB	0cH
+	DB	01H
+	DB	09H
+	DB	0bH
+	DB	0aH
+	DB	00H
+	DB	08H
+	DB	0cH
+	DB	04H
+	DB	0dH
+	DB	03H
+	DB	07H
+	DB	0fH
+	DB	0eH
+	DB	05H
+	DB	06H
+	DB	02H
+	DB	04H
+	DB	00H
+	DB	05H
+	DB	09H
+	DB	07H
+	DB	0cH
+	DB	02H
+	DB	0aH
+	DB	0eH
+	DB	01H
+	DB	03H
+	DB	08H
+	DB	0bH
+	DB	06H
+	DB	0fH
+	DB	0dH
+	DB	05H
+	DB	0eH
+	DB	07H
+	DB	00H
+	DB	09H
+	DB	02H
+	DB	0bH
+	DB	04H
+	DB	0dH
+	DB	06H
+	DB	0fH
+	DB	08H
+	DB	01H
+	DB	0aH
+	DB	03H
+	DB	0cH
+	DB	06H
+	DB	0bH
+	DB	03H
+	DB	07H
+	DB	00H
+	DB	0dH
+	DB	05H
+	DB	0aH
+	DB	0eH
+	DB	0fH
+	DB	08H
+	DB	0cH
+	DB	04H
+	DB	09H
+	DB	01H
+	DB	02H
+	DB	0fH
+	DB	05H
+	DB	01H
+	DB	03H
+	DB	07H
+	DB	0eH
+	DB	06H
+	DB	09H
+	DB	0bH
+	DB	08H
+	DB	0cH
+	DB	02H
+	DB	0aH
+	DB	00H
+	DB	04H
+	DB	0dH
+	DB	08H
+	DB	06H
+	DB	04H
+	DB	01H
+	DB	03H
+	DB	0bH
+	DB	0fH
+	DB	00H
+	DB	05H
+	DB	0cH
+	DB	02H
+	DB	0dH
+	DB	09H
+	DB	07H
+	DB	0aH
+	DB	0eH
+	DB	0cH
+	DB	0fH
+	DB	0aH
+	DB	04H
+	DB	01H
+	DB	05H
+	DB	08H
+	DB	07H
+	DB	06H
+	DB	02H
+	DB	0dH
+	DB	0eH
+	DB	00H
+	DB	03H
+	DB	09H
+	DB	0bH
+$S343_RolTab	DB	0bH
+	DB	0eH
+	DB	0fH
+	DB	0cH
+	DB	05H
+	DB	08H
+	DB	07H
+	DB	09H
+	DB	0bH
+	DB	0dH
+	DB	0eH
+	DB	0fH
+	DB	06H
+	DB	07H
+	DB	09H
+	DB	08H
+	DB	07H
+	DB	06H
+	DB	08H
+	DB	0dH
+	DB	0bH
+	DB	09H
+	DB	07H
+	DB	0fH
+	DB	07H
+	DB	0cH
+	DB	0fH
+	DB	09H
+	DB	0bH
+	DB	07H
+	DB	0dH
+	DB	0cH
+	DB	0bH
+	DB	0dH
+	DB	06H
+	DB	07H
+	DB	0eH
+	DB	09H
+	DB	0dH
+	DB	0fH
+	DB	0eH
+	DB	08H
+	DB	0dH
+	DB	06H
+	DB	05H
+	DB	0cH
+	DB	07H
+	DB	05H
+	DB	0bH
+	DB	0cH
+	DB	0eH
+	DB	0fH
+	DB	0eH
+	DB	0fH
+	DB	09H
+	DB	08H
+	DB	09H
+	DB	0eH
+	DB	05H
+	DB	06H
+	DB	08H
+	DB	06H
+	DB	05H
+	DB	0cH
+	DB	09H
+	DB	0fH
+	DB	05H
+	DB	0bH
+	DB	06H
+	DB	08H
+	DB	0dH
+	DB	0cH
+	DB	05H
+	DB	0cH
+	DB	0dH
+	DB	0eH
+	DB	0bH
+	DB	08H
+	DB	05H
+	DB	06H
+	DB	08H
+	DB	09H
+	DB	09H
+	DB	0bH
+	DB	0dH
+	DB	0fH
+	DB	0fH
+	DB	05H
+	DB	07H
+	DB	07H
+	DB	08H
+	DB	0bH
+	DB	0eH
+	DB	0eH
+	DB	0cH
+	DB	06H
+	DB	09H
+	DB	0dH
+	DB	0fH
+	DB	07H
+	DB	0cH
+	DB	08H
+	DB	09H
+	DB	0bH
+	DB	07H
+	DB	07H
+	DB	0cH
+	DB	07H
+	DB	06H
+	DB	0fH
+	DB	0dH
+	DB	0bH
+	DB	09H
+	DB	07H
+	DB	0fH
+	DB	0bH
+	DB	08H
+	DB	06H
+	DB	06H
+	DB	0eH
+	DB	0cH
+	DB	0dH
+	DB	05H
+	DB	0eH
+	DB	0dH
+	DB	0dH
+	DB	07H
+	DB	05H
+	DB	0fH
+	DB	05H
+	DB	08H
+	DB	0bH
+	DB	0eH
+	DB	0eH
+	DB	06H
+	DB	0eH
+	DB	06H
+	DB	09H
+	DB	0cH
+	DB	09H
+	DB	0cH
+	DB	05H
+	DB	0fH
+	DB	08H
+	DB	08H
+	DB	05H
+	DB	0cH
+	DB	09H
+	DB	0cH
+	DB	05H
+	DB	0eH
+	DB	06H
+	DB	08H
+	DB	0dH
+	DB	06H
+	DB	05H
+	DB	0fH
+	DB	0dH
+	DB	0bH
+	DB	0bH
+$S344_KTab	DD	00H
+	DD	05a827999H
+	DD	06ed9eba1H
+	DD	08f1bbcdcH
+	DD	0a953fd4eH
+	DD	050a28be6H
+	DD	05c4dd124H
+	DD	06d703ef3H
+	DD	07a6d76e9H
+	DD	00H
+_DATA      ENDS
+_BSS      SEGMENT
+$S206_PADDING	DW 020H DUP (?)
+_BSS      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+	PUBLIC	_RMD160Init
+_RMD160Init	PROC NEAR	;  COMDAT
+;|*** // RIPEMD-160 written and placed in the public domain by Wei Dai
+;|*** 
+;|*** /*
+;|***  * This code implements the MD4 message-digest algorithm.
+;|***  * The algorithm is due to Ron Rivest.  This code was
+;|***  * written by Colin Plumb in 1993, no copyright is claimed.
+;|***  * This code is in the public domain; do with it what you wish.
+;|***  */
+;|*** 
+;|*** /* Adapted for CipherShed */
+;|*** 
+;|*** #include <memory.h>
+;|*** #include "../Common/Tcdefs.h"
+;|*** #include "../Common/Endian.h"
+;|*** #include "Rmd160.h"
+;|*** 
+;|*** #define F(x, y, z)    (x ^ y ^ z) 
+;|*** #define G(x, y, z)    (z ^ (x & (y^z)))
+;|*** #define H(x, y, z)    (z ^ (x | ~y))
+;|*** #define I(x, y, z)    (y ^ (z & (x^y)))
+;|*** #define J(x, y, z)    (x ^ (y | ~z))
+;|*** 
+;|*** #define PUT_64BIT_LE(cp, value) do {                                    \
+;|*** 	(cp)[7] = (byte) ((value) >> 56);                                        \
+;|*** 	(cp)[6] = (byte) ((value) >> 48);                                        \
+;|*** 	(cp)[5] = (byte) ((value) >> 40);                                        \
+;|*** 	(cp)[4] = (byte) ((value) >> 32);                                        \
+;|*** 	(cp)[3] = (byte) ((value) >> 24);                                        \
+;|*** 	(cp)[2] = (byte) ((value) >> 16);                                        \
+;|*** 	(cp)[1] = (byte) ((value) >> 8);                                         \
+;|*** 	(cp)[0] = (byte) (value); } while (0)
+;|*** 
+;|*** #define PUT_32BIT_LE(cp, value) do {                                    \
+;|*** 	(cp)[3] = (byte) ((value) >> 24);                                        \
+;|*** 	(cp)[2] = (byte) ((value) >> 16);                                        \
+;|*** 	(cp)[1] = (byte) ((value) >> 8);                                         \
+;|*** 	(cp)[0] = (byte) (value); } while (0)
+;|*** 
+;|*** #ifndef TC_MINIMIZE_CODE_SIZE
+;|*** 
+;|*** static byte PADDING[64] = {
+;|*** 	0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+;|*** 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+;|*** 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+;|*** };
+;|*** 
+;|*** #else
+;|*** 
+;|*** static byte PADDING[64];
+;|*** 
+;|*** #endif
+;|*** 
+;|*** void RMD160Init (RMD160_CTX *ctx)
+;|*** {
+; Line 54
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	56 			push	si
+;	ctx = 4
+	*** 000004	8b 76 04 		mov	si,WORD PTR [bp+4]	;ctx
+;|*** 	ctx->count = 0;
+; Line 55
+	*** 000007	c7 44 14 00 00 		mov	WORD PTR [si+20],0
+;|*** 	ctx->state[0] = 0x67452301;
+; Line 56
+	*** 00000c	66 c7 04 01 23 45 67 	mov	DWORD PTR [si],1732584193	;67452301H
+;|*** 	ctx->state[1] = 0xefcdab89;
+; Line 57
+	*** 000013	66 c7 44 04 89 ab cd ef mov	DWORD PTR [si+4],-271733879	;efcdab89H
+;|*** 	ctx->state[2] = 0x98badcfe;
+; Line 58
+	*** 00001b	66 c7 44 08 fe dc ba 98 mov	DWORD PTR [si+8],-1732584194	;98badcfeH
+;|*** 	ctx->state[3] = 0x10325476;
+; Line 59
+	*** 000023	66 c7 44 0c 76 54 32 10 mov	DWORD PTR [si+12],271733878	;10325476H
+;|*** 	ctx->state[4] = 0xc3d2e1f0;
+; Line 60
+	*** 00002b	66 c7 44 10 f0 e1 d2 c3 mov	DWORD PTR [si+16],-1009589776	;c3d2e1f0H
+;|*** 	PADDING[0] = 0x80;
+; Line 61
+	*** 000033	c6 06 00 00 80 		mov	BYTE PTR $S206_PADDING,128	;0080H
+;|*** }
+; Line 62
+	*** 000038	5e 			pop	si
+	*** 000039	c9 			leave	
+	*** 00003a	c3 			ret	
+
+_RMD160Init	ENDP
+	PUBLIC	_RMD160Update
+_RMD160Update	PROC NEAR	;  COMDAT
+;|*** 
+;|*** /*
+;|*** * Update context to reflect the concatenation of another buffer full
+;|*** * of bytes.
+;|*** */
+;|*** void RMD160Update (RMD160_CTX *ctx, const unsigned char *input, unsigned __int32 lenArg)
+;|*** {
+; Line 69
+	*** 000000	c8 06 00 00 		enter	6,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	ctx = 4
+;	input = 6
+;	lenArg = 8
+;	len = -2
+;	have = -6
+;	need = -4
+	*** 000006	8b 7e 04 		mov	di,WORD PTR [bp+4]	;ctx
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 	uint64 len = lenArg, have, need;
+;|*** #else
+;|*** 	uint16 len = (uint16) lenArg, have, need;
+; Line 73
+	*** 000009	8b 46 08 		mov	ax,WORD PTR [bp+8]	;lenArg
+	*** 00000c	89 46 fe 		mov	WORD PTR [bp-2],ax	;len
+;|*** #endif
+;|*** 
+;|*** 	/* Check how many bytes we already have and how many more we need. */
+;|*** 	have = ((ctx->count >> 3) & (RIPEMD160_BLOCK_LENGTH - 1));
+; Line 77
+	*** 00000f	8b 4d 14 		mov	cx,WORD PTR [di+20]
+	*** 000012	81 e1 f8 01 		and	cx,504	;01f8H
+	*** 000016	c1 e9 03 		shr	cx,3
+	*** 000019	8b f1 			mov	si,cx
+;|*** 	need = RIPEMD160_BLOCK_LENGTH - have;
+; Line 78
+	*** 00001b	83 e9 40 		sub	cx,64	;0040H
+	*** 00001e	f7 d9 			neg	cx
+	*** 000020	89 4e fc 		mov	WORD PTR [bp-4],cx	;need
+;|*** 
+;|*** 	/* Update bitcount */
+;|*** 	ctx->count += len << 3;
+; Line 81
+	*** 000023	c1 e0 03 		shl	ax,3
+	*** 000026	01 45 14 		add	WORD PTR [di+20],ax
+	*** 000029	89 76 fa 		mov	WORD PTR [bp-6],si	;have
+;|*** 
+;|*** 	if (len >= need) {
+; Line 83
+	*** 00002c	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;need
+	*** 00002f	39 46 fe 		cmp	WORD PTR [bp-2],ax	;len
+	*** 000032	73 05 			jae	SHORT $L377
+	*** 000034	8b 76 06 		mov	si,WORD PTR [bp+6]	;input
+	*** 000037	eb 4f 			jmp	SHORT $I220
+					$L377:
+;|*** 		if (have != 0) {
+; Line 84
+	*** 000039	0b f6 			or	si,si
+	*** 00003b	74 2b 			je	SHORT $L375
+;|*** 			memcpy (ctx->buffer + have, input, (size_t) need);
+; Line 85
+	*** 00003d	50 			push	ax
+	*** 00003e	ff 76 06 		push	WORD PTR [bp+6]	;input
+	*** 000041	8b c6 			mov	ax,si
+	*** 000043	03 c7 			add	ax,di
+	*** 000045	05 16 00 		add	ax,22	;0016H
+	*** 000048	50 			push	ax
+	*** 000049	e8 00 00 		call	_memcpy
+	*** 00004c	83 c4 06 		add	sp,6
+;|*** 			RMD160Transform ((uint32 *) ctx->state, (const uint32 *) ctx->buffer);
+; Line 86
+	*** 00004f	8d 45 16 		lea	ax,WORD PTR [di+22]
+	*** 000052	50 			push	ax
+	*** 000053	57 			push	di
+	*** 000054	e8 00 00 		call	_RMD160Transform
+	*** 000057	83 c4 04 		add	sp,4
+;|*** 			input += need;
+; Line 87
+	*** 00005a	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;need
+	*** 00005d	01 46 06 		add	WORD PTR [bp+6],ax	;input
+;|*** 			len -= need;
+; Line 88
+	*** 000060	29 46 fe 		sub	WORD PTR [bp-2],ax	;len
+;|*** 			have = 0;
+; Line 89
+	*** 000063	33 f6 			xor	si,si
+	*** 000065	89 76 fa 		mov	WORD PTR [bp-6],si	;have
+					$L375:
+	*** 000068	8b 76 06 		mov	si,WORD PTR [bp+6]	;input
+	*** 00006b	8b 7e fe 		mov	di,WORD PTR [bp-2]	;len
+;|*** 		}
+;|*** 
+;|*** 		/* Process data in RIPEMD160_BLOCK_LENGTH-byte chunks. */
+;|*** 		while (len >= RIPEMD160_BLOCK_LENGTH) {
+; Line 93
+	*** 00006e	eb 10 			jmp	SHORT $L392
+					$FC223:
+;|*** 			RMD160Transform ((uint32 *) ctx->state, (const uint32 *) input);
+; Line 94
+	*** 000070	56 			push	si
+	*** 000071	ff 76 04 		push	WORD PTR [bp+4]	;ctx
+	*** 000074	e8 00 00 		call	_RMD160Transform
+	*** 000077	83 c4 04 		add	sp,4
+;|*** 			input += RIPEMD160_BLOCK_LENGTH;
+; Line 95
+	*** 00007a	83 c6 40 		add	si,64	;0040H
+;|*** 			len -= RIPEMD160_BLOCK_LENGTH;
+; Line 96
+	*** 00007d	83 ef 40 		sub	di,64	;0040H
+;|*** 		}
+; Line 97
+					$L392:
+	*** 000080	83 ff 40 		cmp	di,64	;0040H
+	*** 000083	73 eb 			jae	SHORT $FC223
+	*** 000085	89 7e fe 		mov	WORD PTR [bp-2],di	;len
+;|*** 	}
+;|*** 
+;|*** 	/* Handle any remaining bytes of data. */
+;|*** 	if (len != 0)
+; Line 101
+					$I220:
+	*** 000088	83 7e fe 00 		cmp	WORD PTR [bp-2],0	;len
+	*** 00008c	74 14 			je	SHORT $EX216
+;|*** 		memcpy (ctx->buffer + have, input, (size_t) len);
+; Line 102
+	*** 00008e	ff 76 fe 		push	WORD PTR [bp-2]	;len
+	*** 000091	56 			push	si
+	*** 000092	8b 46 fa 		mov	ax,WORD PTR [bp-6]	;have
+	*** 000095	03 46 04 		add	ax,WORD PTR [bp+4]	;ctx
+	*** 000098	05 16 00 		add	ax,22	;0016H
+	*** 00009b	50 			push	ax
+	*** 00009c	e8 00 00 		call	_memcpy
+	*** 00009f	83 c4 06 		add	sp,6
+;|*** }
+; Line 103
+					$EX216:
+	*** 0000a2	5e 			pop	si
+	*** 0000a3	5f 			pop	di
+	*** 0000a4	c9 			leave	
+	*** 0000a5	c3 			ret	
+
+_RMD160Update	ENDP
+
+RMD160Pad	PROC NEAR	;  COMDAT
+;|*** 
+;|*** /*
+;|*** * Pad pad to 64-byte boundary with the bit pattern
+;|*** * 1 0* (64-bit count of bits processed, MSB-first)
+;|*** */
+;|*** static void RMD160Pad(RMD160_CTX *ctx)
+;|*** {
+; Line 110
+	*** 000000	c8 0c 00 00 		enter	12,0
+	*** 000004	56 			push	si
+;	ctx = 4
+;	count = -12
+;	padlen = -4
+	*** 000005	8b 76 04 		mov	si,WORD PTR [bp+4]	;ctx
+;|*** 	byte count[8];
+;|*** 	uint32 padlen;
+;|*** 
+;|*** 	/* Convert count to 8 bytes in little endian order. */
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT
+;|*** 	PUT_64BIT_LE(count, ctx->count);
+;|*** #else
+;|*** 	*(uint32 *) (count + 4) = 0;
+; Line 119
+	*** 000008	66 2b c0 		sub	eax,eax
+	*** 00000b	66 89 46 f8 		mov	DWORD PTR [bp-8],eax
+;|*** 	*(uint16 *) (count + 2) = 0;
+; Line 120
+	*** 00000f	89 46 f6 		mov	WORD PTR [bp-10],ax
+;|*** 	*(uint16 *) (count + 0) = ctx->count;
+; Line 121
+	*** 000012	8b 44 14 		mov	ax,WORD PTR [si+20]
+	*** 000015	89 46 f4 		mov	WORD PTR [bp-12],ax	;count
+;|*** #endif
+;|*** 
+;|*** 	/* Pad out to 56 mod 64. */
+;|*** 	padlen = RIPEMD160_BLOCK_LENGTH -
+;|*** 		(uint32)((ctx->count >> 3) & (RIPEMD160_BLOCK_LENGTH - 1));
+; Line 126
+	*** 000018	b8 40 00 		mov	ax,64	;0040H
+	*** 00001b	99 			cwd	
+	*** 00001c	8b 4c 14 		mov	cx,WORD PTR [si+20]
+	*** 00001f	81 e1 f8 01 		and	cx,504	;01f8H
+	*** 000023	c1 e9 03 		shr	cx,3
+	*** 000026	2b c1 			sub	ax,cx
+	*** 000028	83 da 00 		sbb	dx,0
+	*** 00002b	89 46 fc 		mov	WORD PTR [bp-4],ax	;padlen
+	*** 00002e	89 56 fe 		mov	WORD PTR [bp-2],dx
+;|*** 	if (padlen < 1 + 8)
+; Line 127
+	*** 000031	0b d2 			or	dx,dx
+	*** 000033	75 0c 			jne	SHORT $I232
+	*** 000035	3d 09 00 		cmp	ax,9
+	*** 000038	73 07 			jae	SHORT $I232
+;|*** 		padlen += RIPEMD160_BLOCK_LENGTH;
+; Line 128
+	*** 00003a	83 46 fc 40 		add	WORD PTR [bp-4],64	;0040H	;padlen
+	*** 00003e	11 56 fe 		adc	WORD PTR [bp-2],dx
+;|*** 	RMD160Update(ctx, PADDING, padlen - 8);            /* padlen - 8 <= 64 */
+; Line 129
+					$I232:
+	*** 000041	66 8b 46 fc 		mov	eax,DWORD PTR [bp-4]	;padlen
+	*** 000045	66 2d 08 00 00 00 	sub	eax,8
+	*** 00004b	66 50 			push	eax
+	*** 00004d	68 00 00 		push	OFFSET DGROUP:$S206_PADDING
+	*** 000050	56 			push	si
+	*** 000051	e8 00 00 		call	_RMD160Update
+	*** 000054	83 c4 08 		add	sp,8
+;|*** 	RMD160Update(ctx, count, 8);
+; Line 130
+	*** 000057	6a 00 			push	0
+	*** 000059	6a 08 			push	8
+	*** 00005b	8d 46 f4 		lea	ax,WORD PTR [bp-12]	;count
+	*** 00005e	50 			push	ax
+	*** 00005f	56 			push	si
+	*** 000060	e8 00 00 		call	_RMD160Update
+	*** 000063	83 c4 08 		add	sp,8
+;|*** }
+; Line 131
+	*** 000066	5e 			pop	si
+	*** 000067	c9 			leave	
+	*** 000068	c3 			ret	
+
+RMD160Pad	ENDP
+	PUBLIC	_RMD160Final
+_RMD160Final	PROC NEAR	;  COMDAT
+;|*** 
+;|*** /*
+;|*** * Final wrapup--call RMD160Pad, fill in digest and zero out ctx.
+;|*** */
+;|*** void RMD160Final(unsigned char *digest, RMD160_CTX *ctx)
+;|*** {
+; Line 137
+	*** 000000	c8 04 00 00 		enter	4,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	digest = 4
+;	ctx = 6
+;	register si = i
+	*** 000006	8b 7e 06 		mov	di,WORD PTR [bp+6]	;ctx
+;|*** 	int i;
+;|*** 
+;|*** 	RMD160Pad(ctx);
+; Line 140
+	*** 000009	57 			push	di
+	*** 00000a	e8 00 00 		call	RMD160Pad
+	*** 00000d	5b 			pop	bx
+;|*** 	if (digest) {
+; Line 141
+	*** 00000e	83 7e 04 00 		cmp	WORD PTR [bp+4],0	;digest
+	*** 000012	74 59 			je	SHORT $EX237
+;|*** 		for (i = 0; i < 5; i++)
+; Line 142
+	*** 000014	33 f6 			xor	si,si
+					$F240:
+;|*** 			PUT_32BIT_LE(digest + i * 4, ctx->state[i]);
+; Line 143
+	*** 000016	8b de 			mov	bx,si
+	*** 000018	c1 e3 02 		shl	bx,2
+	*** 00001b	2a e4 			sub	ah,ah
+	*** 00001d	8a 41 03 		mov	al,BYTE PTR [bx+3][di]
+	*** 000020	8b cb 			mov	cx,bx
+	*** 000022	03 5e 04 		add	bx,WORD PTR [bp+4]	;digest
+	*** 000025	88 47 03 		mov	BYTE PTR [bx+3],al
+	*** 000028	8b c3 			mov	ax,bx
+	*** 00002a	8b d9 			mov	bx,cx
+	*** 00002c	8a 51 02 		mov	dl,BYTE PTR [bx+2][di]
+	*** 00002f	8b d8 			mov	bx,ax
+	*** 000031	88 57 02 		mov	BYTE PTR [bx+2],dl
+	*** 000034	8b d1 			mov	dx,cx
+	*** 000036	b1 08 			mov	cl,8
+	*** 000038	8b c8 			mov	cx,ax
+	*** 00003a	b1 08 			mov	cl,8
+	*** 00003c	89 46 fe 		mov	WORD PTR [bp-2],ax
+	*** 00003f	8b da 			mov	bx,dx
+	*** 000041	89 56 fc 		mov	WORD PTR [bp-4],dx
+	*** 000044	8b 01 			mov	ax,WORD PTR [bx][di]
+	*** 000046	8b 51 02 		mov	dx,WORD PTR [bx+2][di]
+	*** 000049	e8 00 00 		call	__aNulshr
+	*** 00004c	8b 5e fe 		mov	bx,WORD PTR [bp-2]
+	*** 00004f	88 47 01 		mov	BYTE PTR [bx+1],al
+	*** 000052	8b 5e fc 		mov	bx,WORD PTR [bp-4]
+	*** 000055	8a 01 			mov	al,BYTE PTR [bx][di]
+	*** 000057	8b 5e fe 		mov	bx,WORD PTR [bp-2]
+	*** 00005a	46 			inc	si
+	*** 00005b	88 07 			mov	BYTE PTR [bx],al
+;|*** 		for (i = 0; i < 5; i++)
+; Line 142
+	*** 00005d	83 fe 05 		cmp	si,5
+	*** 000060	7c b4 			jl	SHORT $F240
+;|*** 			PUT_32BIT_LE(digest + i * 4, ctx->state[i]);
+;|*** 		memset (ctx, 0, sizeof(*ctx));
+; Line 144
+	*** 000062	6a 56 			push	86	;0056H
+	*** 000064	6a 00 			push	0
+	*** 000066	57 			push	di
+	*** 000067	e8 00 00 		call	_memset
+	*** 00006a	83 c4 06 		add	sp,6
+;|*** 	}
+;|*** }
+; Line 146
+					$EX237:
+	*** 00006d	5e 			pop	si
+	*** 00006e	5f 			pop	di
+	*** 00006f	c9 			leave	
+	*** 000070	c3 			ret	
+
+_RMD160Final	ENDP
+	PUBLIC	_RMD160Transform
+_RMD160Transform	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** #ifndef TC_MINIMIZE_CODE_SIZE
+;|*** 
+;|*** #define word32 unsigned __int32
+;|*** 
+;|*** #define k0 0
+;|*** #define k1 0x5a827999UL
+;|*** #define k2 0x6ed9eba1UL
+;|*** #define k3 0x8f1bbcdcUL
+;|*** #define k4 0xa953fd4eUL
+;|*** #define k5 0x50a28be6UL
+;|*** #define k6 0x5c4dd124UL
+;|*** #define k7 0x6d703ef3UL
+;|*** #define k8 0x7a6d76e9UL
+;|*** #define k9 0
+;|*** 
+;|*** static word32 rotlFixed (word32 x, unsigned int y)
+;|*** {
+;|*** 	return (word32)((x<<y) | (x>>(sizeof(word32)*8-y)));
+;|*** }
+;|*** 
+;|*** #define Subround(f, a, b, c, d, e, x, s, k)        \
+;|*** 	a += f(b, c, d) + x + k;\
+;|*** 	a = rotlFixed((word32)a, s) + e;\
+;|*** 	c = rotlFixed((word32)c, 10U)
+;|*** 
+;|*** void RMD160Transform (unsigned __int32 *digest, const unsigned __int32 *data)
+;|*** {
+;|*** #if BYTE_ORDER == LITTLE_ENDIAN
+;|*** 	const word32 *X = data;
+;|*** #else
+;|*** 	word32 X[16];
+;|*** 	int i;
+;|*** #endif
+;|*** 
+;|*** 	word32 a1, b1, c1, d1, e1, a2, b2, c2, d2, e2;
+;|*** 	a1 = a2 = digest[0];
+;|*** 	b1 = b2 = digest[1];
+;|*** 	c1 = c2 = digest[2];
+;|*** 	d1 = d2 = digest[3];
+;|*** 	e1 = e2 = digest[4];
+;|*** 
+;|*** #if BYTE_ORDER == BIG_ENDIAN
+;|*** 	for (i = 0; i < 16; i++)
+;|*** 	{
+;|*** 		X[i] = LE32 (data[i]);
+;|*** 	}
+;|*** #endif
+;|*** 
+;|*** 	Subround(F, a1, b1, c1, d1, e1, X[ 0], 11, k0);
+;|*** 	Subround(F, e1, a1, b1, c1, d1, X[ 1], 14, k0);
+;|*** 	Subround(F, d1, e1, a1, b1, c1, X[ 2], 15, k0);
+;|*** 	Subround(F, c1, d1, e1, a1, b1, X[ 3], 12, k0);
+;|*** 	Subround(F, b1, c1, d1, e1, a1, X[ 4],  5, k0);
+;|*** 	Subround(F, a1, b1, c1, d1, e1, X[ 5],  8, k0);
+;|*** 	Subround(F, e1, a1, b1, c1, d1, X[ 6],  7, k0);
+;|*** 	Subround(F, d1, e1, a1, b1, c1, X[ 7],  9, k0);
+;|*** 	Subround(F, c1, d1, e1, a1, b1, X[ 8], 11, k0);
+;|*** 	Subround(F, b1, c1, d1, e1, a1, X[ 9], 13, k0);
+;|*** 	Subround(F, a1, b1, c1, d1, e1, X[10], 14, k0);
+;|*** 	Subround(F, e1, a1, b1, c1, d1, X[11], 15, k0);
+;|*** 	Subround(F, d1, e1, a1, b1, c1, X[12],  6, k0);
+;|*** 	Subround(F, c1, d1, e1, a1, b1, X[13],  7, k0);
+;|*** 	Subround(F, b1, c1, d1, e1, a1, X[14],  9, k0);
+;|*** 	Subround(F, a1, b1, c1, d1, e1, X[15],  8, k0);
+;|*** 
+;|*** 	Subround(G, e1, a1, b1, c1, d1, X[ 7],  7, k1);
+;|*** 	Subround(G, d1, e1, a1, b1, c1, X[ 4],  6, k1);
+;|*** 	Subround(G, c1, d1, e1, a1, b1, X[13],  8, k1);
+;|*** 	Subround(G, b1, c1, d1, e1, a1, X[ 1], 13, k1);
+;|*** 	Subround(G, a1, b1, c1, d1, e1, X[10], 11, k1);
+;|*** 	Subround(G, e1, a1, b1, c1, d1, X[ 6],  9, k1);
+;|*** 	Subround(G, d1, e1, a1, b1, c1, X[15],  7, k1);
+;|*** 	Subround(G, c1, d1, e1, a1, b1, X[ 3], 15, k1);
+;|*** 	Subround(G, b1, c1, d1, e1, a1, X[12],  7, k1);
+;|*** 	Subround(G, a1, b1, c1, d1, e1, X[ 0], 12, k1);
+;|*** 	Subround(G, e1, a1, b1, c1, d1, X[ 9], 15, k1);
+;|*** 	Subround(G, d1, e1, a1, b1, c1, X[ 5],  9, k1);
+;|*** 	Subround(G, c1, d1, e1, a1, b1, X[ 2], 11, k1);
+;|*** 	Subround(G, b1, c1, d1, e1, a1, X[14],  7, k1);
+;|*** 	Subround(G, a1, b1, c1, d1, e1, X[11], 13, k1);
+;|*** 	Subround(G, e1, a1, b1, c1, d1, X[ 8], 12, k1);
+;|*** 
+;|*** 	Subround(H, d1, e1, a1, b1, c1, X[ 3], 11, k2);
+;|*** 	Subround(H, c1, d1, e1, a1, b1, X[10], 13, k2);
+;|*** 	Subround(H, b1, c1, d1, e1, a1, X[14],  6, k2);
+;|*** 	Subround(H, a1, b1, c1, d1, e1, X[ 4],  7, k2);
+;|*** 	Subround(H, e1, a1, b1, c1, d1, X[ 9], 14, k2);
+;|*** 	Subround(H, d1, e1, a1, b1, c1, X[15],  9, k2);
+;|*** 	Subround(H, c1, d1, e1, a1, b1, X[ 8], 13, k2);
+;|*** 	Subround(H, b1, c1, d1, e1, a1, X[ 1], 15, k2);
+;|*** 	Subround(H, a1, b1, c1, d1, e1, X[ 2], 14, k2);
+;|*** 	Subround(H, e1, a1, b1, c1, d1, X[ 7],  8, k2);
+;|*** 	Subround(H, d1, e1, a1, b1, c1, X[ 0], 13, k2);
+;|*** 	Subround(H, c1, d1, e1, a1, b1, X[ 6],  6, k2);
+;|*** 	Subround(H, b1, c1, d1, e1, a1, X[13],  5, k2);
+;|*** 	Subround(H, a1, b1, c1, d1, e1, X[11], 12, k2);
+;|*** 	Subround(H, e1, a1, b1, c1, d1, X[ 5],  7, k2);
+;|*** 	Subround(H, d1, e1, a1, b1, c1, X[12],  5, k2);
+;|*** 
+;|*** 	Subround(I, c1, d1, e1, a1, b1, X[ 1], 11, k3);
+;|*** 	Subround(I, b1, c1, d1, e1, a1, X[ 9], 12, k3);
+;|*** 	Subround(I, a1, b1, c1, d1, e1, X[11], 14, k3);
+;|*** 	Subround(I, e1, a1, b1, c1, d1, X[10], 15, k3);
+;|*** 	Subround(I, d1, e1, a1, b1, c1, X[ 0], 14, k3);
+;|*** 	Subround(I, c1, d1, e1, a1, b1, X[ 8], 15, k3);
+;|*** 	Subround(I, b1, c1, d1, e1, a1, X[12],  9, k3);
+;|*** 	Subround(I, a1, b1, c1, d1, e1, X[ 4],  8, k3);
+;|*** 	Subround(I, e1, a1, b1, c1, d1, X[13],  9, k3);
+;|*** 	Subround(I, d1, e1, a1, b1, c1, X[ 3], 14, k3);
+;|*** 	Subround(I, c1, d1, e1, a1, b1, X[ 7],  5, k3);
+;|*** 	Subround(I, b1, c1, d1, e1, a1, X[15],  6, k3);
+;|*** 	Subround(I, a1, b1, c1, d1, e1, X[14],  8, k3);
+;|*** 	Subround(I, e1, a1, b1, c1, d1, X[ 5],  6, k3);
+;|*** 	Subround(I, d1, e1, a1, b1, c1, X[ 6],  5, k3);
+;|*** 	Subround(I, c1, d1, e1, a1, b1, X[ 2], 12, k3);
+;|*** 
+;|*** 	Subround(J, b1, c1, d1, e1, a1, X[ 4],  9, k4);
+;|*** 	Subround(J, a1, b1, c1, d1, e1, X[ 0], 15, k4);
+;|*** 	Subround(J, e1, a1, b1, c1, d1, X[ 5],  5, k4);
+;|*** 	Subround(J, d1, e1, a1, b1, c1, X[ 9], 11, k4);
+;|*** 	Subround(J, c1, d1, e1, a1, b1, X[ 7],  6, k4);
+;|*** 	Subround(J, b1, c1, d1, e1, a1, X[12],  8, k4);
+;|*** 	Subround(J, a1, b1, c1, d1, e1, X[ 2], 13, k4);
+;|*** 	Subround(J, e1, a1, b1, c1, d1, X[10], 12, k4);
+;|*** 	Subround(J, d1, e1, a1, b1, c1, X[14],  5, k4);
+;|*** 	Subround(J, c1, d1, e1, a1, b1, X[ 1], 12, k4);
+;|*** 	Subround(J, b1, c1, d1, e1, a1, X[ 3], 13, k4);
+;|*** 	Subround(J, a1, b1, c1, d1, e1, X[ 8], 14, k4);
+;|*** 	Subround(J, e1, a1, b1, c1, d1, X[11], 11, k4);
+;|*** 	Subround(J, d1, e1, a1, b1, c1, X[ 6],  8, k4);
+;|*** 	Subround(J, c1, d1, e1, a1, b1, X[15],  5, k4);
+;|*** 	Subround(J, b1, c1, d1, e1, a1, X[13],  6, k4);
+;|*** 
+;|*** 	Subround(J, a2, b2, c2, d2, e2, X[ 5],  8, k5);
+;|*** 	Subround(J, e2, a2, b2, c2, d2, X[14],  9, k5);
+;|*** 	Subround(J, d2, e2, a2, b2, c2, X[ 7],  9, k5);
+;|*** 	Subround(J, c2, d2, e2, a2, b2, X[ 0], 11, k5);
+;|*** 	Subround(J, b2, c2, d2, e2, a2, X[ 9], 13, k5);
+;|*** 	Subround(J, a2, b2, c2, d2, e2, X[ 2], 15, k5);
+;|*** 	Subround(J, e2, a2, b2, c2, d2, X[11], 15, k5);
+;|*** 	Subround(J, d2, e2, a2, b2, c2, X[ 4],  5, k5);
+;|*** 	Subround(J, c2, d2, e2, a2, b2, X[13],  7, k5);
+;|*** 	Subround(J, b2, c2, d2, e2, a2, X[ 6],  7, k5);
+;|*** 	Subround(J, a2, b2, c2, d2, e2, X[15],  8, k5);
+;|*** 	Subround(J, e2, a2, b2, c2, d2, X[ 8], 11, k5);
+;|*** 	Subround(J, d2, e2, a2, b2, c2, X[ 1], 14, k5);
+;|*** 	Subround(J, c2, d2, e2, a2, b2, X[10], 14, k5);
+;|*** 	Subround(J, b2, c2, d2, e2, a2, X[ 3], 12, k5);
+;|*** 	Subround(J, a2, b2, c2, d2, e2, X[12],  6, k5);
+;|*** 
+;|*** 	Subround(I, e2, a2, b2, c2, d2, X[ 6],  9, k6); 
+;|*** 	Subround(I, d2, e2, a2, b2, c2, X[11], 13, k6);
+;|*** 	Subround(I, c2, d2, e2, a2, b2, X[ 3], 15, k6);
+;|*** 	Subround(I, b2, c2, d2, e2, a2, X[ 7],  7, k6);
+;|*** 	Subround(I, a2, b2, c2, d2, e2, X[ 0], 12, k6);
+;|*** 	Subround(I, e2, a2, b2, c2, d2, X[13],  8, k6);
+;|*** 	Subround(I, d2, e2, a2, b2, c2, X[ 5],  9, k6);
+;|*** 	Subround(I, c2, d2, e2, a2, b2, X[10], 11, k6);
+;|*** 	Subround(I, b2, c2, d2, e2, a2, X[14],  7, k6);
+;|*** 	Subround(I, a2, b2, c2, d2, e2, X[15],  7, k6);
+;|*** 	Subround(I, e2, a2, b2, c2, d2, X[ 8], 12, k6);
+;|*** 	Subround(I, d2, e2, a2, b2, c2, X[12],  7, k6);
+;|*** 	Subround(I, c2, d2, e2, a2, b2, X[ 4],  6, k6);
+;|*** 	Subround(I, b2, c2, d2, e2, a2, X[ 9], 15, k6);
+;|*** 	Subround(I, a2, b2, c2, d2, e2, X[ 1], 13, k6);
+;|*** 	Subround(I, e2, a2, b2, c2, d2, X[ 2], 11, k6);
+;|*** 
+;|*** 	Subround(H, d2, e2, a2, b2, c2, X[15],  9, k7);
+;|*** 	Subround(H, c2, d2, e2, a2, b2, X[ 5],  7, k7);
+;|*** 	Subround(H, b2, c2, d2, e2, a2, X[ 1], 15, k7);
+;|*** 	Subround(H, a2, b2, c2, d2, e2, X[ 3], 11, k7);
+;|*** 	Subround(H, e2, a2, b2, c2, d2, X[ 7],  8, k7);
+;|*** 	Subround(H, d2, e2, a2, b2, c2, X[14],  6, k7);
+;|*** 	Subround(H, c2, d2, e2, a2, b2, X[ 6],  6, k7);
+;|*** 	Subround(H, b2, c2, d2, e2, a2, X[ 9], 14, k7);
+;|*** 	Subround(H, a2, b2, c2, d2, e2, X[11], 12, k7);
+;|*** 	Subround(H, e2, a2, b2, c2, d2, X[ 8], 13, k7);
+;|*** 	Subround(H, d2, e2, a2, b2, c2, X[12],  5, k7);
+;|*** 	Subround(H, c2, d2, e2, a2, b2, X[ 2], 14, k7);
+;|*** 	Subround(H, b2, c2, d2, e2, a2, X[10], 13, k7);
+;|*** 	Subround(H, a2, b2, c2, d2, e2, X[ 0], 13, k7);
+;|*** 	Subround(H, e2, a2, b2, c2, d2, X[ 4],  7, k7);
+;|*** 	Subround(H, d2, e2, a2, b2, c2, X[13],  5, k7);
+;|*** 
+;|*** 	Subround(G, c2, d2, e2, a2, b2, X[ 8], 15, k8);
+;|*** 	Subround(G, b2, c2, d2, e2, a2, X[ 6],  5, k8);
+;|*** 	Subround(G, a2, b2, c2, d2, e2, X[ 4],  8, k8);
+;|*** 	Subround(G, e2, a2, b2, c2, d2, X[ 1], 11, k8);
+;|*** 	Subround(G, d2, e2, a2, b2, c2, X[ 3], 14, k8);
+;|*** 	Subround(G, c2, d2, e2, a2, b2, X[11], 14, k8);
+;|*** 	Subround(G, b2, c2, d2, e2, a2, X[15],  6, k8);
+;|*** 	Subround(G, a2, b2, c2, d2, e2, X[ 0], 14, k8);
+;|*** 	Subround(G, e2, a2, b2, c2, d2, X[ 5],  6, k8);
+;|*** 	Subround(G, d2, e2, a2, b2, c2, X[12],  9, k8);
+;|*** 	Subround(G, c2, d2, e2, a2, b2, X[ 2], 12, k8);
+;|*** 	Subround(G, b2, c2, d2, e2, a2, X[13],  9, k8);
+;|*** 	Subround(G, a2, b2, c2, d2, e2, X[ 9], 12, k8);
+;|*** 	Subround(G, e2, a2, b2, c2, d2, X[ 7],  5, k8);
+;|*** 	Subround(G, d2, e2, a2, b2, c2, X[10], 15, k8);
+;|*** 	Subround(G, c2, d2, e2, a2, b2, X[14],  8, k8);
+;|*** 
+;|*** 	Subround(F, b2, c2, d2, e2, a2, X[12],  8, k9);
+;|*** 	Subround(F, a2, b2, c2, d2, e2, X[15],  5, k9);
+;|*** 	Subround(F, e2, a2, b2, c2, d2, X[10], 12, k9);
+;|*** 	Subround(F, d2, e2, a2, b2, c2, X[ 4],  9, k9);
+;|*** 	Subround(F, c2, d2, e2, a2, b2, X[ 1], 12, k9);
+;|*** 	Subround(F, b2, c2, d2, e2, a2, X[ 5],  5, k9);
+;|*** 	Subround(F, a2, b2, c2, d2, e2, X[ 8], 14, k9);
+;|*** 	Subround(F, e2, a2, b2, c2, d2, X[ 7],  6, k9);
+;|*** 	Subround(F, d2, e2, a2, b2, c2, X[ 6],  8, k9);
+;|*** 	Subround(F, c2, d2, e2, a2, b2, X[ 2], 13, k9);
+;|*** 	Subround(F, b2, c2, d2, e2, a2, X[13],  6, k9);
+;|*** 	Subround(F, a2, b2, c2, d2, e2, X[14],  5, k9);
+;|*** 	Subround(F, e2, a2, b2, c2, d2, X[ 0], 15, k9);
+;|*** 	Subround(F, d2, e2, a2, b2, c2, X[ 3], 13, k9);
+;|*** 	Subround(F, c2, d2, e2, a2, b2, X[ 9], 11, k9);
+;|*** 	Subround(F, b2, c2, d2, e2, a2, X[11], 11, k9);
+;|*** 
+;|*** 	c1        = digest[1] + c1 + d2;
+;|*** 	digest[1] = digest[2] + d1 + e2;
+;|*** 	digest[2] = digest[3] + e1 + a2;
+;|*** 	digest[3] = digest[4] + a1 + b2;
+;|*** 	digest[4] = digest[0] + b1 + c2;
+;|*** 	digest[0] = c1;
+;|*** }
+;|*** 
+;|*** #else // TC_MINIMIZE_CODE_SIZE
+;|*** 
+;|*** /*
+;|***  Copyright (c) 2008 TrueCrypt Developers Association. All rights reserved.
+;|*** 
+;|***  Governed by the TrueCrypt License 3.0 the full text of which is contained in
+;|***  the file License.txt included in TrueCrypt binary and source code distribution
+;|***  packages.
+;|*** */
+;|*** 
+;|*** #pragma optimize ("tl", on)
+;|*** 
+;|*** typedef unsigned __int32 uint32;
+;|*** typedef unsigned __int8 byte;
+;|*** 
+;|*** #include <stdlib.h>
+;|*** #pragma intrinsic (_lrotl)
+;|*** 
+;|*** static const byte OrderTab[] = {
+;|*** 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+;|*** 	7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8,
+;|*** 	3, 10, 14, 4, 9, 15, 8, 1, 2, 7, 0, 6, 13, 11, 5, 12,
+;|*** 	1, 9, 11, 10, 0, 8, 12, 4, 13, 3, 7, 15, 14, 5, 6, 2,
+;|*** 	4, 0, 5, 9, 7, 12, 2, 10, 14, 1, 3, 8, 11, 6, 15, 13,
+;|*** 	5, 14, 7, 0, 9, 2, 11, 4, 13, 6, 15, 8, 1, 10, 3, 12,
+;|*** 	6, 11, 3, 7, 0, 13, 5, 10, 14, 15, 8, 12, 4, 9, 1, 2,
+;|*** 	15, 5, 1, 3, 7, 14, 6, 9, 11, 8, 12, 2, 10, 0, 4, 13,
+;|*** 	8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2, 13, 9, 7, 10, 14,
+;|*** 	12, 15, 10, 4, 1, 5, 8, 7, 6, 2, 13, 14, 0, 3, 9, 11
+;|*** };
+;|*** 
+;|*** static const byte RolTab[] = {
+;|*** 	11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8,
+;|*** 	7, 6, 8, 13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12,
+;|*** 	11, 13, 6, 7, 14, 9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5,
+;|*** 	11, 12, 14, 15, 14, 15, 9, 8, 9, 14, 5, 6, 8, 6, 5, 12,
+;|*** 	9, 15, 5, 11, 6, 8, 13, 12, 5, 12, 13, 14, 11, 8, 5, 6,
+;|*** 	8, 9, 9, 11, 13, 15, 15, 5, 7, 7, 8, 11, 14, 14, 12, 6,
+;|*** 	9, 13, 15, 7, 12, 8, 9, 11, 7, 7, 12, 7, 6, 15, 13, 11,
+;|*** 	9, 7, 15, 11, 8, 6, 6, 14, 12, 13, 5, 14, 13, 13, 7, 5,
+;|*** 	15, 5, 8, 11, 14, 14, 6, 14, 6, 9, 12, 9, 12, 5, 15, 8,
+;|*** 	8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
+;|*** };
+;|*** 
+;|*** static const uint32 KTab[] = {
+;|*** 	0x00000000UL,
+;|*** 	0x5A827999UL,
+;|*** 	0x6ED9EBA1UL,
+;|*** 	0x8F1BBCDCUL,
+;|*** 	0xA953FD4EUL,
+;|*** 	0x50A28BE6UL,
+;|*** 	0x5C4DD124UL,
+;|*** 	0x6D703EF3UL,
+;|*** 	0x7A6D76E9UL,
+;|*** 	0x00000000UL
+;|*** };
+;|*** 
+;|*** 
+;|*** void RMD160Transform (unsigned __int32 *state, const unsigned __int32 *data)
+;|*** {
+; Line 434
+	*** 000000	c8 2e 00 00 		enter	46,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	state = 4
+;	data = 6
+;	a = -22
+;	b = -18
+;	c = -10
+;	d = -14
+;	e = -26
+;	a2 = -30
+;	b2 = -34
+;	c2 = -38
+;	d2 = -42
+;	e2 = -46
+;	pos = -5
+;	tmp = -4
+	*** 000006	8b 76 04 		mov	si,WORD PTR [bp+4]	;state
+;|*** 	uint32 a, b, c, d, e;
+;|*** 	uint32 a2, b2, c2, d2, e2;
+;|*** 	byte pos;
+;|*** 	uint32 tmp;
+;|*** 
+;|*** 	a = state[0];
+; Line 440
+	*** 000009	66 8b 04 		mov	eax,DWORD PTR [si]
+	*** 00000c	66 89 46 ea 		mov	DWORD PTR [bp-22],eax	;a
+;|*** 	b = state[1];
+; Line 441
+	*** 000010	66 8b 44 04 		mov	eax,DWORD PTR [si+4]
+	*** 000014	66 89 46 ee 		mov	DWORD PTR [bp-18],eax	;b
+;|*** 	c = state[2];
+; Line 442
+	*** 000018	66 8b 44 08 		mov	eax,DWORD PTR [si+8]
+	*** 00001c	66 89 46 f6 		mov	DWORD PTR [bp-10],eax	;c
+;|*** 	d = state[3];
+; Line 443
+	*** 000020	66 8b 44 0c 		mov	eax,DWORD PTR [si+12]
+	*** 000024	66 89 46 f2 		mov	DWORD PTR [bp-14],eax	;d
+;|*** 	e = state[4];
+; Line 444
+	*** 000028	66 8b 44 10 		mov	eax,DWORD PTR [si+16]
+	*** 00002c	66 89 46 e6 		mov	DWORD PTR [bp-26],eax	;e
+;|*** 
+;|*** 	for (pos = 0; pos < 160; ++pos)
+; Line 446
+	*** 000030	c6 46 fb 00 		mov	BYTE PTR [bp-5],0	;pos
+	*** 000034	8b 7e 06 		mov	di,WORD PTR [bp+6]	;data
+					$F362:
+;|*** 	{
+;|*** 		tmp = a + data[OrderTab[pos]] + KTab[pos >> 4];
+; Line 448
+	*** 000037	8a 5e fb 		mov	bl,BYTE PTR [bp-5]	;pos
+	*** 00003a	c0 eb 02 		shr	bl,2
+	*** 00003d	81 e3 fc 00 		and	bx,252	;00fcH
+	*** 000041	8b 87 00 00 		mov	ax,WORD PTR $S344_KTab[bx]
+	*** 000045	8b 97 02 00 		mov	dx,WORD PTR $S344_KTab[bx+2]
+	*** 000049	8a 5e fb 		mov	bl,BYTE PTR [bp-5]	;pos
+	*** 00004c	2a ff 			sub	bh,bh
+	*** 00004e	8a 9f 00 00 		mov	bl,BYTE PTR $S342_OrderTab[bx]
+	*** 000052	c1 e3 02 		shl	bx,2
+	*** 000055	03 01 			add	ax,WORD PTR [bx][di]
+	*** 000057	13 51 02 		adc	dx,WORD PTR [bx+2][di]
+	*** 00005a	03 46 ea 		add	ax,WORD PTR [bp-22]	;a
+	*** 00005d	13 56 ec 		adc	dx,WORD PTR [bp-20]
+	*** 000060	89 46 fc 		mov	WORD PTR [bp-4],ax	;tmp
+	*** 000063	89 56 fe 		mov	WORD PTR [bp-2],dx
+;|*** 		
+;|*** 		switch (pos >> 4)
+; Line 450
+	*** 000066	8a 46 fb 		mov	al,BYTE PTR [bp-5]	;pos
+	*** 000069	c0 e8 04 		shr	al,4
+	*** 00006c	2a e4 			sub	ah,ah
+;|*** 		{
+;|*** 		case 0: case 9: tmp += F (b, c, d); break;
+;|*** 		case 1: case 8: tmp += G (b, c, d); break;
+;|*** 		case 2: case 7: tmp += H (b, c, d); break;
+;|*** 		case 3: case 6: tmp += I (b, c, d); break;
+;|*** 		case 4: case 5: tmp += J (b, c, d); break;
+;|*** 		}
+; Line 457
+	*** 00006e	3d 09 00 		cmp	ax,9
+	*** 000071	0f 87 8f 00 		ja	$SB366
+	*** 000075	03 c0 			add	ax,ax
+	*** 000077	93 			xchg	ax,bx
+	*** 000078	2e ff a7 00 00 		jmp	WORD PTR cs:$L387[bx]
+	*** 00007d	90 			nop	
+					$L387:
+	*** 00007e	00 00 				DW	$SC369
+	*** 000080	00 00 				DW	$SC370
+	*** 000082	00 00 				DW	$SC371
+	*** 000084	00 00 				DW	$SC372
+	*** 000086	00 00 				DW	$SC373
+	*** 000088	00 00 				DW	$SC373
+	*** 00008a	00 00 				DW	$SC372
+	*** 00008c	00 00 				DW	$SC371
+	*** 00008e	00 00 				DW	$SC370
+	*** 000090	00 00 				DW	$SC369
+;|*** 		case 0: case 9: tmp += F (b, c, d); break;
+; Line 452
+					$SC369:
+	*** 000092	8b 46 f2 		mov	ax,WORD PTR [bp-14]	;d
+	*** 000095	8b 56 f4 		mov	dx,WORD PTR [bp-12]
+	*** 000098	33 46 f6 		xor	ax,WORD PTR [bp-10]	;c
+	*** 00009b	33 56 f8 		xor	dx,WORD PTR [bp-8]
+	*** 00009e	eb 58 			jmp	SHORT $L394
+;|*** 		case 1: case 8: tmp += G (b, c, d); break;
+; Line 453
+					$SC370:
+	*** 0000a0	66 8b 46 f2 		mov	eax,DWORD PTR [bp-14]	;d
+	*** 0000a4	66 33 46 f6 		xor	eax,DWORD PTR [bp-10]	;c
+	*** 0000a8	66 23 46 ee 		and	eax,DWORD PTR [bp-18]	;b
+	*** 0000ac	66 8b d0 		mov	edx,eax
+	*** 0000af	66 c1 ea 10 		shr	edx,16	;00000010H
+	*** 0000b3	eb 11 			jmp	SHORT $L396
+	*** 0000b5	90 			nop	
+;|*** 		case 2: case 7: tmp += H (b, c, d); break;
+; Line 454
+					$SC371:
+	*** 0000b6	8b 46 f6 		mov	ax,WORD PTR [bp-10]	;c
+	*** 0000b9	8b 56 f8 		mov	dx,WORD PTR [bp-8]
+	*** 0000bc	f7 d0 			not	ax
+	*** 0000be	f7 d2 			not	dx
+	*** 0000c0	0b 46 ee 		or	ax,WORD PTR [bp-18]	;b
+	*** 0000c3	0b 56 f0 		or	dx,WORD PTR [bp-16]
+					$L396:
+	*** 0000c6	33 46 f2 		xor	ax,WORD PTR [bp-14]	;d
+	*** 0000c9	33 56 f4 		xor	dx,WORD PTR [bp-12]
+	*** 0000cc	eb 30 			jmp	SHORT $L395
+;|*** 		case 3: case 6: tmp += I (b, c, d); break;
+; Line 455
+					$SC372:
+	*** 0000ce	66 8b 46 f6 		mov	eax,DWORD PTR [bp-10]	;c
+	*** 0000d2	66 33 46 ee 		xor	eax,DWORD PTR [bp-18]	;b
+	*** 0000d6	66 23 46 f2 		and	eax,DWORD PTR [bp-14]	;d
+	*** 0000da	66 33 46 f6 		xor	eax,DWORD PTR [bp-10]	;c
+	*** 0000de	66 8b d0 		mov	edx,eax
+	*** 0000e1	66 c1 ea 10 		shr	edx,16	;00000010H
+	*** 0000e5	eb 17 			jmp	SHORT $L395
+	*** 0000e7	90 			nop	
+;|*** 		case 4: case 5: tmp += J (b, c, d); break;
+; Line 456
+					$SC373:
+	*** 0000e8	8b 46 f2 		mov	ax,WORD PTR [bp-14]	;d
+	*** 0000eb	8b 56 f4 		mov	dx,WORD PTR [bp-12]
+	*** 0000ee	f7 d0 			not	ax
+	*** 0000f0	f7 d2 			not	dx
+	*** 0000f2	0b 46 f6 		or	ax,WORD PTR [bp-10]	;c
+	*** 0000f5	0b 56 f8 		or	dx,WORD PTR [bp-8]
+					$L394:
+	*** 0000f8	33 46 ee 		xor	ax,WORD PTR [bp-18]	;b
+	*** 0000fb	33 56 f0 		xor	dx,WORD PTR [bp-16]
+					$L395:
+	*** 0000fe	01 46 fc 		add	WORD PTR [bp-4],ax	;tmp
+	*** 000101	11 56 fe 		adc	WORD PTR [bp-2],dx
+;|*** 		}
+; Line 457
+					$SB366:
+;|*** 
+;|*** 		tmp = _lrotl (tmp, RolTab[pos]) + e;
+; Line 459
+	*** 000104	8a 5e fb 		mov	bl,BYTE PTR [bp-5]	;pos
+	*** 000107	2a ff 			sub	bh,bh
+	*** 000109	8a 8f 00 00 		mov	cl,BYTE PTR $S343_RolTab[bx]
+	*** 00010d	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;tmp
+	*** 000110	8b 56 fe 		mov	dx,WORD PTR [bp-2]
+	*** 000113	0a c9 			or	cl,cl
+	*** 000115	74 0b 			je	SHORT $L389
+					$L388:
+	*** 000117	03 c0 			add	ax,ax
+	*** 000119	13 d2 			adc	dx,dx
+	*** 00011b	15 00 00 		adc	ax,0
+	*** 00011e	fe c9 			dec	cl
+	*** 000120	75 f5 			jne	SHORT $L388
+					$L389:
+	*** 000122	03 46 e6 		add	ax,WORD PTR [bp-26]	;e
+	*** 000125	13 56 e8 		adc	dx,WORD PTR [bp-24]
+	*** 000128	89 46 fc 		mov	WORD PTR [bp-4],ax	;tmp
+	*** 00012b	89 56 fe 		mov	WORD PTR [bp-2],dx
+;|*** 		a = e;
+; Line 460
+	*** 00012e	66 8b 46 e6 		mov	eax,DWORD PTR [bp-26]	;e
+	*** 000132	66 89 46 ea 		mov	DWORD PTR [bp-22],eax	;a
+;|*** 		e = d;
+; Line 461
+	*** 000136	66 8b 46 f2 		mov	eax,DWORD PTR [bp-14]	;d
+	*** 00013a	66 89 46 e6 		mov	DWORD PTR [bp-26],eax	;e
+;|*** 		d = _lrotl (c, 10);
+; Line 462
+	*** 00013e	8b 46 f6 		mov	ax,WORD PTR [bp-10]	;c
+	*** 000141	8b 56 f8 		mov	dx,WORD PTR [bp-8]
+	*** 000144	b1 0a 			mov	cl,10	;000aH
+					$L390:
+	*** 000146	03 c0 			add	ax,ax
+	*** 000148	13 d2 			adc	dx,dx
+	*** 00014a	15 00 00 		adc	ax,0
+	*** 00014d	fe c9 			dec	cl
+	*** 00014f	75 f5 			jne	SHORT $L390
+	*** 000151	89 46 f2 		mov	WORD PTR [bp-14],ax	;d
+	*** 000154	89 56 f4 		mov	WORD PTR [bp-12],dx
+;|*** 		c = b;
+; Line 463
+	*** 000157	66 8b 46 ee 		mov	eax,DWORD PTR [bp-18]	;b
+	*** 00015b	66 89 46 f6 		mov	DWORD PTR [bp-10],eax	;c
+;|*** 		b = tmp;
+; Line 464
+	*** 00015f	66 8b 46 fc 		mov	eax,DWORD PTR [bp-4]	;tmp
+	*** 000163	66 89 46 ee 		mov	DWORD PTR [bp-18],eax	;b
+;|*** 
+;|*** 		if (pos == 79)
+; Line 466
+	*** 000167	80 7e fb 4f 		cmp	BYTE PTR [bp-5],79	;004fH	;pos
+	*** 00016b	75 4f 			jne	SHORT $FC363
+;|*** 		{
+;|*** 			a2 = a;
+; Line 468
+	*** 00016d	66 8b 46 ea 		mov	eax,DWORD PTR [bp-22]	;a
+	*** 000171	66 89 46 e2 		mov	DWORD PTR [bp-30],eax	;a2
+;|*** 			b2 = b;
+; Line 469
+	*** 000175	66 8b 46 ee 		mov	eax,DWORD PTR [bp-18]	;b
+	*** 000179	66 89 46 de 		mov	DWORD PTR [bp-34],eax	;b2
+;|*** 			c2 = c;
+; Line 470
+	*** 00017d	66 8b 46 f6 		mov	eax,DWORD PTR [bp-10]	;c
+	*** 000181	66 89 46 da 		mov	DWORD PTR [bp-38],eax	;c2
+;|*** 			d2 = d;
+; Line 471
+	*** 000185	66 8b 46 f2 		mov	eax,DWORD PTR [bp-14]	;d
+	*** 000189	66 89 46 d6 		mov	DWORD PTR [bp-42],eax	;d2
+;|*** 			e2 = e;
+; Line 472
+	*** 00018d	66 8b 46 e6 		mov	eax,DWORD PTR [bp-26]	;e
+	*** 000191	66 89 46 d2 		mov	DWORD PTR [bp-46],eax	;e2
+;|*** 
+;|*** 			a = state[0];
+; Line 474
+	*** 000195	66 8b 04 		mov	eax,DWORD PTR [si]
+	*** 000198	66 89 46 ea 		mov	DWORD PTR [bp-22],eax	;a
+;|*** 			b = state[1];
+; Line 475
+	*** 00019c	66 8b 44 04 		mov	eax,DWORD PTR [si+4]
+	*** 0001a0	66 89 46 ee 		mov	DWORD PTR [bp-18],eax	;b
+;|*** 			c = state[2];
+; Line 476
+	*** 0001a4	66 8b 44 08 		mov	eax,DWORD PTR [si+8]
+	*** 0001a8	66 89 46 f6 		mov	DWORD PTR [bp-10],eax	;c
+;|*** 			d = state[3];
+; Line 477
+	*** 0001ac	66 8b 44 0c 		mov	eax,DWORD PTR [si+12]
+	*** 0001b0	66 89 46 f2 		mov	DWORD PTR [bp-14],eax	;d
+;|*** 			e = state[4];
+; Line 478
+	*** 0001b4	66 8b 44 10 		mov	eax,DWORD PTR [si+16]
+	*** 0001b8	66 89 46 e6 		mov	DWORD PTR [bp-26],eax	;e
+;|*** 	for (pos = 0; pos < 160; ++pos)
+; Line 446
+					$FC363:
+	*** 0001bc	fe 46 fb 		inc	BYTE PTR [bp-5]	;pos
+	*** 0001bf	80 7e fb a0 		cmp	BYTE PTR [bp-5],160	;00a0H	;pos
+	*** 0001c3	0f 82 70 fe 		jb	$F362
+;|*** 	{
+;|*** 		tmp = a + data[OrderTab[pos]] + KTab[pos >> 4];
+;|*** 		
+;|*** 		switch (pos >> 4)
+;|*** 		{
+;|*** 		case 0: case 9: tmp += F (b, c, d); break;
+;|*** 		case 1: case 8: tmp += G (b, c, d); break;
+;|*** 		case 2: case 7: tmp += H (b, c, d); break;
+;|*** 		case 3: case 6: tmp += I (b, c, d); break;
+;|*** 		case 4: case 5: tmp += J (b, c, d); break;
+;|*** 		}
+;|*** 
+;|*** 		tmp = _lrotl (tmp, RolTab[pos]) + e;
+;|*** 		a = e;
+;|*** 		e = d;
+;|*** 		d = _lrotl (c, 10);
+;|*** 		c = b;
+;|*** 		b = tmp;
+;|*** 
+;|*** 		if (pos == 79)
+;|*** 		{
+;|*** 			a2 = a;
+;|*** 			b2 = b;
+;|*** 			c2 = c;
+;|*** 			d2 = d;
+;|*** 			e2 = e;
+;|*** 
+;|*** 			a = state[0];
+;|*** 			b = state[1];
+;|*** 			c = state[2];
+;|*** 			d = state[3];
+;|*** 			e = state[4];
+;|*** 		}
+;|*** 	}
+;|*** 
+;|*** 	tmp = state[1] + c2 + d;
+; Line 482
+	*** 0001c7	66 8b 44 04 		mov	eax,DWORD PTR [si+4]
+	*** 0001cb	66 03 46 da 		add	eax,DWORD PTR [bp-38]	;c2
+	*** 0001cf	66 03 46 f2 		add	eax,DWORD PTR [bp-14]	;d
+	*** 0001d3	66 89 46 fc 		mov	DWORD PTR [bp-4],eax	;tmp
+;|*** 	state[1] = state[2] + d2 + e;
+; Line 483
+	*** 0001d7	66 8b 44 08 		mov	eax,DWORD PTR [si+8]
+	*** 0001db	66 03 46 d6 		add	eax,DWORD PTR [bp-42]	;d2
+	*** 0001df	66 03 46 e6 		add	eax,DWORD PTR [bp-26]	;e
+	*** 0001e3	66 89 44 04 		mov	DWORD PTR [si+4],eax
+;|*** 	state[2] = state[3] + e2 + a;
+; Line 484
+	*** 0001e7	66 8b 44 0c 		mov	eax,DWORD PTR [si+12]
+	*** 0001eb	66 03 46 d2 		add	eax,DWORD PTR [bp-46]	;e2
+	*** 0001ef	66 03 46 ea 		add	eax,DWORD PTR [bp-22]	;a
+	*** 0001f3	66 89 44 08 		mov	DWORD PTR [si+8],eax
+;|*** 	state[3] = state[4] + a2 + b;
+; Line 485
+	*** 0001f7	66 8b 44 10 		mov	eax,DWORD PTR [si+16]
+	*** 0001fb	66 03 46 e2 		add	eax,DWORD PTR [bp-30]	;a2
+	*** 0001ff	66 03 46 ee 		add	eax,DWORD PTR [bp-18]	;b
+	*** 000203	66 89 44 0c 		mov	DWORD PTR [si+12],eax
+;|*** 	state[4] = state[0] + b2 + c;
+; Line 486
+	*** 000207	66 8b 04 		mov	eax,DWORD PTR [si]
+	*** 00020a	66 03 46 de 		add	eax,DWORD PTR [bp-34]	;b2
+	*** 00020e	66 03 46 f6 		add	eax,DWORD PTR [bp-10]	;c
+	*** 000212	66 89 44 10 		mov	DWORD PTR [si+16],eax
+;|*** 	state[0] = tmp;
+; Line 487
+	*** 000216	66 8b 46 fc 		mov	eax,DWORD PTR [bp-4]	;tmp
+	*** 00021a	66 89 04 		mov	DWORD PTR [si],eax
+;|*** }
+; Line 488
+	*** 00021d	5e 			pop	si
+	*** 00021e	5f 			pop	di
+	*** 00021f	c9 			leave	
+	*** 000220	c3 			ret	
+
+_RMD160Transform	ENDP
+	*** 000221	90 			nop	
+_TEXT	ENDS
+END
+;|*** 
+;|*** #endif // TC_MINIMIZE_CODE_SIZE
