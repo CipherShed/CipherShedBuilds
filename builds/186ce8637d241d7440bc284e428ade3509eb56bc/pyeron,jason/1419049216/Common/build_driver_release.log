@@ -1,4 +1,0 @@
-BUILD: Examining c:\home\public\desktop\projects\ciphershed\src\common directory for files to compile.
-1>Compiling c:\home\public\desktop\projects\ciphershed\src\common *************
-1>'nmake.exe /nologo BUILDMSG=Stop. /S /C -i BUILD_PASS=PASS1 NOLINK=1 MAKEDIR_RELATIVE_TO_BASEDIR='
-1>BUILDMSG: _NT_TARGET_VERSION SET TO WS03
