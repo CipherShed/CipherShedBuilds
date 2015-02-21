@@ -1,0 +1,33 @@
+
+ Start  Stop   Length Name                   Class
+ 00000H 007E0H 007E1H _TEXT                  CODE
+ 007E2H 008FDH 0011CH _DATA                  DATA
+ 008FEH 008FEH 00000H CONST                  CONST
+ 008FEH 00BB9H 002BCH _BSS                   BSS
+
+ Origin   Group
+ 0000:0   DGROUP
+
+  Address         Publics by Name
+
+ 0000:08FE       _edata
+ 0000:0BBA       _end
+ 0000:0760       _main
+ 0000:075E       __acrtused
+ 0000:0104       __aNlshl
+ 0000:0110       __aNlshr
+ 0000:08FE       __edata
+ 0000:0BBA       __end
+
+  Address         Publics by Value
+
+ 0000:0104       __aNlshl
+ 0000:0110       __aNlshr
+ 0000:075E       __acrtused
+ 0000:0760       _main
+ 0000:08FE       __edata
+ 0000:08FE       _edata
+ 0000:0BBA       __end
+ 0000:0BBA       _end
+
+Program entry point at 0000:0100
