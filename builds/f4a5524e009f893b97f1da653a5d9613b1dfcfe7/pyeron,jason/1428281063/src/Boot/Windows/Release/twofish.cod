@@ -1,0 +1,1880 @@
+;	Static Name Aliases
+;
+;	$S192_ror4	EQU	ror4
+;	$S193_ashx	EQU	ashx
+;	$S194_qt0	EQU	qt0
+;	$S195_qt1	EQU	qt1
+;	$S196_qt2	EQU	qt2
+;	$S197_qt3	EQU	qt3
+;	$S214_qt_gen	EQU	qt_gen
+;	$S215_q_tab	EQU	q_tab
+;	$S222_mt_gen	EQU	mt_gen
+;	$S223_m_tab	EQU	m_tab
+;	$S190_tab_5b	EQU	tab_5b
+;	$S191_tab_ef	EQU	tab_ef
+	TITLE   ..\..\..\crypto\twofish.c
+	.MODEL  SMALL
+	.386p
+	.387
+_TEXT	SEGMENT  WORD USE16 PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD USE16 PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD USE16 PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD USE16 PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	__aNulmul:NEAR
+_DATA      SEGMENT
+$S190_tab_5b	DB	00H
+	DB	05aH
+	DB	0b4H
+	DB	0eeH
+$S191_tab_ef	DB	00H
+	DB	0eeH
+	DB	0b4H
+	DB	05aH
+$S192_ror4	DB	00H
+	DB	08H
+	DB	01H
+	DB	09H
+	DB	02H
+	DB	0aH
+	DB	03H
+	DB	0bH
+	DB	04H
+	DB	0cH
+	DB	05H
+	DB	0dH
+	DB	06H
+	DB	0eH
+	DB	07H
+	DB	0fH
+$S193_ashx	DB	00H
+	DB	09H
+	DB	02H
+	DB	0bH
+	DB	04H
+	DB	0dH
+	DB	06H
+	DB	0fH
+	DB	08H
+	DB	01H
+	DB	0aH
+	DB	03H
+	DB	0cH
+	DB	05H
+	DB	0eH
+	DB	07H
+$S194_qt0	DB	08H
+	DB	01H
+	DB	07H
+	DB	0dH
+	DB	06H
+	DB	0fH
+	DB	03H
+	DB	02H
+	DB	00H
+	DB	0bH
+	DB	05H
+	DB	09H
+	DB	0eH
+	DB	0cH
+	DB	0aH
+	DB	04H
+	DB	02H
+	DB	08H
+	DB	0bH
+	DB	0dH
+	DB	0fH
+	DB	07H
+	DB	06H
+	DB	0eH
+	DB	03H
+	DB	01H
+	DB	09H
+	DB	04H
+	DB	00H
+	DB	0aH
+	DB	0cH
+	DB	05H
+$S195_qt1	DB	0eH
+	DB	0cH
+	DB	0bH
+	DB	08H
+	DB	01H
+	DB	02H
+	DB	03H
+	DB	05H
+	DB	0fH
+	DB	04H
+	DB	0aH
+	DB	06H
+	DB	07H
+	DB	00H
+	DB	09H
+	DB	0dH
+	DB	01H
+	DB	0eH
+	DB	02H
+	DB	0bH
+	DB	04H
+	DB	0cH
+	DB	03H
+	DB	07H
+	DB	06H
+	DB	0dH
+	DB	0aH
+	DB	05H
+	DB	0fH
+	DB	09H
+	DB	00H
+	DB	08H
+$S196_qt2	DB	0bH
+	DB	0aH
+	DB	05H
+	DB	0eH
+	DB	06H
+	DB	0dH
+	DB	09H
+	DB	00H
+	DB	0cH
+	DB	08H
+	DB	0fH
+	DB	03H
+	DB	02H
+	DB	04H
+	DB	07H
+	DB	01H
+	DB	04H
+	DB	0cH
+	DB	07H
+	DB	05H
+	DB	01H
+	DB	06H
+	DB	09H
+	DB	0aH
+	DB	00H
+	DB	0eH
+	DB	0dH
+	DB	08H
+	DB	02H
+	DB	0bH
+	DB	03H
+	DB	0fH
+$S197_qt3	DB	0dH
+	DB	07H
+	DB	0fH
+	DB	04H
+	DB	01H
+	DB	02H
+	DB	06H
+	DB	0eH
+	DB	09H
+	DB	0bH
+	DB	03H
+	DB	00H
+	DB	08H
+	DB	05H
+	DB	0cH
+	DB	0aH
+	DB	0bH
+	DB	09H
+	DB	05H
+	DB	01H
+	DB	0cH
+	DB	03H
+	DB	0dH
+	DB	0eH
+	DB	06H
+	DB	04H
+	DB	07H
+	DB	0fH
+	DB	02H
+	DB	00H
+	DB	08H
+	DB	0aH
+$S214_qt_gen	DD	00H
+$S222_mt_gen	DD	00H
+_DATA      ENDS
+_BSS      SEGMENT
+$S215_q_tab	DW 0100H DUP (?)
+$S223_m_tab	DW 0800H DUP (?)
+_BSS      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+
+qp	PROC NEAR	;  COMDAT
+;|*** /*
+;|***  ---------------------------------------------------------------------------
+;|***  Copyright (c) 1999, Dr Brian Gladman, Worcester, UK.   All rights reserved.
+;|*** 
+;|***  LICENSE TERMS
+;|*** 
+;|***  The free distribution and use of this software is allowed (with or without
+;|***  changes) provided that:
+;|*** 
+;|***   1. source code distributions include the above copyright notice, this
+;|***      list of conditions and the following disclaimer;
+;|*** 
+;|***   2. binary distributions include the above copyright notice, this list
+;|***      of conditions and the following disclaimer in their documentation;
+;|*** 
+;|***   3. the name of the copyright holder is not used to endorse products
+;|***      built using this software without specific written permission.
+;|*** 
+;|***  DISCLAIMER
+;|*** 
+;|***  This software is provided 'as is' with no explicit or implied warranties
+;|***  in respect of its properties, including, but not limited to, correctness
+;|***  and/or fitness for purpose.
+;|***  ---------------------------------------------------------------------------
+;|*** 
+;|***  My thanks to Doug Whiting and Niels Ferguson for comments that led
+;|***  to improvements in this implementation.
+;|*** 
+;|***  Issue Date: 14th January 1999
+;|*** */
+;|*** 
+;|*** /* Adapted for CipherShed */
+;|*** 
+;|*** 
+;|*** #ifdef TC_WINDOWS_BOOT
+;|*** #pragma optimize ("tl", on)
+;|*** #endif
+;|*** 
+;|*** #include "Twofish.h"
+;|*** #include "../Common/Endian.h"
+;|*** 
+;|*** #define Q_TABLES
+;|*** #define M_TABLE
+;|*** 
+;|*** #if !defined (TC_MINIMIZE_CODE_SIZE) || defined (TC_WINDOWS_BOOT_TWOFISH)
+;|*** #	define MK_TABLE
+;|*** #	define ONE_STEP
+;|*** #endif
+;|*** 
+;|*** /* finite field arithmetic for GF(2**8) with the modular    */
+;|*** /* polynomial x^8 + x^6 + x^5 + x^3 + 1 (0x169)             */
+;|*** 
+;|*** #define G_M 0x0169
+;|*** 
+;|*** static u1byte  tab_5b[4] = { 0, G_M >> 2, G_M >> 1, (G_M >> 1) ^ (G_M >> 2) };
+;|*** static u1byte  tab_ef[4] = { 0, (G_M >> 1) ^ (G_M >> 2), G_M >> 1, G_M >> 2 };
+;|*** 
+;|*** #define ffm_01(x)    (x)
+;|*** #define ffm_5b(x)   ((x) ^ ((x) >> 2) ^ tab_5b[(x) & 3])
+;|*** #define ffm_ef(x)   ((x) ^ ((x) >> 1) ^ ((x) >> 2) ^ tab_ef[(x) & 3])
+;|*** 
+;|*** static u1byte ror4[16] = { 0, 8, 1, 9, 2, 10, 3, 11, 4, 12, 5, 13, 6, 14, 7, 15 };
+;|*** static u1byte ashx[16] = { 0, 9, 2, 11, 4, 13, 6, 15, 8, 1, 10, 3, 12, 5, 14, 7 };
+;|*** 
+;|*** static u1byte qt0[2][16] = 
+;|*** {   { 8, 1, 7, 13, 6, 15, 3, 2, 0, 11, 5, 9, 14, 12, 10, 4 },
+;|***     { 2, 8, 11, 13, 15, 7, 6, 14, 3, 1, 9, 4, 0, 10, 12, 5 }
+;|*** };
+;|*** 
+;|*** static u1byte qt1[2][16] =
+;|*** {   { 14, 12, 11, 8, 1, 2, 3, 5, 15, 4, 10, 6, 7, 0, 9, 13 }, 
+;|***     { 1, 14, 2, 11, 4, 12, 3, 7, 6, 13, 10, 5, 15, 9, 0, 8 }
+;|*** };
+;|*** 
+;|*** static u1byte qt2[2][16] = 
+;|*** {   { 11, 10, 5, 14, 6, 13, 9, 0, 12, 8, 15, 3, 2, 4, 7, 1 },
+;|***     { 4, 12, 7, 5, 1, 6, 9, 10, 0, 14, 13, 8, 2, 11, 3, 15 }
+;|*** };
+;|*** 
+;|*** static u1byte qt3[2][16] = 
+;|*** {   { 13, 7, 15, 4, 1, 2, 6, 14, 9, 11, 3, 0, 8, 5, 12, 10 },
+;|***     { 11, 9, 5, 1, 12, 3, 13, 14, 6, 4, 7, 15, 2, 0, 8, 10 }
+;|*** };
+;|***  
+;|*** static u1byte qp(const u4byte n, const u1byte x)
+;|*** {   u1byte  a0, a1, a2, a3, a4, b0, b1, b2, b3, b4;
+; Line 86
+	*** 000000	c8 04 00 00 		enter	4,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	n = 4
+;	x = 8
+;	a0 = -2
+;	a1 = -4
+;	a2 = -6
+;	a3 = -8
+;	a4 = -10
+;	b0 = -12
+;	b1 = -14
+;	b2 = -16
+;	b3 = -1
+;	b4 = -20
+;|*** 
+;|***     a0 = x >> 4; b0 = x & 15;
+;|***     a1 = a0 ^ b0; b1 = ror4[b0] ^ ashx[a0];
+;|***     a2 = qt0[n][a1]; b2 = qt1[n][b1];
+;|***     a3 = a2 ^ b2; b3 = ror4[b2] ^ ashx[a2];
+; Line 91
+	*** 000006	8a 5e 08 		mov	bl,BYTE PTR [bp+8]	;x
+	*** 000009	c0 eb 04 		shr	bl,4
+	*** 00000c	8b c3 			mov	ax,bx
+	*** 00000e	2a ff 			sub	bh,bh
+	*** 000010	8a 8f 00 00 		mov	cl,BYTE PTR $S193_ashx[bx]
+	*** 000014	8a 5e 08 		mov	bl,BYTE PTR [bp+8]	;x
+	*** 000017	80 e3 0f 		and	bl,15	;000fH
+	*** 00001a	8b d3 			mov	dx,bx
+	*** 00001c	32 8f 00 00 		xor	cl,BYTE PTR $S192_ror4[bx]
+	*** 000020	2a ed 			sub	ch,ch
+	*** 000022	8b f1 			mov	si,cx
+	*** 000024	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;n
+	*** 000027	c1 e3 04 		shl	bx,4
+	*** 00002a	32 c2 			xor	al,dl
+	*** 00002c	2a e4 			sub	ah,ah
+	*** 00002e	8b f8 			mov	di,ax
+	*** 000030	8b c3 			mov	ax,bx
+	*** 000032	8a 99 00 00 		mov	bl,BYTE PTR $S194_qt0[bx][di]
+	*** 000036	8b cb 			mov	cx,bx
+	*** 000038	8b d8 			mov	bx,ax
+	*** 00003a	8b d3 			mov	dx,bx
+	*** 00003c	8a 98 00 00 		mov	bl,BYTE PTR $S195_qt1[bx][si]
+	*** 000040	8b c3 			mov	ax,bx
+	*** 000042	2a ff 			sub	bh,bh
+	*** 000044	89 46 fc 		mov	WORD PTR [bp-4],ax	;a1
+	*** 000047	8a 87 00 00 		mov	al,BYTE PTR $S192_ror4[bx]
+	*** 00004b	8a d9 			mov	bl,cl
+	*** 00004d	8b cb 			mov	cx,bx
+	*** 00004f	32 87 00 00 		xor	al,BYTE PTR $S193_ashx[bx]
+;|***     a4 = qt2[n][a3]; b4 = qt3[n][b3];
+;|***     return (b4 << 4) | a4;
+; Line 93
+	*** 000053	8b f2 			mov	si,dx
+	*** 000055	8a d8 			mov	bl,al
+	*** 000057	8a 80 00 00 		mov	al,BYTE PTR $S197_qt3[bx][si]
+	*** 00005b	c0 e0 04 		shl	al,4
+	*** 00005e	32 4e fc 		xor	cl,BYTE PTR [bp-4]	;a1
+	*** 000061	8b da 			mov	bx,dx
+	*** 000063	8b f9 			mov	di,cx
+	*** 000065	0a 81 00 00 		or	al,BYTE PTR $S196_qt2[bx][di]
+;|*** };
+; Line 94
+	*** 000069	5e 			pop	si
+	*** 00006a	5f 			pop	di
+	*** 00006b	c9 			leave	
+	*** 00006c	c3 			ret	
+
+qp	ENDP
+
+gen_qtab	PROC NEAR	;  COMDAT
+;|*** 
+;|*** #ifdef  Q_TABLES
+;|*** 
+;|*** static u4byte  qt_gen = 0;
+;|*** static u1byte  q_tab[2][256];
+;|*** 
+;|*** #define q(n,x)  q_tab[n][x]
+;|*** 
+;|*** static void gen_qtab(void)
+;|*** {   u4byte  i;
+; Line 104
+	*** 000000	c8 06 00 00 		enter	6,0
+;	i = -4
+;|*** 
+;|***     for(i = 0; i < 256; ++i)
+; Line 106
+	*** 000004	66 c7 46 fc 00 00 00 00 mov	DWORD PTR [bp-4],0	;i
+					$F219:
+;|***     {       
+;|***         q(0,i) = qp(0, (u1byte)i);
+; Line 108
+	*** 00000c	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;i
+	*** 00000f	50 			push	ax
+	*** 000010	66 6a 00 		push	DWORD PTR 0
+	*** 000013	89 46 fa 		mov	WORD PTR [bp-6],ax
+	*** 000016	e8 00 00 		call	qp
+	*** 000019	8b 5e fc 		mov	bx,WORD PTR [bp-4]	;i
+	*** 00001c	83 c4 06 		add	sp,6
+	*** 00001f	88 87 00 00 		mov	BYTE PTR $S215_q_tab[bx],al
+;|***         q(1,i) = qp(1, (u1byte)i);
+; Line 109
+	*** 000023	8a 46 fa 		mov	al,BYTE PTR [bp-6]
+	*** 000026	50 			push	ax
+	*** 000027	66 6a 01 		push	DWORD PTR 1
+	*** 00002a	e8 00 00 		call	qp
+	*** 00002d	8b 5e fc 		mov	bx,WORD PTR [bp-4]	;i
+	*** 000030	83 c4 06 		add	sp,6
+	*** 000033	88 87 00 01 		mov	BYTE PTR $S215_q_tab[bx+256],al
+	*** 000037	66 ff 46 fc 		inc	DWORD PTR [bp-4]	;i
+	*** 00003b	66 81 7e fc 00 01 00 00 cmp	DWORD PTR [bp-4],256	;00000100H	;i
+	*** 000043	72 c7 			jb	SHORT $F219
+					$L320:
+;|***     }
+;|*** };
+; Line 111
+	*** 000045	c9 			leave	
+	*** 000046	c3 			ret	
+
+gen_qtab	ENDP
+
+gen_mtab	PROC NEAR	;  COMDAT
+;|*** 
+;|*** #else
+;|*** 
+;|*** #define q(n,x)  qp(n, x)
+;|*** 
+;|*** #endif
+;|*** 
+;|*** #ifdef  M_TABLE
+;|*** 
+;|*** static u4byte  mt_gen = 0;
+;|*** static u4byte  m_tab[4][256];
+;|*** 
+;|*** static void gen_mtab(void)
+;|*** {   u4byte  i, f01, f5b, fef;
+; Line 125
+	*** 000000	c8 2c 00 00 		enter	44,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	i = -4
+;	f01 = -8
+;	f5b = -12
+;	fef = -16
+;|***     
+;|***     for(i = 0; i < 256; ++i)
+; Line 127
+	*** 000006	2b c0 			sub	ax,ax
+	*** 000008	89 46 fc 		mov	WORD PTR [bp-4],ax	;i
+	*** 00000b	be 00 00 		mov	si,OFFSET DGROUP:$S223_m_tab
+					$F230:
+;|***     {
+;|***         f01 = q(1,i); f5b = ffm_5b(f01); fef = ffm_ef(f01);
+;|***         m_tab[0][i] = f01 + (f5b << 8) + (fef << 16) + (fef << 24);
+; Line 130
+	*** 00000e	66 68 00 01 01 00 	push	DWORD PTR 65792	;00010100H
+	*** 000014	8b 5e fc 		mov	bx,WORD PTR [bp-4]	;i
+	*** 000017	2a e4 			sub	ah,ah
+	*** 000019	8a 87 00 01 		mov	al,BYTE PTR $S215_q_tab[bx+256]
+	*** 00001d	2b d2 			sub	dx,dx
+	*** 00001f	8b c8 			mov	cx,ax
+	*** 000021	8b fa 			mov	di,dx
+	*** 000023	d1 ea 			shr	dx,1
+	*** 000025	d1 d8 			rcr	ax,1
+	*** 000027	d1 ea 			shr	dx,1
+	*** 000029	d1 d8 			rcr	ax,1
+	*** 00002b	8b d9 			mov	bx,cx
+	*** 00002d	83 e3 03 		and	bx,3
+	*** 000030	89 46 f8 		mov	WORD PTR [bp-8],ax	;f01
+	*** 000033	89 56 fa 		mov	WORD PTR [bp-6],dx
+	*** 000036	8a 87 00 00 		mov	al,BYTE PTR $S190_tab_5b[bx]
+	*** 00003a	2a e4 			sub	ah,ah
+	*** 00003c	2b d2 			sub	dx,dx
+	*** 00003e	33 46 f8 		xor	ax,WORD PTR [bp-8]	;f01
+	*** 000041	33 56 fa 		xor	dx,WORD PTR [bp-6]
+	*** 000044	89 4e f4 		mov	WORD PTR [bp-12],cx	;f5b
+	*** 000047	89 7e f6 		mov	WORD PTR [bp-10],di
+	*** 00004a	33 c8 			xor	cx,ax
+	*** 00004c	33 fa 			xor	di,dx
+	*** 00004e	66 8b 46 f4 		mov	eax,DWORD PTR [bp-12]	;f5b
+	*** 000052	66 d1 e8 		shr	eax,1
+	*** 000055	66 33 46 f4 		xor	eax,DWORD PTR [bp-12]	;f5b
+	*** 000059	66 d1 e8 		shr	eax,1
+	*** 00005c	66 89 46 f0 		mov	DWORD PTR [bp-16],eax	;fef
+	*** 000060	8a 87 00 00 		mov	al,BYTE PTR $S191_tab_ef[bx]
+	*** 000064	2a e4 			sub	ah,ah
+	*** 000066	2b d2 			sub	dx,dx
+	*** 000068	33 46 f0 		xor	ax,WORD PTR [bp-16]	;fef
+	*** 00006b	33 56 f2 		xor	dx,WORD PTR [bp-14]
+	*** 00006e	33 46 f4 		xor	ax,WORD PTR [bp-12]	;f5b
+	*** 000071	33 56 f6 		xor	dx,WORD PTR [bp-10]
+	*** 000074	52 			push	dx
+	*** 000075	50 			push	ax
+	*** 000076	89 46 ec 		mov	WORD PTR [bp-20],ax
+	*** 000079	89 56 ee 		mov	WORD PTR [bp-18],dx
+	*** 00007c	89 4e e8 		mov	WORD PTR [bp-24],cx
+	*** 00007f	89 7e ea 		mov	WORD PTR [bp-22],di
+	*** 000082	66 58 			pop	eax
+	*** 000084	66 59 			pop	ecx
+	*** 000086	66 f7 e1 		mul	ecx
+	*** 000089	66 03 46 e8 		add	eax,DWORD PTR [bp-24]
+	*** 00008d	66 c1 e0 08 		shl	eax,8
+	*** 000091	66 03 46 f4 		add	eax,DWORD PTR [bp-12]	;f5b
+	*** 000095	66 89 04 		mov	DWORD PTR [si],eax
+;|***         m_tab[2][i] = f5b + (fef << 8) + (f01 << 16) + (fef << 24);
+; Line 131
+	*** 000098	66 8b 46 ec 		mov	eax,DWORD PTR [bp-20]
+	*** 00009c	66 b9 00 01 00 01 	mov	ecx,16777472	;01000100H
+	*** 0000a2	66 f7 e1 		mul	ecx
+	*** 0000a5	66 03 46 e8 		add	eax,DWORD PTR [bp-24]
+	*** 0000a9	66 8b d0 		mov	edx,eax
+	*** 0000ac	66 c1 ea 10 		shr	edx,16	;00000010H
+	*** 0000b0	8b 4e f4 		mov	cx,WORD PTR [bp-12]	;f5b
+	*** 0000b3	2b db 			sub	bx,bx
+	*** 0000b5	03 c3 			add	ax,bx
+	*** 0000b7	13 d1 			adc	dx,cx
+	*** 0000b9	89 84 00 08 		mov	WORD PTR [si+2048],ax
+	*** 0000bd	89 94 02 08 		mov	WORD PTR [si+2050],dx
+;|*** 
+;|***         f01 = q(0,i); f5b = ffm_5b(f01); fef = ffm_ef(f01);
+;|***         m_tab[1][i] = fef + (fef << 8) + (f5b << 16) + (f01 << 24);
+; Line 134
+	*** 0000c1	53 			push	bx
+	*** 0000c2	68 01 01 		push	257	;0101H
+	*** 0000c5	8b 5e fc 		mov	bx,WORD PTR [bp-4]	;i
+	*** 0000c8	2a e4 			sub	ah,ah
+	*** 0000ca	8a 87 00 00 		mov	al,BYTE PTR $S215_q_tab[bx]
+	*** 0000ce	2b d2 			sub	dx,dx
+	*** 0000d0	8b c8 			mov	cx,ax
+	*** 0000d2	8b da 			mov	bx,dx
+	*** 0000d4	8a e0 			mov	ah,al
+	*** 0000d6	2a c0 			sub	al,al
+	*** 0000d8	89 4e e4 		mov	WORD PTR [bp-28],cx
+	*** 0000db	89 56 e6 		mov	WORD PTR [bp-26],dx
+	*** 0000de	d1 eb 			shr	bx,1
+	*** 0000e0	d1 d9 			rcr	cx,1
+	*** 0000e2	d1 eb 			shr	bx,1
+	*** 0000e4	d1 d9 			rcr	cx,1
+	*** 0000e6	8b fb 			mov	di,bx
+	*** 0000e8	8a 5e e4 		mov	bl,BYTE PTR [bp-28]
+	*** 0000eb	83 e3 03 		and	bx,3
+	*** 0000ee	89 46 e0 		mov	WORD PTR [bp-32],ax
+	*** 0000f1	8a 87 00 00 		mov	al,BYTE PTR $S190_tab_5b[bx]
+	*** 0000f5	2a e4 			sub	ah,ah
+	*** 0000f7	33 c8 			xor	cx,ax
+	*** 0000f9	33 fa 			xor	di,dx
+	*** 0000fb	33 4e e4 		xor	cx,WORD PTR [bp-28]
+	*** 0000fe	33 fa 			xor	di,dx
+	*** 000100	8b 46 e4 		mov	ax,WORD PTR [bp-28]
+	*** 000103	d1 ea 			shr	dx,1
+	*** 000105	d1 d8 			rcr	ax,1
+	*** 000107	33 46 e4 		xor	ax,WORD PTR [bp-28]
+	*** 00010a	33 56 e6 		xor	dx,WORD PTR [bp-26]
+	*** 00010d	d1 ea 			shr	dx,1
+	*** 00010f	d1 d8 			rcr	ax,1
+	*** 000111	89 46 dc 		mov	WORD PTR [bp-36],ax
+	*** 000114	89 56 de 		mov	WORD PTR [bp-34],dx
+	*** 000117	8a 87 00 00 		mov	al,BYTE PTR $S191_tab_ef[bx]
+	*** 00011b	2a e4 			sub	ah,ah
+	*** 00011d	2b d2 			sub	dx,dx
+	*** 00011f	33 46 dc 		xor	ax,WORD PTR [bp-36]
+	*** 000122	33 56 de 		xor	dx,WORD PTR [bp-34]
+	*** 000125	33 46 e4 		xor	ax,WORD PTR [bp-28]
+	*** 000128	33 56 e6 		xor	dx,WORD PTR [bp-26]
+	*** 00012b	52 			push	dx
+	*** 00012c	50 			push	ax
+	*** 00012d	89 46 d8 		mov	WORD PTR [bp-40],ax
+	*** 000130	89 56 da 		mov	WORD PTR [bp-38],dx
+	*** 000133	89 4e d4 		mov	WORD PTR [bp-44],cx
+	*** 000136	89 7e d6 		mov	WORD PTR [bp-42],di
+	*** 000139	66 58 			pop	eax
+	*** 00013b	66 59 			pop	ecx
+	*** 00013d	66 f7 e1 		mul	ecx
+	*** 000140	66 8b d0 		mov	edx,eax
+	*** 000143	66 c1 ea 10 		shr	edx,16	;00000010H
+	*** 000147	8b 4e d4 		mov	cx,WORD PTR [bp-44]
+	*** 00014a	03 4e e0 		add	cx,WORD PTR [bp-32]
+	*** 00014d	2b db 			sub	bx,bx
+	*** 00014f	03 c3 			add	ax,bx
+	*** 000151	13 d1 			adc	dx,cx
+	*** 000153	89 84 00 04 		mov	WORD PTR [si+1024],ax
+	*** 000157	89 94 02 04 		mov	WORD PTR [si+1026],dx
+;|***         m_tab[3][i] = f5b + (f01 << 8) + (fef << 16) + (f5b << 24);
+; Line 135
+	*** 00015b	66 8b 46 d4 		mov	eax,DWORD PTR [bp-44]
+	*** 00015f	66 b9 01 00 00 01 	mov	ecx,16777217	;01000001H
+	*** 000165	66 f7 e1 		mul	ecx
+	*** 000168	66 8b d0 		mov	edx,eax
+	*** 00016b	66 c1 ea 10 		shr	edx,16	;00000010H
+	*** 00016f	8b c8 			mov	cx,ax
+	*** 000171	8b da 			mov	bx,dx
+	*** 000173	66 8b 46 d8 		mov	eax,DWORD PTR [bp-40]
+	*** 000177	66 c1 e0 08 		shl	eax,8
+	*** 00017b	66 03 46 e4 		add	eax,DWORD PTR [bp-28]
+	*** 00017f	66 c1 e0 08 		shl	eax,8
+	*** 000183	66 8b d0 		mov	edx,eax
+	*** 000186	66 c1 ea 10 		shr	edx,16	;00000010H
+	*** 00018a	03 c8 			add	cx,ax
+	*** 00018c	13 da 			adc	bx,dx
+	*** 00018e	89 8c 00 0c 		mov	WORD PTR [si+3072],cx
+	*** 000192	89 9c 02 0c 		mov	WORD PTR [si+3074],bx
+;|***     for(i = 0; i < 256; ++i)
+; Line 127
+	*** 000196	83 46 fc 01 		add	WORD PTR [bp-4],1	;i
+	*** 00019a	83 c6 04 		add	si,4
+	*** 00019d	81 fe 00 04 		cmp	si,OFFSET DGROUP:$S223_m_tab+1024
+	*** 0001a1	0f 82 69 fe 		jb	$F230
+;|***     {
+;|***         f01 = q(1,i); f5b = ffm_5b(f01); fef = ffm_ef(f01);
+;|***         m_tab[0][i] = f01 + (f5b << 8) + (fef << 16) + (fef << 24);
+;|***         m_tab[2][i] = f5b + (fef << 8) + (f01 << 16) + (fef << 24);
+;|*** 
+;|***         f01 = q(0,i); f5b = ffm_5b(f01); fef = ffm_ef(f01);
+;|***         m_tab[1][i] = fef + (fef << 8) + (f5b << 16) + (f01 << 24);
+;|***         m_tab[3][i] = f5b + (f01 << 8) + (fef << 16) + (f5b << 24);
+;|***     }
+;|*** };
+; Line 137
+	*** 0001a5	5e 			pop	si
+	*** 0001a6	5f 			pop	di
+	*** 0001a7	c9 			leave	
+	*** 0001a8	c3 			ret	
+
+gen_mtab	ENDP
+
+h_fun	PROC NEAR	;  COMDAT
+;|*** 
+;|*** #define mds(n,x)    m_tab[n][x]
+;|*** 
+;|*** #else
+;|*** 
+;|*** #define fm_00   ffm_01
+;|*** #define fm_10   ffm_5b
+;|*** #define fm_20   ffm_ef
+;|*** #define fm_30   ffm_ef
+;|*** #define q_0(x)  q(1,x)
+;|*** 
+;|*** #define fm_01   ffm_ef
+;|*** #define fm_11   ffm_ef
+;|*** #define fm_21   ffm_5b
+;|*** #define fm_31   ffm_01
+;|*** #define q_1(x)  q(0,x)
+;|*** 
+;|*** #define fm_02   ffm_5b
+;|*** #define fm_12   ffm_ef
+;|*** #define fm_22   ffm_01
+;|*** #define fm_32   ffm_ef
+;|*** #define q_2(x)  q(1,x)
+;|*** 
+;|*** #define fm_03   ffm_5b
+;|*** #define fm_13   ffm_01
+;|*** #define fm_23   ffm_ef
+;|*** #define fm_33   ffm_5b
+;|*** #define q_3(x)  q(0,x)
+;|*** 
+;|*** #define f_0(n,x)    ((u4byte)fm_0##n(x))
+;|*** #define f_1(n,x)    ((u4byte)fm_1##n(x) << 8)
+;|*** #define f_2(n,x)    ((u4byte)fm_2##n(x) << 16)
+;|*** #define f_3(n,x)    ((u4byte)fm_3##n(x) << 24)
+;|*** 
+;|*** #define mds(n,x)    f_0(n,q_##n(x)) ^ f_1(n,q_##n(x)) ^ f_2(n,q_##n(x)) ^ f_3(n,q_##n(x))
+;|*** 
+;|*** #endif
+;|*** 
+;|*** static u4byte h_fun(TwofishInstance *instance, const u4byte x, const u4byte key[])
+;|*** {   u4byte  b0, b1, b2, b3;
+; Line 177
+	*** 000000	c8 18 00 00 		enter	24,0
+	*** 000004	56 			push	si
+;	instance = 4
+;	x = 6
+;	key = 10
+;	b0 = -4
+;	b1 = -8
+;	b2 = -12
+;	b3 = -16
+;|*** 
+;|*** #ifndef M_TABLE
+;|***     u4byte  m5b_b0, m5b_b1, m5b_b2, m5b_b3;
+;|***     u4byte  mef_b0, mef_b1, mef_b2, mef_b3;
+;|*** #endif
+;|*** 
+;|***     b0 = extract_byte(x, 0); b1 = extract_byte(x, 1); b2 = extract_byte(x, 2); b3 = extract_byte(x, 3);
+; Line 184
+	*** 000005	8a 46 06 		mov	al,BYTE PTR [bp+6]	;x
+	*** 000008	2a e4 			sub	ah,ah
+	*** 00000a	89 46 fc 		mov	WORD PTR [bp-4],ax	;b0
+	*** 00000d	8b 46 06 		mov	ax,WORD PTR [bp+6]	;x
+	*** 000010	8b 56 08 		mov	dx,WORD PTR [bp+8]
+	*** 000013	8a c4 			mov	al,ah
+	*** 000015	8a d6 			mov	dl,dh
+	*** 000017	2a f6 			sub	dh,dh
+	*** 000019	2a e4 			sub	ah,ah
+	*** 00001b	89 46 f8 		mov	WORD PTR [bp-8],ax	;b1
+	*** 00001e	8a 46 08 		mov	al,BYTE PTR [bp+8]
+	*** 000021	89 46 f4 		mov	WORD PTR [bp-12],ax	;b2
+	*** 000024	8a 46 09 		mov	al,BYTE PTR [bp+9]
+	*** 000027	89 46 f0 		mov	WORD PTR [bp-16],ax	;b3
+;|*** 
+;|***     switch(instance->k_len)
+; Line 186
+	*** 00002a	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;instance
+	*** 00002d	8b 87 b0 00 		mov	ax,WORD PTR [bx+176]
+	*** 000031	8b 97 b2 00 		mov	dx,WORD PTR [bx+178]
+;|***     {
+;|***     case 4: b0 = q(1, (u1byte) b0) ^ extract_byte(key[3],0);
+;|***             b1 = q(0, (u1byte) b1) ^ extract_byte(key[3],1);
+;|***             b2 = q(0, (u1byte) b2) ^ extract_byte(key[3],2);
+;|***             b3 = q(1, (u1byte) b3) ^ extract_byte(key[3],3);
+;|***     case 3: b0 = q(1, (u1byte) b0) ^ extract_byte(key[2],0);
+;|***             b1 = q(1, (u1byte) b1) ^ extract_byte(key[2],1);
+;|***             b2 = q(0, (u1byte) b2) ^ extract_byte(key[2],2);
+;|***             b3 = q(0, (u1byte) b3) ^ extract_byte(key[2],3);
+;|***     case 2: b0 = q(0, (u1byte) (q(0, (u1byte) b0) ^ extract_byte(key[1],0))) ^ extract_byte(key[0],0);
+;|***             b1 = q(0, (u1byte) (q(1, (u1byte) b1) ^ extract_byte(key[1],1))) ^ extract_byte(key[0],1);
+;|***             b2 = q(1, (u1byte) (q(0, (u1byte) b2) ^ extract_byte(key[1],2))) ^ extract_byte(key[0],2);
+;|***             b3 = q(1, (u1byte) (q(1, (u1byte) b3) ^ extract_byte(key[1],3))) ^ extract_byte(key[0],3);
+;|***     }
+; Line 200
+	*** 000035	83 fa 00 		cmp	dx,0
+	*** 000038	0f 85 26 01 		jne	$SB246
+	*** 00003c	48 			dec	ax
+	*** 00003d	48 			dec	ax
+	*** 00003e	74 0a 			je	SHORT $L325
+	*** 000040	48 			dec	ax
+	*** 000041	74 0d 			je	SHORT $L324
+	*** 000043	48 			dec	ax
+	*** 000044	74 10 			je	SHORT $SC249
+	*** 000046	e9 19 01 		jmp	$SB246
+	*** 000049	90 			nop	
+					$L325:
+	*** 00004a	8b 76 0a 		mov	si,WORD PTR [bp+10]	;key
+	*** 00004d	e9 8f 00 		jmp	$SC251
+					$L324:
+	*** 000050	8b 76 0a 		mov	si,WORD PTR [bp+10]	;key
+	*** 000053	eb 47 			jmp	SHORT $SC250
+	*** 000055	90 			nop	
+;|***     case 4: b0 = q(1, (u1byte) b0) ^ extract_byte(key[3],0);
+; Line 188
+					$SC249:
+	*** 000056	8b 76 0a 		mov	si,WORD PTR [bp+10]	;key
+	*** 000059	8a 5e fc 		mov	bl,BYTE PTR [bp-4]	;b0
+	*** 00005c	2a ff 			sub	bh,bh
+	*** 00005e	8a 87 00 01 		mov	al,BYTE PTR $S215_q_tab[bx+256]
+	*** 000062	32 44 0c 		xor	al,BYTE PTR [si+12]
+	*** 000065	2a e4 			sub	ah,ah
+	*** 000067	89 46 fc 		mov	WORD PTR [bp-4],ax	;b0
+;|***             b1 = q(0, (u1byte) b1) ^ extract_byte(key[3],1);
+; Line 189
+	*** 00006a	8b 44 0c 		mov	ax,WORD PTR [si+12]
+	*** 00006d	8b 54 0e 		mov	dx,WORD PTR [si+14]
+	*** 000070	8a c4 			mov	al,ah
+	*** 000072	8a d6 			mov	dl,dh
+	*** 000074	2a f6 			sub	dh,dh
+	*** 000076	8a 5e f8 		mov	bl,BYTE PTR [bp-8]	;b1
+	*** 000079	32 87 00 00 		xor	al,BYTE PTR $S215_q_tab[bx]
+	*** 00007d	2a e4 			sub	ah,ah
+	*** 00007f	89 46 f8 		mov	WORD PTR [bp-8],ax	;b1
+;|***             b2 = q(0, (u1byte) b2) ^ extract_byte(key[3],2);
+; Line 190
+	*** 000082	8a 5e f4 		mov	bl,BYTE PTR [bp-12]	;b2
+	*** 000085	8a 44 0e 		mov	al,BYTE PTR [si+14]
+	*** 000088	32 87 00 00 		xor	al,BYTE PTR $S215_q_tab[bx]
+	*** 00008c	89 46 f4 		mov	WORD PTR [bp-12],ax	;b2
+;|***             b3 = q(1, (u1byte) b3) ^ extract_byte(key[3],3);
+; Line 191
+	*** 00008f	8a 5e f0 		mov	bl,BYTE PTR [bp-16]	;b3
+	*** 000092	8a 44 0f 		mov	al,BYTE PTR [si+15]
+	*** 000095	32 87 00 01 		xor	al,BYTE PTR $S215_q_tab[bx+256]
+	*** 000099	89 46 f0 		mov	WORD PTR [bp-16],ax	;b3
+;|***     case 3: b0 = q(1, (u1byte) b0) ^ extract_byte(key[2],0);
+; Line 192
+					$SC250:
+	*** 00009c	8a 5e fc 		mov	bl,BYTE PTR [bp-4]	;b0
+	*** 00009f	2a ff 			sub	bh,bh
+	*** 0000a1	8a 87 00 01 		mov	al,BYTE PTR $S215_q_tab[bx+256]
+	*** 0000a5	32 44 08 		xor	al,BYTE PTR [si+8]
+	*** 0000a8	2a e4 			sub	ah,ah
+	*** 0000aa	89 46 fc 		mov	WORD PTR [bp-4],ax	;b0
+;|***             b1 = q(1, (u1byte) b1) ^ extract_byte(key[2],1);
+; Line 193
+	*** 0000ad	8b 44 08 		mov	ax,WORD PTR [si+8]
+	*** 0000b0	8b 54 0a 		mov	dx,WORD PTR [si+10]
+	*** 0000b3	8a c4 			mov	al,ah
+	*** 0000b5	8a d6 			mov	dl,dh
+	*** 0000b7	2a f6 			sub	dh,dh
+	*** 0000b9	8a 5e f8 		mov	bl,BYTE PTR [bp-8]	;b1
+	*** 0000bc	32 87 00 01 		xor	al,BYTE PTR $S215_q_tab[bx+256]
+	*** 0000c0	2a e4 			sub	ah,ah
+	*** 0000c2	89 46 f8 		mov	WORD PTR [bp-8],ax	;b1
+;|***             b2 = q(0, (u1byte) b2) ^ extract_byte(key[2],2);
+; Line 194
+	*** 0000c5	8a 5e f4 		mov	bl,BYTE PTR [bp-12]	;b2
+	*** 0000c8	8a 44 0a 		mov	al,BYTE PTR [si+10]
+	*** 0000cb	32 87 00 00 		xor	al,BYTE PTR $S215_q_tab[bx]
+	*** 0000cf	89 46 f4 		mov	WORD PTR [bp-12],ax	;b2
+;|***             b3 = q(0, (u1byte) b3) ^ extract_byte(key[2],3);
+; Line 195
+	*** 0000d2	8a 5e f0 		mov	bl,BYTE PTR [bp-16]	;b3
+	*** 0000d5	8a 44 0b 		mov	al,BYTE PTR [si+11]
+	*** 0000d8	32 87 00 00 		xor	al,BYTE PTR $S215_q_tab[bx]
+	*** 0000dc	89 46 f0 		mov	WORD PTR [bp-16],ax	;b3
+;|***     case 2: b0 = q(0, (u1byte) (q(0, (u1byte) b0) ^ extract_byte(key[1],0))) ^ extract_byte(key[0],0);
+; Line 196
+					$SC251:
+	*** 0000df	8a 5e fc 		mov	bl,BYTE PTR [bp-4]	;b0
+	*** 0000e2	2a ff 			sub	bh,bh
+	*** 0000e4	8a 9f 00 00 		mov	bl,BYTE PTR $S215_q_tab[bx]
+	*** 0000e8	32 5c 04 		xor	bl,BYTE PTR [si+4]
+	*** 0000eb	8a 87 00 00 		mov	al,BYTE PTR $S215_q_tab[bx]
+	*** 0000ef	32 04 			xor	al,BYTE PTR [si]
+	*** 0000f1	2a e4 			sub	ah,ah
+	*** 0000f3	89 46 fc 		mov	WORD PTR [bp-4],ax	;b0
+;|***             b1 = q(0, (u1byte) (q(1, (u1byte) b1) ^ extract_byte(key[1],1))) ^ extract_byte(key[0],1);
+; Line 197
+	*** 0000f6	8a 5e f8 		mov	bl,BYTE PTR [bp-8]	;b1
+	*** 0000f9	8a 87 00 01 		mov	al,BYTE PTR $S215_q_tab[bx+256]
+	*** 0000fd	8b 54 06 		mov	dx,WORD PTR [si+6]
+	*** 000100	8b 5c 04 		mov	bx,WORD PTR [si+4]
+	*** 000103	8b c8 			mov	cx,ax
+	*** 000105	89 56 ee 		mov	WORD PTR [bp-18],dx
+	*** 000108	8b 04 			mov	ax,WORD PTR [si]
+	*** 00010a	8b 54 02 		mov	dx,WORD PTR [si+2]
+	*** 00010d	8b f2 			mov	si,dx
+	*** 00010f	8a c4 			mov	al,ah
+	*** 000111	8a e2 			mov	ah,dl
+	*** 000113	8a d6 			mov	dl,dh
+	*** 000115	2a f6 			sub	dh,dh
+	*** 000117	89 76 ea 		mov	WORD PTR [bp-22],si
+	*** 00011a	8b d1 			mov	dx,cx
+	*** 00011c	b1 08 			mov	cl,8
+	*** 00011e	8b 76 ee 		mov	si,WORD PTR [bp-18]
+					$L338:
+	*** 000121	d1 ee 			shr	si,1
+	*** 000123	d1 db 			rcr	bx,1
+	*** 000125	fe c9 			dec	cl
+	*** 000127	75 f8 			jne	SHORT $L338
+	*** 000129	32 da 			xor	bl,dl
+	*** 00012b	2a ff 			sub	bh,bh
+	*** 00012d	32 87 00 00 		xor	al,BYTE PTR $S215_q_tab[bx]
+	*** 000131	2a e4 			sub	ah,ah
+	*** 000133	89 46 f8 		mov	WORD PTR [bp-8],ax	;b1
+;|***             b2 = q(1, (u1byte) (q(0, (u1byte) b2) ^ extract_byte(key[1],2))) ^ extract_byte(key[0],2);
+; Line 198
+	*** 000136	8a 5e f4 		mov	bl,BYTE PTR [bp-12]	;b2
+	*** 000139	8a 87 00 00 		mov	al,BYTE PTR $S215_q_tab[bx]
+	*** 00013d	8a 5e ee 		mov	bl,BYTE PTR [bp-18]
+	*** 000140	32 d8 			xor	bl,al
+	*** 000142	8a 46 ea 		mov	al,BYTE PTR [bp-22]
+	*** 000145	32 87 00 01 		xor	al,BYTE PTR $S215_q_tab[bx+256]
+	*** 000149	89 46 f4 		mov	WORD PTR [bp-12],ax	;b2
+;|***             b3 = q(1, (u1byte) (q(1, (u1byte) b3) ^ extract_byte(key[1],3))) ^ extract_byte(key[0],3);
+; Line 199
+	*** 00014c	8a 5e f0 		mov	bl,BYTE PTR [bp-16]	;b3
+	*** 00014f	8a 87 00 01 		mov	al,BYTE PTR $S215_q_tab[bx+256]
+	*** 000153	8a 5e ef 		mov	bl,BYTE PTR [bp-17]
+	*** 000156	32 d8 			xor	bl,al
+	*** 000158	8a 46 eb 		mov	al,BYTE PTR [bp-21]
+	*** 00015b	32 87 00 01 		xor	al,BYTE PTR $S215_q_tab[bx+256]
+	*** 00015f	89 46 f0 		mov	WORD PTR [bp-16],ax	;b3
+;|***     }
+; Line 200
+					$SB246:
+;|*** #ifdef  M_TABLE
+;|*** 
+;|***     return  mds(0, b0) ^ mds(1, b1) ^ mds(2, b2) ^ mds(3, b3);
+; Line 203
+	*** 000162	8b 5e f0 		mov	bx,WORD PTR [bp-16]	;b3
+	*** 000165	c1 e3 02 		shl	bx,2
+	*** 000168	8b 87 00 0c 		mov	ax,WORD PTR $S223_m_tab[bx+3072]
+	*** 00016c	8b 97 02 0c 		mov	dx,WORD PTR $S223_m_tab[bx+3074]
+	*** 000170	8b 5e f4 		mov	bx,WORD PTR [bp-12]	;b2
+	*** 000173	c1 e3 02 		shl	bx,2
+	*** 000176	33 87 00 08 		xor	ax,WORD PTR $S223_m_tab[bx+2048]
+	*** 00017a	33 97 02 08 		xor	dx,WORD PTR $S223_m_tab[bx+2050]
+	*** 00017e	8b 5e f8 		mov	bx,WORD PTR [bp-8]	;b1
+	*** 000181	c1 e3 02 		shl	bx,2
+	*** 000184	33 87 00 04 		xor	ax,WORD PTR $S223_m_tab[bx+1024]
+	*** 000188	33 97 02 04 		xor	dx,WORD PTR $S223_m_tab[bx+1026]
+	*** 00018c	8b 5e fc 		mov	bx,WORD PTR [bp-4]	;b0
+	*** 00018f	c1 e3 02 		shl	bx,2
+	*** 000192	33 87 00 00 		xor	ax,WORD PTR $S223_m_tab[bx]
+	*** 000196	33 97 02 00 		xor	dx,WORD PTR $S223_m_tab[bx+2]
+;|*** 
+;|*** #else
+;|*** 
+;|***     b0 = q(1, (u1byte) b0); b1 = q(0, (u1byte) b1); b2 = q(1, (u1byte) b2); b3 = q(0, (u1byte) b3);
+;|***     m5b_b0 = ffm_5b(b0); m5b_b1 = ffm_5b(b1); m5b_b2 = ffm_5b(b2); m5b_b3 = ffm_5b(b3);
+;|***     mef_b0 = ffm_ef(b0); mef_b1 = ffm_ef(b1); mef_b2 = ffm_ef(b2); mef_b3 = ffm_ef(b3);
+;|***     b0 ^= mef_b1 ^ m5b_b2 ^ m5b_b3; b3 ^= m5b_b0 ^ mef_b1 ^ mef_b2;
+;|***     b2 ^= mef_b0 ^ m5b_b1 ^ mef_b3; b1 ^= mef_b0 ^ mef_b2 ^ m5b_b3;
+;|*** 
+;|***     return b0 | (b3 << 8) | (b2 << 16) | (b1 << 24);
+;|*** 
+;|*** #endif
+;|*** };
+; Line 216
+	*** 00019a	5e 			pop	si
+	*** 00019b	c9 			leave	
+	*** 00019c	c3 			ret	
+
+h_fun	ENDP
+
+mds_rem	PROC NEAR	;  COMDAT
+;|*** 
+;|*** #ifdef  MK_TABLE
+;|*** 
+;|*** #ifdef  ONE_STEP
+;|*** //u4byte  mk_tab[4][256];
+;|*** #else
+;|*** static u1byte  sb[4][256];
+;|*** #endif
+;|*** 
+;|*** #define q20(x)  q(0,q(0,x) ^ extract_byte(key[1],0)) ^ extract_byte(key[0],0)
+;|*** #define q21(x)  q(0,q(1,x) ^ extract_byte(key[1],1)) ^ extract_byte(key[0],1)
+;|*** #define q22(x)  q(1,q(0,x) ^ extract_byte(key[1],2)) ^ extract_byte(key[0],2)
+;|*** #define q23(x)  q(1,q(1,x) ^ extract_byte(key[1],3)) ^ extract_byte(key[0],3)
+;|*** 
+;|*** #define q30(x)  q(0,q(0,q(1, x) ^ extract_byte(key[2],0)) ^ extract_byte(key[1],0)) ^ extract_byte(key[0],0)
+;|*** #define q31(x)  q(0,q(1,q(1, x) ^ extract_byte(key[2],1)) ^ extract_byte(key[1],1)) ^ extract_byte(key[0],1)
+;|*** #define q32(x)  q(1,q(0,q(0, x) ^ extract_byte(key[2],2)) ^ extract_byte(key[1],2)) ^ extract_byte(key[0],2)
+;|*** #define q33(x)  q(1,q(1,q(0, x) ^ extract_byte(key[2],3)) ^ extract_byte(key[1],3)) ^ extract_byte(key[0],3)
+;|*** 
+;|*** #define q40(x)  q(0,q(0,q(1, q(1, x) ^ extract_byte(key[3],0)) ^ extract_byte(key[2],0)) ^ extract_byte(key[1],0)) ^ extract_byte(key[0],0)
+;|*** #define q41(x)  q(0,q(1,q(1, q(0, x) ^ extract_byte(key[3],1)) ^ extract_byte(key[2],1)) ^ extract_byte(key[1],1)) ^ extract_byte(key[0],1)
+;|*** #define q42(x)  q(1,q(0,q(0, q(0, x) ^ extract_byte(key[3],2)) ^ extract_byte(key[2],2)) ^ extract_byte(key[1],2)) ^ extract_byte(key[0],2)
+;|*** #define q43(x)  q(1,q(1,q(0, q(1, x) ^ extract_byte(key[3],3)) ^ extract_byte(key[2],3)) ^ extract_byte(key[1],3)) ^ extract_byte(key[0],3)
+;|*** 
+;|*** static void gen_mk_tab(TwofishInstance *instance, u4byte key[])
+;|*** {   u4byte  i;
+;|***     u1byte  by;
+;|*** 
+;|*** 	u4byte *mk_tab = instance->mk_tab;
+;|*** 
+;|***     switch(instance->k_len)
+;|***     {
+;|***     case 2: for(i = 0; i < 256; ++i)
+;|***             {
+;|***                 by = (u1byte)i;
+;|*** #ifdef ONE_STEP
+;|***                 mk_tab[0 + 4*i] = mds(0, q20(by)); mk_tab[1 + 4*i] = mds(1, q21(by));
+;|***                 mk_tab[2 + 4*i] = mds(2, q22(by)); mk_tab[3 + 4*i] = mds(3, q23(by));
+;|*** #else
+;|***                 sb[0][i] = q20(by); sb[1][i] = q21(by); 
+;|***                 sb[2][i] = q22(by); sb[3][i] = q23(by);
+;|*** #endif
+;|***             }
+;|***             break;
+;|***     
+;|***     case 3: for(i = 0; i < 256; ++i)
+;|***             {
+;|***                 by = (u1byte)i;
+;|*** #ifdef ONE_STEP
+;|***                 mk_tab[0 + 4*i] = mds(0, q30(by)); mk_tab[1 + 4*i] = mds(1, q31(by));
+;|***                 mk_tab[2 + 4*i] = mds(2, q32(by)); mk_tab[3 + 4*i] = mds(3, q33(by));
+;|*** #else
+;|***                 sb[0][i] = q30(by); sb[1][i] = q31(by); 
+;|***                 sb[2][i] = q32(by); sb[3][i] = q33(by);
+;|*** #endif
+;|***             }
+;|***             break;
+;|***     
+;|***     case 4: for(i = 0; i < 256; ++i)
+;|***             {
+;|***                 by = (u1byte)i;
+;|*** #ifdef ONE_STEP
+;|***                 mk_tab[0 + 4*i] = mds(0, q40(by)); mk_tab[1 + 4*i] = mds(1, q41(by));
+;|***                 mk_tab[2 + 4*i] = mds(2, q42(by)); mk_tab[3 + 4*i] = mds(3, q43(by));
+;|*** #else
+;|***                 sb[0][i] = q40(by); sb[1][i] = q41(by); 
+;|***                 sb[2][i] = q42(by); sb[3][i] = q43(by);
+;|*** #endif
+;|***             }
+;|***     }
+;|*** };
+;|*** 
+;|*** #  ifdef ONE_STEP
+;|*** #    define g0_fun(x) ( mk_tab[0 + 4*extract_byte(x,0)] ^ mk_tab[1 + 4*extract_byte(x,1)] \
+;|***                       ^ mk_tab[2 + 4*extract_byte(x,2)] ^ mk_tab[3 + 4*extract_byte(x,3)] )
+;|*** #    define g1_fun(x) ( mk_tab[0 + 4*extract_byte(x,3)] ^ mk_tab[1 + 4*extract_byte(x,0)] \
+;|***                       ^ mk_tab[2 + 4*extract_byte(x,1)] ^ mk_tab[3 + 4*extract_byte(x,2)] )
+;|*** 
+;|*** 
+;|*** #  else
+;|*** #    define g0_fun(x) ( mds(0, sb[0][extract_byte(x,0)]) ^ mds(1, sb[1][extract_byte(x,1)]) \
+;|***                       ^ mds(2, sb[2][extract_byte(x,2)]) ^ mds(3, sb[3][extract_byte(x,3)]) )
+;|*** #    define g1_fun(x) ( mds(0, sb[0][extract_byte(x,3)]) ^ mds(1, sb[1][extract_byte(x,0)]) \
+;|***                       ^ mds(2, sb[2][extract_byte(x,1)]) ^ mds(3, sb[3][extract_byte(x,2)]) )
+;|*** #  endif
+;|*** 
+;|*** #else
+;|*** 
+;|*** #define g0_fun(x)   h_fun(instance, x, instance->s_key)
+;|*** #define g1_fun(x)   h_fun(instance, rotl(x,8), instance->s_key)
+;|*** 
+;|*** #endif
+;|*** 
+;|*** /* The (12,8) Reed Soloman code has the generator polynomial
+;|*** 
+;|***   g(x) = x^4 + (a + 1/a) * x^3 + a * x^2 + (a + 1/a) * x + 1
+;|*** 
+;|*** where the coefficients are in the finite field GF(2^8) with a
+;|*** modular polynomial a^8 + a^6 + a^3 + a^2 + 1. To generate the
+;|*** remainder we have to start with a 12th order polynomial with our
+;|*** eight input bytes as the coefficients of the 4th to 11th terms. 
+;|*** That is:
+;|*** 
+;|***   m[7] * x^11 + m[6] * x^10 ... + m[0] * x^4 + 0 * x^3 +... + 0
+;|***   
+;|*** We then multiply the generator polynomial by m[7] * x^7 and subtract
+;|*** it - xor in GF(2^8) - from the above to eliminate the x^7 term (the 
+;|*** artihmetic on the coefficients is done in GF(2^8). We then multiply 
+;|*** the generator polynomial by x^6 * coeff(x^10) and use this to remove
+;|*** the x^10 term. We carry on in this way until the x^4 term is removed
+;|*** so that we are left with:
+;|*** 
+;|***   r[3] * x^3 + r[2] * x^2 + r[1] 8 x^1 + r[0]
+;|*** 
+;|*** which give the resulting 4 bytes of the remainder. This is equivalent 
+;|*** to the matrix multiplication in the Twofish description but much faster 
+;|*** to implement.
+;|*** 
+;|*** */
+;|*** 
+;|*** #define G_MOD   0x0000014d
+;|*** 
+;|*** static u4byte mds_rem(u4byte p0, u4byte p1)
+;|*** {   u4byte  i, t, u;
+; Line 340
+	*** 000000	c8 08 00 00 		enter	8,0
+;	i = -4
+;	t = -8
+;	u = -4
+;	p0 = 4
+;	p1 = 8
+	*** 000004	bb 08 00 		mov	bx,8
+;|*** 
+;|***     for(i = 0; i < 8; ++i)
+; Line 342
+					$F261:
+;|***     {
+;|***         t = p1 >> 24;   // get most significant coefficient
+; Line 344
+	*** 000007	8a 46 0b 		mov	al,BYTE PTR [bp+11]
+	*** 00000a	2a e4 			sub	ah,ah
+	*** 00000c	89 46 f8 		mov	WORD PTR [bp-8],ax	;t
+	*** 00000f	c7 46 fa 00 00 		mov	WORD PTR [bp-6],0
+;|***         
+;|***         p1 = (p1 << 8) | (p0 >> 24); p0 <<= 8;  // shift others up
+; Line 346
+	*** 000014	66 8b 46 08 		mov	eax,DWORD PTR [bp+8]	;p1
+	*** 000018	66 c1 e0 08 		shl	eax,8
+	*** 00001c	8a 4e 07 		mov	cl,BYTE PTR [bp+7]
+	*** 00001f	2a ed 			sub	ch,ch
+	*** 000021	0b c1 			or	ax,cx
+	*** 000023	66 89 46 08 		mov	DWORD PTR [bp+8],eax	;p1
+	*** 000027	66 8b 46 04 		mov	eax,DWORD PTR [bp+4]	;p0
+	*** 00002b	66 c1 e0 08 		shl	eax,8
+	*** 00002f	66 89 46 04 		mov	DWORD PTR [bp+4],eax	;p0
+;|***             
+;|***         // multiply t by a (the primitive element - i.e. left shift)
+;|*** 
+;|***         u = (t << 1); 
+; Line 350
+	*** 000033	66 8b 46 f8 		mov	eax,DWORD PTR [bp-8]	;t
+	*** 000037	66 03 c0 		add	eax,eax
+	*** 00003a	66 89 46 fc 		mov	DWORD PTR [bp-4],eax	;i
+;|***         
+;|***         if(t & 0x80)            // subtract modular polynomial on overflow
+; Line 352
+	*** 00003e	f6 46 f8 80 		test	BYTE PTR [bp-8],128	;0080H	;t
+	*** 000042	74 05 			je	SHORT $I264
+;|***         
+;|***             u ^= G_MOD; 
+; Line 354
+	*** 000044	81 76 fc 4d 01 		xor	WORD PTR [bp-4],333	;014dH	;i
+;|*** 
+;|***         p1 ^= t ^ (u << 16);    // remove t * (a * x^2 + 1)  
+; Line 356
+					$I264:
+	*** 000049	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;i
+	*** 00004c	8b d0 			mov	dx,ax
+	*** 00004e	2b c9 			sub	cx,cx
+	*** 000050	33 4e f8 		xor	cx,WORD PTR [bp-8]	;t
+	*** 000053	33 56 fa 		xor	dx,WORD PTR [bp-6]
+	*** 000056	31 4e 08 		xor	WORD PTR [bp+8],cx	;p1
+	*** 000059	31 56 0a 		xor	WORD PTR [bp+10],dx
+;|*** 
+;|***         u ^= (t >> 1);          // form u = a * t + t / a = t * (a + 1 / a); 
+; Line 358
+	*** 00005c	66 8b 46 f8 		mov	eax,DWORD PTR [bp-8]	;t
+	*** 000060	66 d1 e8 		shr	eax,1
+	*** 000063	66 31 46 fc 		xor	DWORD PTR [bp-4],eax	;i
+;|***         
+;|***         if(t & 0x01)            // add the modular polynomial on underflow
+; Line 360
+	*** 000067	f6 46 f8 01 		test	BYTE PTR [bp-8],1	;t
+	*** 00006b	74 04 			je	SHORT $I265
+;|***         
+;|***             u ^= G_MOD >> 1;
+; Line 362
+	*** 00006d	80 76 fc a6 		xor	BYTE PTR [bp-4],166	;00a6H	;i
+;|*** 
+;|***         p1 ^= (u << 24) | (u << 8); // remove t * (a + 1/a) * (x^3 + x)
+; Line 364
+					$I265:
+	*** 000071	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;i
+	*** 000074	8b d0 			mov	dx,ax
+	*** 000076	0b 56 fe 		or	dx,WORD PTR [bp-2]
+	*** 000079	8a f2 			mov	dh,dl
+	*** 00007b	8a d4 			mov	dl,ah
+	*** 00007d	8a e0 			mov	ah,al
+	*** 00007f	2a c0 			sub	al,al
+	*** 000081	31 46 08 		xor	WORD PTR [bp+8],ax	;p1
+	*** 000084	31 56 0a 		xor	WORD PTR [bp+10],dx
+	*** 000087	4b 			dec	bx
+	*** 000088	0f 85 7b ff 		jne	$F261
+;|***     }
+;|*** 
+;|***     return p1;
+; Line 367
+	*** 00008c	8b 46 08 		mov	ax,WORD PTR [bp+8]	;p1
+	*** 00008f	8b 56 0a 		mov	dx,WORD PTR [bp+10]
+;|*** };
+; Line 368
+	*** 000092	c9 			leave	
+	*** 000093	c3 			ret	
+
+mds_rem	ENDP
+	PUBLIC	_twofish_set_key
+_twofish_set_key	PROC NEAR	;  COMDAT
+;|*** 
+;|*** /* initialise the key schedule from the user supplied key   */
+;|*** 
+;|*** u4byte *twofish_set_key(TwofishInstance *instance, const u4byte in_key[], const u4byte key_len)
+;|*** {   u4byte  i, a, b, me_key[4], mo_key[4];
+; Line 373
+	*** 000000	c8 3a 00 00 		enter	58,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	instance = 4
+;	in_key = 6
+;	key_len = 8
+;	i = -4
+;	a = -8
+;	b = -12
+;	me_key = -52
+;	mo_key = -36
+;	l_key = -20
+;	s_key = -18
+	*** 000006	8b 7e 04 		mov	di,WORD PTR [bp+4]	;instance
+;|*** 	u4byte *l_key, *s_key;
+;|*** 
+;|*** 	l_key = instance->l_key;
+;|*** 	s_key = instance->s_key;
+; Line 377
+	*** 000009	89 7e ec 		mov	WORD PTR [bp-20],di	;l_key
+	*** 00000c	8d 85 a0 00 		lea	ax,WORD PTR [di+160]
+	*** 000010	89 46 ee 		mov	WORD PTR [bp-18],ax	;s_key
+;|*** 
+;|*** #ifdef Q_TABLES
+;|***     if(!qt_gen)
+; Line 380
+	*** 000013	66 83 3e 00 00 00 	cmp	DWORD PTR $S214_qt_gen,0
+	*** 000019	75 0c 			jne	SHORT $I280
+;|***     {
+;|***         gen_qtab(); qt_gen = 1;
+; Line 382
+	*** 00001b	e8 00 00 		call	gen_qtab
+	*** 00001e	66 c7 06 00 00 01 00 00 00 mov	DWORD PTR $S214_qt_gen,1
+;|***     }
+;|*** #endif
+;|*** 
+;|*** #ifdef M_TABLE
+;|***     if(!mt_gen)
+; Line 387
+					$I280:
+	*** 000027	66 83 3e 00 00 00 	cmp	DWORD PTR $S222_mt_gen,0
+	*** 00002d	75 0c 			jne	SHORT $I281
+;|***     {
+;|***         gen_mtab(); mt_gen = 1;
+; Line 389
+	*** 00002f	e8 00 00 		call	gen_mtab
+	*** 000032	66 c7 06 00 00 01 00 00 00 mov	DWORD PTR $S222_mt_gen,1
+;|***     }
+;|*** #endif
+;|*** 
+;|***     instance->k_len = key_len / 64;   /* 2, 3 or 4 */
+; Line 393
+					$I281:
+	*** 00003b	8b 46 08 		mov	ax,WORD PTR [bp+8]	;key_len
+	*** 00003e	8b 56 0a 		mov	dx,WORD PTR [bp+10]
+	*** 000041	d1 ea 			shr	dx,1
+	*** 000043	d1 d8 			rcr	ax,1
+	*** 000045	d1 ea 			shr	dx,1
+	*** 000047	d1 d8 			rcr	ax,1
+	*** 000049	d1 ea 			shr	dx,1
+	*** 00004b	d1 d8 			rcr	ax,1
+	*** 00004d	d1 ea 			shr	dx,1
+	*** 00004f	d1 d8 			rcr	ax,1
+	*** 000051	d1 ea 			shr	dx,1
+	*** 000053	d1 d8 			rcr	ax,1
+	*** 000055	d1 ea 			shr	dx,1
+	*** 000057	d1 d8 			rcr	ax,1
+	*** 000059	89 85 b0 00 		mov	WORD PTR [di+176],ax
+	*** 00005d	89 95 b2 00 		mov	WORD PTR [di+178],dx
+;|*** 
+;|***     for(i = 0; i < instance->k_len; ++i)
+; Line 395
+	*** 000061	66 c7 46 fc 00 00 00 00 mov	DWORD PTR [bp-4],0	;i
+	*** 000069	0b d2 			or	dx,dx
+	*** 00006b	75 04 			jne	SHORT $L349
+	*** 00006d	0b c0 			or	ax,ax
+	*** 00006f	74 69 			je	SHORT $L350
+					$L349:
+	*** 000071	8d 56 dc 		lea	dx,WORD PTR [bp-36]	;mo_key
+	*** 000074	8b 76 06 		mov	si,WORD PTR [bp+6]	;in_key
+	*** 000077	8d 46 cc 		lea	ax,WORD PTR [bp-52]	;me_key
+	*** 00007a	89 46 f2 		mov	WORD PTR [bp-14],ax
+	*** 00007d	89 56 f0 		mov	WORD PTR [bp-16],dx
+	*** 000080	8b fa 			mov	di,dx
+					$F282:
+;|***     {
+;|***         a = LE32(in_key[i + i]);     me_key[i] = a;
+; Line 397
+	*** 000082	66 8b 04 		mov	eax,DWORD PTR [si]
+	*** 000085	66 89 46 f8 		mov	DWORD PTR [bp-8],eax	;a
+	*** 000089	8b 5e f2 		mov	bx,WORD PTR [bp-14]
+	*** 00008c	66 89 07 		mov	DWORD PTR [bx],eax
+;|***         b = LE32(in_key[i + i + 1]); mo_key[i] = b;
+; Line 398
+	*** 00008f	66 8b 44 04 		mov	eax,DWORD PTR [si+4]
+	*** 000093	66 89 46 f4 		mov	DWORD PTR [bp-12],eax	;b
+	*** 000097	66 89 05 		mov	DWORD PTR [di],eax
+;|***         s_key[instance->k_len - i - 1] = mds_rem(a, b);
+; Line 399
+	*** 00009a	66 ff 76 f4 		push	DWORD PTR [bp-12]	;b
+	*** 00009e	66 ff 76 f8 		push	DWORD PTR [bp-8]	;a
+	*** 0000a2	e8 00 00 		call	mds_rem
+	*** 0000a5	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;instance
+	*** 0000a8	83 c4 08 		add	sp,8
+	*** 0000ab	8b 9f b0 00 		mov	bx,WORD PTR [bx+176]
+	*** 0000af	2b 5e fc 		sub	bx,WORD PTR [bp-4]	;i
+	*** 0000b2	c1 e3 02 		shl	bx,2
+	*** 0000b5	03 5e ee 		add	bx,WORD PTR [bp-18]	;s_key
+	*** 0000b8	89 47 fc 		mov	WORD PTR [bx-4],ax
+	*** 0000bb	89 57 fe 		mov	WORD PTR [bx-2],dx
+	*** 0000be	83 c7 04 		add	di,4
+	*** 0000c1	83 c6 08 		add	si,8
+	*** 0000c4	83 46 f2 04 		add	WORD PTR [bp-14],4
+	*** 0000c8	66 ff 46 fc 		inc	DWORD PTR [bp-4]	;i
+	*** 0000cc	66 8b 46 fc 		mov	eax,DWORD PTR [bp-4]	;i
+	*** 0000d0	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;instance
+	*** 0000d3	66 39 87 b0 00 		cmp	DWORD PTR [bx+176],eax
+	*** 0000d8	77 a8 			ja	SHORT $F282
+					$L350:
+;|***     }
+; Line 400
+	*** 0000da	8b 76 ec 		mov	si,WORD PTR [bp-20]	;l_key
+	*** 0000dd	66 c7 46 fc 01 01 01 01 mov	DWORD PTR [bp-4],16843009	;01010101H	;i
+	*** 0000e5	8b 7e 04 		mov	di,WORD PTR [bp+4]	;instance
+;|*** 
+;|***     for(i = 0; i < 40; i += 2)
+; Line 402
+					$F285:
+;|***     {
+;|***         a = 0x01010101 * i; b = a + 0x01010101;
+;|***         a = h_fun(instance, a, me_key);
+; Line 405
+	*** 0000e8	8d 46 cc 		lea	ax,WORD PTR [bp-52]	;me_key
+	*** 0000eb	50 			push	ax
+	*** 0000ec	66 8b 46 fc 		mov	eax,DWORD PTR [bp-4]	;i
+	*** 0000f0	66 2d 01 01 01 01 	sub	eax,16843009	;01010101H
+	*** 0000f6	66 50 			push	eax
+	*** 0000f8	57 			push	di
+	*** 0000f9	e8 00 00 		call	h_fun
+	*** 0000fc	83 c4 08 		add	sp,8
+	*** 0000ff	89 46 f8 		mov	WORD PTR [bp-8],ax	;a
+	*** 000102	89 56 fa 		mov	WORD PTR [bp-6],dx
+;|***         b = rotl(h_fun(instance, b, mo_key), 8);
+;|***         l_key[i] = a + b;
+; Line 407
+	*** 000105	8d 46 dc 		lea	ax,WORD PTR [bp-36]	;mo_key
+	*** 000108	50 			push	ax
+	*** 000109	66 ff 76 fc 		push	DWORD PTR [bp-4]	;i
+	*** 00010d	57 			push	di
+	*** 00010e	e8 00 00 		call	h_fun
+	*** 000111	83 c4 08 		add	sp,8
+	*** 000114	8d 4e dc 		lea	cx,WORD PTR [bp-36]	;mo_key
+	*** 000117	51 			push	cx
+	*** 000118	66 ff 76 fc 		push	DWORD PTR [bp-4]	;i
+	*** 00011c	57 			push	di
+	*** 00011d	89 46 c8 		mov	WORD PTR [bp-56],ax
+	*** 000120	89 56 ca 		mov	WORD PTR [bp-54],dx
+	*** 000123	e8 00 00 		call	h_fun
+	*** 000126	83 c4 08 		add	sp,8
+	*** 000129	8a d6 			mov	dl,dh
+	*** 00012b	2a f6 			sub	dh,dh
+	*** 00012d	8b ca 			mov	cx,dx
+	*** 00012f	66 8b 46 c8 		mov	eax,DWORD PTR [bp-56]
+	*** 000133	66 c1 e0 08 		shl	eax,8
+	*** 000137	0b c1 			or	ax,cx
+	*** 000139	66 89 46 f4 		mov	DWORD PTR [bp-12],eax	;b
+	*** 00013d	66 03 46 f8 		add	eax,DWORD PTR [bp-8]	;a
+	*** 000141	66 89 04 		mov	DWORD PTR [si],eax
+;|***         l_key[i + 1] = rotl(a + 2 * b, 9);
+; Line 408
+	*** 000144	66 8b 46 f4 		mov	eax,DWORD PTR [bp-12]	;b
+	*** 000148	66 03 c0 		add	eax,eax
+	*** 00014b	66 03 46 f8 		add	eax,DWORD PTR [bp-8]	;a
+	*** 00014f	66 8b d0 		mov	edx,eax
+	*** 000152	66 c1 ea 10 		shr	edx,16	;00000010H
+	*** 000156	89 56 c6 		mov	WORD PTR [bp-58],dx
+	*** 000159	8a f2 			mov	dh,dl
+	*** 00015b	8a d4 			mov	dl,ah
+	*** 00015d	8a e0 			mov	ah,al
+	*** 00015f	2a c0 			sub	al,al
+	*** 000161	03 c0 			add	ax,ax
+	*** 000163	13 d2 			adc	dx,dx
+	*** 000165	8b 4e c6 		mov	cx,WORD PTR [bp-58]
+	*** 000168	c1 e9 07 		shr	cx,7
+	*** 00016b	0b c1 			or	ax,cx
+	*** 00016d	89 44 04 		mov	WORD PTR [si+4],ax
+	*** 000170	89 54 06 		mov	WORD PTR [si+6],dx
+	*** 000173	83 c6 08 		add	si,8
+	*** 000176	66 81 46 fc 02 02 02 02 add	DWORD PTR [bp-4],33686018	;02020202H	;i
+	*** 00017e	66 81 7e fc 29 29 29 29 cmp	DWORD PTR [bp-4],690563369	;29292929H	;i
+	*** 000186	0f 82 5e ff 		jb	$F285
+					$L351:
+;|***     }
+;|*** 
+;|*** #ifdef MK_TABLE
+;|***     gen_mk_tab(instance, s_key);
+;|*** #endif
+;|*** 
+;|***     return l_key;
+; Line 415
+	*** 00018a	8b 46 ec 		mov	ax,WORD PTR [bp-20]	;l_key
+;|*** };
+; Line 416
+	*** 00018d	5e 			pop	si
+	*** 00018e	5f 			pop	di
+	*** 00018f	c9 			leave	
+	*** 000190	c3 			ret	
+
+_twofish_set_key	ENDP
+	PUBLIC	_twofish_encrypt
+_twofish_encrypt	PROC NEAR	;  COMDAT
+;|*** 
+;|*** /* encrypt a block of text  */
+;|*** 
+;|*** #ifndef TC_MINIMIZE_CODE_SIZE
+;|*** 
+;|*** #define f_rnd(i)                                                    \
+;|***     t1 = g1_fun(blk[1]); t0 = g0_fun(blk[0]);                       \
+;|***     blk[2] = rotr(blk[2] ^ (t0 + t1 + l_key[4 * (i) + 8]), 1);      \
+;|***     blk[3] = rotl(blk[3], 1) ^ (t0 + 2 * t1 + l_key[4 * (i) + 9]);  \
+;|***     t1 = g1_fun(blk[3]); t0 = g0_fun(blk[2]);                       \
+;|***     blk[0] = rotr(blk[0] ^ (t0 + t1 + l_key[4 * (i) + 10]), 1);     \
+;|***     blk[1] = rotl(blk[1], 1) ^ (t0 + 2 * t1 + l_key[4 * (i) + 11])
+;|*** 
+;|*** void twofish_encrypt(TwofishInstance *instance, const u4byte in_blk[4], u4byte out_blk[])
+;|*** {   u4byte  t0, t1, blk[4];
+;|*** 
+;|*** 	u4byte *l_key = instance->l_key;
+;|*** 	u4byte *mk_tab = instance->mk_tab;
+;|*** 
+;|*** 	blk[0] = LE32(in_blk[0]) ^ l_key[0];
+;|***     blk[1] = LE32(in_blk[1]) ^ l_key[1];
+;|***     blk[2] = LE32(in_blk[2]) ^ l_key[2];
+;|***     blk[3] = LE32(in_blk[3]) ^ l_key[3];
+;|*** 
+;|***     f_rnd(0); f_rnd(1); f_rnd(2); f_rnd(3);
+;|***     f_rnd(4); f_rnd(5); f_rnd(6); f_rnd(7);
+;|*** 
+;|***     out_blk[0] = LE32(blk[2] ^ l_key[4]);
+;|***     out_blk[1] = LE32(blk[3] ^ l_key[5]);
+;|***     out_blk[2] = LE32(blk[0] ^ l_key[6]);
+;|***     out_blk[3] = LE32(blk[1] ^ l_key[7]); 
+;|*** };
+;|*** 
+;|*** #else // TC_MINIMIZE_CODE_SIZE
+;|*** 
+;|*** void twofish_encrypt(TwofishInstance *instance, const u4byte in_blk[4], u4byte out_blk[])
+;|*** {   u4byte  t0, t1, blk[4];
+; Line 453
+	*** 000000	c8 2e 00 00 		enter	46,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	instance = 4
+;	in_blk = 6
+;	out_blk = 8
+;	t0 = -8
+;	t1 = -4
+;	blk = -30
+;	l_key = -14
+;	i = -28
+	*** 000006	8b 7e 04 		mov	di,WORD PTR [bp+4]	;instance
+	*** 000009	8b 5e 06 		mov	bx,WORD PTR [bp+6]	;in_blk
+;|*** 
+;|*** 	u4byte *l_key = instance->l_key;
+;|*** #ifdef TC_WINDOWS_BOOT_TWOFISH
+;|*** 	u4byte *mk_tab = instance->mk_tab;
+;|*** #endif
+;|*** 	int i;
+;|*** 
+;|*** 	blk[0] = LE32(in_blk[0]) ^ l_key[0];
+; Line 461
+	*** 00000c	66 8b 05 		mov	eax,DWORD PTR [di]
+	*** 00000f	66 33 07 		xor	eax,DWORD PTR [bx]
+	*** 000012	66 89 46 e2 		mov	DWORD PTR [bp-30],eax	;blk
+;|***     blk[1] = LE32(in_blk[1]) ^ l_key[1];
+; Line 462
+	*** 000016	66 8b 45 04 		mov	eax,DWORD PTR [di+4]
+	*** 00001a	66 33 47 04 		xor	eax,DWORD PTR [bx+4]
+	*** 00001e	66 89 46 e6 		mov	DWORD PTR [bp-26],eax
+;|***     blk[2] = LE32(in_blk[2]) ^ l_key[2];
+; Line 463
+	*** 000022	66 8b 45 08 		mov	eax,DWORD PTR [di+8]
+	*** 000026	66 33 47 08 		xor	eax,DWORD PTR [bx+8]
+	*** 00002a	66 89 46 ea 		mov	DWORD PTR [bp-22],eax
+;|***     blk[3] = LE32(in_blk[3]) ^ l_key[3];
+; Line 464
+	*** 00002e	66 8b 45 0c 		mov	eax,DWORD PTR [di+12]
+	*** 000032	66 33 47 0c 		xor	eax,DWORD PTR [bx+12]
+	*** 000036	66 89 46 ee 		mov	DWORD PTR [bp-18],eax
+	*** 00003a	8d 45 20 		lea	ax,WORD PTR [di+32]
+	*** 00003d	c7 46 f4 08 00 		mov	WORD PTR [bp-12],8
+	*** 000042	89 7e f2 		mov	WORD PTR [bp-14],di	;l_key
+	*** 000045	8b f0 			mov	si,ax
+;|*** 
+;|*** 	for (i = 0; i <= 7; ++i)
+; Line 466
+					$F300:
+;|*** 	{
+;|*** 		t1 = g1_fun(blk[1]); t0 = g0_fun(blk[0]);
+; Line 468
+	*** 000047	8d 85 a0 00 		lea	ax,WORD PTR [di+160]
+	*** 00004b	50 			push	ax
+	*** 00004c	8b 56 e8 		mov	dx,WORD PTR [bp-24]
+	*** 00004f	8b c2 			mov	ax,dx
+	*** 000051	8a c4 			mov	al,ah
+	*** 000053	2a e4 			sub	ah,ah
+	*** 000055	8b c8 			mov	cx,ax
+	*** 000057	8b 46 e6 		mov	ax,WORD PTR [bp-26]
+	*** 00005a	8a f2 			mov	dh,dl
+	*** 00005c	8a d4 			mov	dl,ah
+	*** 00005e	8a e0 			mov	ah,al
+	*** 000060	2a c0 			sub	al,al
+	*** 000062	0b c1 			or	ax,cx
+	*** 000064	52 			push	dx
+	*** 000065	50 			push	ax
+	*** 000066	57 			push	di
+	*** 000067	e8 00 00 		call	h_fun
+	*** 00006a	83 c4 08 		add	sp,8
+	*** 00006d	89 46 fc 		mov	WORD PTR [bp-4],ax	;t1
+	*** 000070	89 56 fe 		mov	WORD PTR [bp-2],dx
+	*** 000073	8d 85 a0 00 		lea	ax,WORD PTR [di+160]
+	*** 000077	50 			push	ax
+	*** 000078	66 ff 76 e2 		push	DWORD PTR [bp-30]	;blk
+	*** 00007c	57 			push	di
+	*** 00007d	e8 00 00 		call	h_fun
+	*** 000080	83 c4 08 		add	sp,8
+	*** 000083	89 46 f8 		mov	WORD PTR [bp-8],ax	;t0
+	*** 000086	89 56 fa 		mov	WORD PTR [bp-6],dx
+;|*** 		blk[2] = rotr(blk[2] ^ (t0 + t1 + l_key[4 * (i) + 8]), 1);
+; Line 469
+	*** 000089	66 8b 46 fc 		mov	eax,DWORD PTR [bp-4]	;t1
+	*** 00008d	66 03 46 f8 		add	eax,DWORD PTR [bp-8]	;t0
+	*** 000091	66 03 04 		add	eax,DWORD PTR [si]
+	*** 000094	66 33 46 ea 		xor	eax,DWORD PTR [bp-22]
+	*** 000098	66 8b d0 		mov	edx,eax
+	*** 00009b	66 c1 ea 10 		shr	edx,16	;00000010H
+	*** 00009f	8b c8 			mov	cx,ax
+	*** 0000a1	8b da 			mov	bx,dx
+	*** 0000a3	c1 e0 0f 		shl	ax,15	;000fH
+	*** 0000a6	89 4e de 		mov	WORD PTR [bp-34],cx
+	*** 0000a9	8b c8 			mov	cx,ax
+	*** 0000ab	2b d2 			sub	dx,dx
+	*** 0000ad	89 56 da 		mov	WORD PTR [bp-38],dx
+	*** 0000b0	8b 46 de 		mov	ax,WORD PTR [bp-34]
+	*** 0000b3	8b d3 			mov	dx,bx
+	*** 0000b5	d1 ea 			shr	dx,1
+	*** 0000b7	d1 d8 			rcr	ax,1
+	*** 0000b9	0b 46 da 		or	ax,WORD PTR [bp-38]
+	*** 0000bc	0b d1 			or	dx,cx
+	*** 0000be	89 46 ea 		mov	WORD PTR [bp-22],ax
+	*** 0000c1	89 56 ec 		mov	WORD PTR [bp-20],dx
+;|*** 		blk[3] = rotl(blk[3], 1) ^ (t0 + 2 * t1 + l_key[4 * (i) + 9]);
+; Line 470
+	*** 0000c4	8b 4e ee 		mov	cx,WORD PTR [bp-18]
+	*** 0000c7	8b 56 f0 		mov	dx,WORD PTR [bp-16]
+	*** 0000ca	8b c2 			mov	ax,dx
+	*** 0000cc	03 c9 			add	cx,cx
+	*** 0000ce	13 c2 			adc	ax,dx
+	*** 0000d0	c1 ea 0f 		shr	dx,15	;000fH
+	*** 0000d3	0b ca 			or	cx,dx
+	*** 0000d5	8b 56 fc 		mov	dx,WORD PTR [bp-4]	;t1
+	*** 0000d8	8b 5e fe 		mov	bx,WORD PTR [bp-2]
+	*** 0000db	03 d2 			add	dx,dx
+	*** 0000dd	13 db 			adc	bx,bx
+	*** 0000df	03 54 04 		add	dx,WORD PTR [si+4]
+	*** 0000e2	13 5c 06 		adc	bx,WORD PTR [si+6]
+	*** 0000e5	03 56 f8 		add	dx,WORD PTR [bp-8]	;t0
+	*** 0000e8	13 5e fa 		adc	bx,WORD PTR [bp-6]
+	*** 0000eb	33 d1 			xor	dx,cx
+	*** 0000ed	33 d8 			xor	bx,ax
+	*** 0000ef	89 56 ee 		mov	WORD PTR [bp-18],dx
+	*** 0000f2	89 5e f0 		mov	WORD PTR [bp-16],bx
+;|*** 		t1 = g1_fun(blk[3]); t0 = g0_fun(blk[2]);
+; Line 471
+	*** 0000f5	8d 85 a0 00 		lea	ax,WORD PTR [di+160]
+	*** 0000f9	50 			push	ax
+	*** 0000fa	8b d3 			mov	dx,bx
+	*** 0000fc	8b c3 			mov	ax,bx
+	*** 0000fe	8a c4 			mov	al,ah
+	*** 000100	2a e4 			sub	ah,ah
+	*** 000102	8b c8 			mov	cx,ax
+	*** 000104	8b 46 ee 		mov	ax,WORD PTR [bp-18]
+	*** 000107	8a f2 			mov	dh,dl
+	*** 000109	8a d4 			mov	dl,ah
+	*** 00010b	8a e0 			mov	ah,al
+	*** 00010d	2a c0 			sub	al,al
+	*** 00010f	0b c1 			or	ax,cx
+	*** 000111	52 			push	dx
+	*** 000112	50 			push	ax
+	*** 000113	57 			push	di
+	*** 000114	e8 00 00 		call	h_fun
+	*** 000117	83 c4 08 		add	sp,8
+	*** 00011a	89 46 fc 		mov	WORD PTR [bp-4],ax	;t1
+	*** 00011d	89 56 fe 		mov	WORD PTR [bp-2],dx
+	*** 000120	8d 85 a0 00 		lea	ax,WORD PTR [di+160]
+	*** 000124	50 			push	ax
+	*** 000125	66 ff 76 ea 		push	DWORD PTR [bp-22]
+	*** 000129	57 			push	di
+	*** 00012a	e8 00 00 		call	h_fun
+	*** 00012d	83 c4 08 		add	sp,8
+	*** 000130	89 46 f8 		mov	WORD PTR [bp-8],ax	;t0
+	*** 000133	89 56 fa 		mov	WORD PTR [bp-6],dx
+;|*** 		blk[0] = rotr(blk[0] ^ (t0 + t1 + l_key[4 * (i) + 10]), 1);
+; Line 472
+	*** 000136	66 8b 44 08 		mov	eax,DWORD PTR [si+8]
+	*** 00013a	66 03 46 fc 		add	eax,DWORD PTR [bp-4]	;t1
+	*** 00013e	66 03 46 f8 		add	eax,DWORD PTR [bp-8]	;t0
+	*** 000142	66 33 46 e2 		xor	eax,DWORD PTR [bp-30]	;blk
+	*** 000146	66 8b d0 		mov	edx,eax
+	*** 000149	66 c1 ea 10 		shr	edx,16	;00000010H
+	*** 00014d	8b c8 			mov	cx,ax
+	*** 00014f	8b da 			mov	bx,dx
+	*** 000151	c1 e0 0f 		shl	ax,15	;000fH
+	*** 000154	89 4e d6 		mov	WORD PTR [bp-42],cx
+	*** 000157	8b c8 			mov	cx,ax
+	*** 000159	2b d2 			sub	dx,dx
+	*** 00015b	89 56 d2 		mov	WORD PTR [bp-46],dx
+	*** 00015e	8b 46 d6 		mov	ax,WORD PTR [bp-42]
+	*** 000161	8b d3 			mov	dx,bx
+	*** 000163	d1 ea 			shr	dx,1
+	*** 000165	d1 d8 			rcr	ax,1
+	*** 000167	0b 46 d2 		or	ax,WORD PTR [bp-46]
+	*** 00016a	0b d1 			or	dx,cx
+	*** 00016c	89 46 e2 		mov	WORD PTR [bp-30],ax	;blk
+	*** 00016f	89 56 e4 		mov	WORD PTR [bp-28],dx	;i
+;|*** 		blk[1] = rotl(blk[1], 1) ^ (t0 + 2 * t1 + l_key[4 * (i) + 11]);
+; Line 473
+	*** 000172	8b 4e e6 		mov	cx,WORD PTR [bp-26]
+	*** 000175	8b 56 e8 		mov	dx,WORD PTR [bp-24]
+	*** 000178	8b c2 			mov	ax,dx
+	*** 00017a	03 c9 			add	cx,cx
+	*** 00017c	13 c2 			adc	ax,dx
+	*** 00017e	c1 ea 0f 		shr	dx,15	;000fH
+	*** 000181	0b ca 			or	cx,dx
+	*** 000183	8b 56 fc 		mov	dx,WORD PTR [bp-4]	;t1
+	*** 000186	8b 5e fe 		mov	bx,WORD PTR [bp-2]
+	*** 000189	03 d2 			add	dx,dx
+	*** 00018b	13 db 			adc	bx,bx
+	*** 00018d	03 54 0c 		add	dx,WORD PTR [si+12]
+	*** 000190	13 5c 0e 		adc	bx,WORD PTR [si+14]
+	*** 000193	03 56 f8 		add	dx,WORD PTR [bp-8]	;t0
+	*** 000196	13 5e fa 		adc	bx,WORD PTR [bp-6]
+	*** 000199	33 d1 			xor	dx,cx
+	*** 00019b	33 d8 			xor	bx,ax
+	*** 00019d	89 56 e6 		mov	WORD PTR [bp-26],dx
+	*** 0001a0	89 5e e8 		mov	WORD PTR [bp-24],bx
+	*** 0001a3	83 c6 10 		add	si,16	;0010H
+	*** 0001a6	ff 4e f4 		dec	WORD PTR [bp-12]
+	*** 0001a9	0f 85 9a fe 		jne	$F300
+;|*** 	}
+; Line 474
+	*** 0001ad	8b 7e f2 		mov	di,WORD PTR [bp-14]	;l_key
+	*** 0001b0	8b 5e 08 		mov	bx,WORD PTR [bp+8]	;out_blk
+;|*** 
+;|***     out_blk[0] = LE32(blk[2] ^ l_key[4]);
+; Line 476
+	*** 0001b3	66 8b 45 10 		mov	eax,DWORD PTR [di+16]
+	*** 0001b7	66 33 46 ea 		xor	eax,DWORD PTR [bp-22]
+	*** 0001bb	66 89 07 		mov	DWORD PTR [bx],eax
+;|***     out_blk[1] = LE32(blk[3] ^ l_key[5]);
+; Line 477
+	*** 0001be	66 8b 45 14 		mov	eax,DWORD PTR [di+20]
+	*** 0001c2	66 33 46 ee 		xor	eax,DWORD PTR [bp-18]
+	*** 0001c6	66 89 47 04 		mov	DWORD PTR [bx+4],eax
+;|***     out_blk[2] = LE32(blk[0] ^ l_key[6]);
+; Line 478
+	*** 0001ca	66 8b 45 18 		mov	eax,DWORD PTR [di+24]
+	*** 0001ce	66 33 46 e2 		xor	eax,DWORD PTR [bp-30]	;blk
+	*** 0001d2	66 89 47 08 		mov	DWORD PTR [bx+8],eax
+;|***     out_blk[3] = LE32(blk[1] ^ l_key[7]); 
+; Line 479
+	*** 0001d6	66 8b 45 1c 		mov	eax,DWORD PTR [di+28]
+	*** 0001da	66 33 46 e6 		xor	eax,DWORD PTR [bp-26]
+	*** 0001de	66 89 47 0c 		mov	DWORD PTR [bx+12],eax
+;|*** };
+; Line 480
+	*** 0001e2	5e 			pop	si
+	*** 0001e3	5f 			pop	di
+	*** 0001e4	c9 			leave	
+	*** 0001e5	c3 			ret	
+
+_twofish_encrypt	ENDP
+	PUBLIC	_twofish_decrypt
+_twofish_decrypt	PROC NEAR	;  COMDAT
+;|*** 
+;|*** #endif // TC_MINIMIZE_CODE_SIZE
+;|*** 
+;|*** /* decrypt a block of text  */
+;|*** 
+;|*** #ifndef TC_MINIMIZE_CODE_SIZE
+;|*** 
+;|*** #define i_rnd(i)                                                        \
+;|***         t1 = g1_fun(blk[1]); t0 = g0_fun(blk[0]);                       \
+;|***         blk[2] = rotl(blk[2], 1) ^ (t0 + t1 + l_key[4 * (i) + 10]);     \
+;|***         blk[3] = rotr(blk[3] ^ (t0 + 2 * t1 + l_key[4 * (i) + 11]), 1); \
+;|***         t1 = g1_fun(blk[3]); t0 = g0_fun(blk[2]);                       \
+;|***         blk[0] = rotl(blk[0], 1) ^ (t0 + t1 + l_key[4 * (i) +  8]);     \
+;|***         blk[1] = rotr(blk[1] ^ (t0 + 2 * t1 + l_key[4 * (i) +  9]), 1)
+;|*** 
+;|*** void twofish_decrypt(TwofishInstance *instance, const u4byte in_blk[4], u4byte out_blk[4])
+;|*** {   u4byte  t0, t1, blk[4];
+;|*** 
+;|*** 	u4byte *l_key = instance->l_key;
+;|*** 	u4byte *mk_tab = instance->mk_tab;
+;|*** 
+;|***     blk[0] = LE32(in_blk[0]) ^ l_key[4];
+;|***     blk[1] = LE32(in_blk[1]) ^ l_key[5];
+;|***     blk[2] = LE32(in_blk[2]) ^ l_key[6];
+;|***     blk[3] = LE32(in_blk[3]) ^ l_key[7];
+;|*** 
+;|***     i_rnd(7); i_rnd(6); i_rnd(5); i_rnd(4);
+;|***     i_rnd(3); i_rnd(2); i_rnd(1); i_rnd(0);
+;|*** 
+;|***     out_blk[0] = LE32(blk[2] ^ l_key[0]);
+;|***     out_blk[1] = LE32(blk[3] ^ l_key[1]);
+;|***     out_blk[2] = LE32(blk[0] ^ l_key[2]);
+;|***     out_blk[3] = LE32(blk[1] ^ l_key[3]); 
+;|*** };
+;|*** 
+;|*** #else // TC_MINIMIZE_CODE_SIZE
+;|*** 
+;|*** void twofish_decrypt(TwofishInstance *instance, const u4byte in_blk[4], u4byte out_blk[4])
+;|*** {   u4byte  t0, t1, blk[4];
+; Line 519
+	*** 000000	c8 26 00 00 		enter	38,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	instance = 4
+;	in_blk = 6
+;	out_blk = 8
+;	t0 = -4
+;	t1 = -8
+;	blk = -30
+;	l_key = -14
+;	i = -12
+	*** 000006	8b 7e 04 		mov	di,WORD PTR [bp+4]	;instance
+	*** 000009	8b 5e 06 		mov	bx,WORD PTR [bp+6]	;in_blk
+;|*** 
+;|*** 	u4byte *l_key = instance->l_key;
+;|*** #ifdef TC_WINDOWS_BOOT_TWOFISH
+;|*** 	u4byte *mk_tab = instance->mk_tab;
+;|*** #endif
+;|*** 	int i;
+;|*** 
+;|***     blk[0] = LE32(in_blk[0]) ^ l_key[4];
+; Line 527
+	*** 00000c	66 8b 45 10 		mov	eax,DWORD PTR [di+16]
+	*** 000010	66 33 07 		xor	eax,DWORD PTR [bx]
+	*** 000013	66 89 46 e2 		mov	DWORD PTR [bp-30],eax	;blk
+;|***     blk[1] = LE32(in_blk[1]) ^ l_key[5];
+; Line 528
+	*** 000017	66 8b 45 14 		mov	eax,DWORD PTR [di+20]
+	*** 00001b	66 33 47 04 		xor	eax,DWORD PTR [bx+4]
+	*** 00001f	66 89 46 e6 		mov	DWORD PTR [bp-26],eax
+;|***     blk[2] = LE32(in_blk[2]) ^ l_key[6];
+; Line 529
+	*** 000023	66 8b 45 18 		mov	eax,DWORD PTR [di+24]
+	*** 000027	66 33 47 08 		xor	eax,DWORD PTR [bx+8]
+	*** 00002b	66 89 46 ea 		mov	DWORD PTR [bp-22],eax
+;|***     blk[3] = LE32(in_blk[3]) ^ l_key[7];
+; Line 530
+	*** 00002f	66 8b 45 1c 		mov	eax,DWORD PTR [di+28]
+	*** 000033	66 33 47 0c 		xor	eax,DWORD PTR [bx+12]
+	*** 000037	66 89 46 ee 		mov	DWORD PTR [bp-18],eax
+;|*** 
+;|*** 	for (i = 7; i >= 0; --i)
+; Line 532
+	*** 00003b	c7 46 f4 07 00 		mov	WORD PTR [bp-12],7	;i
+	*** 000040	8d 85 9c 00 		lea	ax,WORD PTR [di+156]
+	*** 000044	89 7e f2 		mov	WORD PTR [bp-14],di	;l_key
+	*** 000047	8b f0 			mov	si,ax
+					$F315:
+;|*** 	{
+;|*** 		t1 = g1_fun(blk[1]); t0 = g0_fun(blk[0]);
+; Line 534
+	*** 000049	8d 85 a0 00 		lea	ax,WORD PTR [di+160]
+	*** 00004d	50 			push	ax
+	*** 00004e	8b 56 e8 		mov	dx,WORD PTR [bp-24]
+	*** 000051	8b c2 			mov	ax,dx
+	*** 000053	8a c4 			mov	al,ah
+	*** 000055	2a e4 			sub	ah,ah
+	*** 000057	8b c8 			mov	cx,ax
+	*** 000059	8b 46 e6 		mov	ax,WORD PTR [bp-26]
+	*** 00005c	8a f2 			mov	dh,dl
+	*** 00005e	8a d4 			mov	dl,ah
+	*** 000060	8a e0 			mov	ah,al
+	*** 000062	2a c0 			sub	al,al
+	*** 000064	0b c1 			or	ax,cx
+	*** 000066	52 			push	dx
+	*** 000067	50 			push	ax
+	*** 000068	57 			push	di
+	*** 000069	e8 00 00 		call	h_fun
+	*** 00006c	83 c4 08 		add	sp,8
+	*** 00006f	89 46 f8 		mov	WORD PTR [bp-8],ax	;t1
+	*** 000072	89 56 fa 		mov	WORD PTR [bp-6],dx
+	*** 000075	8d 85 a0 00 		lea	ax,WORD PTR [di+160]
+	*** 000079	50 			push	ax
+	*** 00007a	66 ff 76 e2 		push	DWORD PTR [bp-30]	;blk
+	*** 00007e	57 			push	di
+	*** 00007f	e8 00 00 		call	h_fun
+	*** 000082	83 c4 08 		add	sp,8
+	*** 000085	89 46 fc 		mov	WORD PTR [bp-4],ax	;t0
+	*** 000088	89 56 fe 		mov	WORD PTR [bp-2],dx
+;|*** 		blk[2] = rotl(blk[2], 1) ^ (t0 + t1 + l_key[4 * (i) + 10]);
+; Line 535
+	*** 00008b	8b 4e ea 		mov	cx,WORD PTR [bp-22]
+	*** 00008e	8b 56 ec 		mov	dx,WORD PTR [bp-20]
+	*** 000091	8b c2 			mov	ax,dx
+	*** 000093	03 c9 			add	cx,cx
+	*** 000095	13 c2 			adc	ax,dx
+	*** 000097	c1 ea 0f 		shr	dx,15	;000fH
+	*** 00009a	0b ca 			or	cx,dx
+	*** 00009c	8b 54 fc 		mov	dx,WORD PTR [si-4]
+	*** 00009f	8b 5c fe 		mov	bx,WORD PTR [si-2]
+	*** 0000a2	03 56 f8 		add	dx,WORD PTR [bp-8]	;t1
+	*** 0000a5	13 5e fa 		adc	bx,WORD PTR [bp-6]
+	*** 0000a8	03 56 fc 		add	dx,WORD PTR [bp-4]	;t0
+	*** 0000ab	13 5e fe 		adc	bx,WORD PTR [bp-2]
+	*** 0000ae	33 d1 			xor	dx,cx
+	*** 0000b0	33 d8 			xor	bx,ax
+	*** 0000b2	89 56 ea 		mov	WORD PTR [bp-22],dx
+	*** 0000b5	89 5e ec 		mov	WORD PTR [bp-20],bx
+;|*** 		blk[3] = rotr(blk[3] ^ (t0 + 2 * t1 + l_key[4 * (i) + 11]), 1);
+; Line 536
+	*** 0000b8	8b 46 fc 		mov	ax,WORD PTR [bp-4]	;t0
+	*** 0000bb	03 04 			add	ax,WORD PTR [si]
+	*** 0000bd	33 46 ee 		xor	ax,WORD PTR [bp-18]
+	*** 0000c0	c1 e0 0f 		shl	ax,15	;000fH
+	*** 0000c3	89 46 e0 		mov	WORD PTR [bp-32],ax
+	*** 0000c6	66 8b 46 f8 		mov	eax,DWORD PTR [bp-8]	;t1
+	*** 0000ca	66 03 c0 		add	eax,eax
+	*** 0000cd	66 03 46 fc 		add	eax,DWORD PTR [bp-4]	;t0
+	*** 0000d1	66 03 04 		add	eax,DWORD PTR [si]
+	*** 0000d4	66 33 46 ee 		xor	eax,DWORD PTR [bp-18]
+	*** 0000d8	66 d1 e8 		shr	eax,1
+	*** 0000db	66 8b d0 		mov	edx,eax
+	*** 0000de	66 c1 ea 10 		shr	edx,16	;00000010H
+	*** 0000e2	0b 56 e0 		or	dx,WORD PTR [bp-32]
+	*** 0000e5	89 46 ee 		mov	WORD PTR [bp-18],ax
+	*** 0000e8	89 56 f0 		mov	WORD PTR [bp-16],dx
+;|*** 		t1 = g1_fun(blk[3]); t0 = g0_fun(blk[2]);
+; Line 537
+	*** 0000eb	8d 85 a0 00 		lea	ax,WORD PTR [di+160]
+	*** 0000ef	50 			push	ax
+	*** 0000f0	8b c2 			mov	ax,dx
+	*** 0000f2	8a c4 			mov	al,ah
+	*** 0000f4	2a e4 			sub	ah,ah
+	*** 0000f6	8b c8 			mov	cx,ax
+	*** 0000f8	8b 46 ee 		mov	ax,WORD PTR [bp-18]
+	*** 0000fb	8a f2 			mov	dh,dl
+	*** 0000fd	8a d4 			mov	dl,ah
+	*** 0000ff	8a e0 			mov	ah,al
+	*** 000101	2a c0 			sub	al,al
+	*** 000103	0b c1 			or	ax,cx
+	*** 000105	52 			push	dx
+	*** 000106	50 			push	ax
+	*** 000107	57 			push	di
+	*** 000108	e8 00 00 		call	h_fun
+	*** 00010b	83 c4 08 		add	sp,8
+	*** 00010e	89 46 f8 		mov	WORD PTR [bp-8],ax	;t1
+	*** 000111	89 56 fa 		mov	WORD PTR [bp-6],dx
+	*** 000114	8d 85 a0 00 		lea	ax,WORD PTR [di+160]
+	*** 000118	50 			push	ax
+	*** 000119	66 ff 76 ea 		push	DWORD PTR [bp-22]
+	*** 00011d	57 			push	di
+	*** 00011e	e8 00 00 		call	h_fun
+	*** 000121	83 c4 08 		add	sp,8
+	*** 000124	89 46 fc 		mov	WORD PTR [bp-4],ax	;t0
+	*** 000127	89 56 fe 		mov	WORD PTR [bp-2],dx
+;|*** 		blk[0] = rotl(blk[0], 1) ^ (t0 + t1 + l_key[4 * (i) +  8]);
+; Line 538
+	*** 00012a	8b 4e e2 		mov	cx,WORD PTR [bp-30]	;blk
+	*** 00012d	8b 56 e4 		mov	dx,WORD PTR [bp-28]
+	*** 000130	8b c2 			mov	ax,dx
+	*** 000132	03 c9 			add	cx,cx
+	*** 000134	13 c2 			adc	ax,dx
+	*** 000136	c1 ea 0f 		shr	dx,15	;000fH
+	*** 000139	0b ca 			or	cx,dx
+	*** 00013b	8b 54 f4 		mov	dx,WORD PTR [si-12]
+	*** 00013e	8b 5c f6 		mov	bx,WORD PTR [si-10]
+	*** 000141	03 56 f8 		add	dx,WORD PTR [bp-8]	;t1
+	*** 000144	13 5e fa 		adc	bx,WORD PTR [bp-6]
+	*** 000147	03 56 fc 		add	dx,WORD PTR [bp-4]	;t0
+	*** 00014a	13 5e fe 		adc	bx,WORD PTR [bp-2]
+	*** 00014d	33 d1 			xor	dx,cx
+	*** 00014f	33 d8 			xor	bx,ax
+	*** 000151	89 56 e2 		mov	WORD PTR [bp-30],dx	;blk
+	*** 000154	89 5e e4 		mov	WORD PTR [bp-28],bx
+;|*** 		blk[1] = rotr(blk[1] ^ (t0 + 2 * t1 + l_key[4 * (i) +  9]), 1);
+; Line 539
+	*** 000157	8b 44 f8 		mov	ax,WORD PTR [si-8]
+	*** 00015a	03 46 fc 		add	ax,WORD PTR [bp-4]	;t0
+	*** 00015d	33 46 e6 		xor	ax,WORD PTR [bp-26]
+	*** 000160	c1 e0 0f 		shl	ax,15	;000fH
+	*** 000163	2b c9 			sub	cx,cx
+	*** 000165	89 46 dc 		mov	WORD PTR [bp-36],ax
+	*** 000168	66 8b 46 f8 		mov	eax,DWORD PTR [bp-8]	;t1
+	*** 00016c	66 03 c0 		add	eax,eax
+	*** 00016f	66 03 44 f8 		add	eax,DWORD PTR [si-8]
+	*** 000173	66 03 46 fc 		add	eax,DWORD PTR [bp-4]	;t0
+	*** 000177	66 33 46 e6 		xor	eax,DWORD PTR [bp-26]
+	*** 00017b	66 d1 e8 		shr	eax,1
+	*** 00017e	66 8b d0 		mov	edx,eax
+	*** 000181	66 c1 ea 10 		shr	edx,16	;00000010H
+	*** 000185	0b 56 dc 		or	dx,WORD PTR [bp-36]
+	*** 000188	89 46 e6 		mov	WORD PTR [bp-26],ax
+	*** 00018b	89 56 e8 		mov	WORD PTR [bp-24],dx
+	*** 00018e	83 ee 10 		sub	si,16	;0010H
+	*** 000191	ff 4e f4 		dec	WORD PTR [bp-12]	;i
+	*** 000194	0f 89 b1 fe 		jns	$F315
+;|*** 	}
+; Line 540
+	*** 000198	8b 7e f2 		mov	di,WORD PTR [bp-14]	;l_key
+	*** 00019b	8b 5e 08 		mov	bx,WORD PTR [bp+8]	;out_blk
+;|*** 
+;|***     out_blk[0] = LE32(blk[2] ^ l_key[0]);
+; Line 542
+	*** 00019e	66 8b 05 		mov	eax,DWORD PTR [di]
+	*** 0001a1	66 33 46 ea 		xor	eax,DWORD PTR [bp-22]
+	*** 0001a5	66 89 07 		mov	DWORD PTR [bx],eax
+;|***     out_blk[1] = LE32(blk[3] ^ l_key[1]);
+; Line 543
+	*** 0001a8	66 8b 45 04 		mov	eax,DWORD PTR [di+4]
+	*** 0001ac	66 33 46 ee 		xor	eax,DWORD PTR [bp-18]
+	*** 0001b0	66 89 47 04 		mov	DWORD PTR [bx+4],eax
+;|***     out_blk[2] = LE32(blk[0] ^ l_key[2]);
+; Line 544
+	*** 0001b4	66 8b 45 08 		mov	eax,DWORD PTR [di+8]
+	*** 0001b8	66 33 46 e2 		xor	eax,DWORD PTR [bp-30]	;blk
+	*** 0001bc	66 89 47 08 		mov	DWORD PTR [bx+8],eax
+;|***     out_blk[3] = LE32(blk[1] ^ l_key[3]); 
+; Line 545
+	*** 0001c0	66 8b 45 0c 		mov	eax,DWORD PTR [di+12]
+	*** 0001c4	66 33 46 e6 		xor	eax,DWORD PTR [bp-26]
+	*** 0001c8	66 89 47 0c 		mov	DWORD PTR [bx+12],eax
+;|*** };
+; Line 546
+	*** 0001cc	5e 			pop	si
+	*** 0001cd	5f 			pop	di
+	*** 0001ce	c9 			leave	
+	*** 0001cf	c3 			ret	
+
+_twofish_decrypt	ENDP
+_TEXT	ENDS
+END
+;|*** 
+;|*** #endif // TC_MINIMIZE_CODE_SIZE

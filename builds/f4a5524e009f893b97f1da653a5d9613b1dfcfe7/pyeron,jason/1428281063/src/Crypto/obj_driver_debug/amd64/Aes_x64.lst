@@ -1,0 +1,3303 @@
+     1                                  
+     2                                  ; ---------------------------------------------------------------------------
+     3                                  ; Copyright (c) 1998-2007, Brian Gladman, Worcester, UK. All rights reserved.
+     4                                  ; 
+     5                                  ; LICENSE TERMS
+     6                                  ; 
+     7                                  ; The free distribution and use of this software is allowed (with or without
+     8                                  ; changes) provided that:
+     9                                  ; 
+    10                                  ;  1. source code distributions include the above copyright notice, this
+    11                                  ;     list of conditions and the following disclaimer;
+    12                                  ; 
+    13                                  ;  2. binary distributions include the above copyright notice, this list
+    14                                  ;     of conditions and the following disclaimer in their documentation;
+    15                                  ; 
+    16                                  ;  3. the name of the copyright holder is not used to endorse products
+    17                                  ;     built using this software without specific written permission.
+    18                                  ; 
+    19                                  ; DISCLAIMER
+    20                                  ; 
+    21                                  ; This software is provided 'as is' with no explicit or implied warranties
+    22                                  ; in respect of its properties, including, but not limited to, correctness
+    23                                  ; and/or fitness for purpose.
+    24                                  ; ---------------------------------------------------------------------------
+    25                                  ; Issue 20/12/2007
+    26                                  ;
+    27                                  ; I am grateful to Dag Arne Osvik for many discussions of the techniques that
+    28                                  ; can be used to optimise AES assembler code on AMD64/EM64T architectures.
+    29                                  ; Some of the techniques used in this implementation are the result of
+    30                                  ; suggestions made by him for which I am most grateful.
+    31                                  
+    32                                  ;
+    33                                  ; Adapted for CipherShed:
+    34                                  ; - Compatibility with NASM
+    35                                  ;
+    36                                  
+    37                                  ; An AES implementation for AMD64 processors using the YASM assembler.  This
+    38                                  ; implemetation provides only encryption, decryption and hence requires key
+    39                                  ; scheduling support in C. It uses 8k bytes of tables but its encryption and
+    40                                  ; decryption performance is very close to that obtained using large tables.
+    41                                  ; It can use either Windows or Gnu/Linux calling conventions, which are as
+    42                                  ; follows:
+    43                                  ;               windows  gnu/linux
+    44                                  ;
+    45                                  ;   in_blk          rcx     rdi
+    46                                  ;   out_blk         rdx     rsi
+    47                                  ;   context (cx)     r8     rdx
+    48                                  ;
+    49                                  ;   preserved       rsi      -    + rbx, rbp, rsp, r12, r13, r14 & r15
+    50                                  ;   registers       rdi      -      on both
+    51                                  ;
+    52                                  ;   destroyed        -      rsi   + rax, rcx, rdx, r8, r9, r10 & r11
+    53                                  ;   registers        -      rdi     on both
+    54                                  ;
+    55                                  ; The default convention is that for windows, the gnu/linux convention being
+    56                                  ; used if __GNUC__ is defined.
+    57                                  ;
+    58                                  ; Define _SEH_ to include support for Win64 structured exception handling
+    59                                  ; (this requires YASM version 0.6 or later).
+    60                                  ;
+    61                                  ; This code provides the standard AES block size (128 bits, 16 bytes) and the
+    62                                  ; three standard AES key sizes (128, 192 and 256 bits). It has the same call
+    63                                  ; interface as my C implementation.  It uses the Microsoft C AMD64 calling
+    64                                  ; conventions in which the three parameters are placed in  rcx, rdx and r8
+    65                                  ; respectively.  The rbx, rsi, rdi, rbp and r12..r15 registers are preserved.
+    66                                  ;
+    67                                  ;     AES_RETURN aes_encrypt(const unsigned char in_blk[],
+    68                                  ;                   unsigned char out_blk[], const aes_encrypt_ctx cx[1]);
+    69                                  ;
+    70                                  ;     AES_RETURN aes_decrypt(const unsigned char in_blk[],
+    71                                  ;                   unsigned char out_blk[], const aes_decrypt_ctx cx[1]);
+    72                                  ;
+    73                                  ;     AES_RETURN aes_encrypt_key<NNN>(const unsigned char key[],
+    74                                  ;                                            const aes_encrypt_ctx cx[1]);
+    75                                  ;
+    76                                  ;     AES_RETURN aes_decrypt_key<NNN>(const unsigned char key[],
+    77                                  ;                                            const aes_decrypt_ctx cx[1]);
+    78                                  ;
+    79                                  ;     AES_RETURN aes_encrypt_key(const unsigned char key[],
+    80                                  ;                           unsigned int len, const aes_decrypt_ctx cx[1]);
+    81                                  ;
+    82                                  ;     AES_RETURN aes_decrypt_key(const unsigned char key[],
+    83                                  ;                           unsigned int len, const aes_decrypt_ctx cx[1]);
+    84                                  ;
+    85                                  ; where <NNN> is 128, 102 or 256.  In the last two calls the length can be in
+    86                                  ; either bits or bytes.
+    87                                  ;
+    88                                  ; Comment in/out the following lines to obtain the desired subroutines. These
+    89                                  ; selections MUST match those in the C header file aes.h
+    90                                  
+    91                                  ; %define AES_128                 ; define if AES with 128 bit keys is needed
+    92                                  ; %define AES_192                 ; define if AES with 192 bit keys is needed
+    93                                  %define AES_256                 ; define if AES with 256 bit keys is needed
+    94                                  ; %define AES_VAR                 ; define if a variable key size is needed
+    95                                  %define ENCRYPTION              ; define if encryption is needed
+    96                                  %define DECRYPTION              ; define if decryption is needed
+    97                                  %define AES_REV_DKS             ; define if key decryption schedule is reversed
+    98                                  %define LAST_ROUND_TABLES       ; define for the faster version using extra tables
+    99                                  
+   100                                  ; The encryption key schedule has the following in memory layout where N is the
+   101                                  ; number of rounds (10, 12 or 14):
+   102                                  ;
+   103                                  ; lo: | input key (round 0)  |  ; each round is four 32-bit words
+   104                                  ;     | encryption round 1   |
+   105                                  ;     | encryption round 2   |
+   106                                  ;     ....
+   107                                  ;     | encryption round N-1 |
+   108                                  ; hi: | encryption round N   |
+   109                                  ;
+   110                                  ; The decryption key schedule is normally set up so that it has the same
+   111                                  ; layout as above by actually reversing the order of the encryption key
+   112                                  ; schedule in memory (this happens when AES_REV_DKS is set):
+   113                                  ;
+   114                                  ; lo: | decryption round 0   | =              | encryption round N   |
+   115                                  ;     | decryption round 1   | = INV_MIX_COL[ | encryption round N-1 | ]
+   116                                  ;     | decryption round 2   | = INV_MIX_COL[ | encryption round N-2 | ]
+   117                                  ;     ....                       ....
+   118                                  ;     | decryption round N-1 | = INV_MIX_COL[ | encryption round 1   | ]
+   119                                  ; hi: | decryption round N   | =              | input key (round 0)  |
+   120                                  ;
+   121                                  ; with rounds except the first and last modified using inv_mix_column()
+   122                                  ; But if AES_REV_DKS is NOT set the order of keys is left as it is for
+   123                                  ; encryption so that it has to be accessed in reverse when used for
+   124                                  ; decryption (although the inverse mix column modifications are done)
+   125                                  ;
+   126                                  ; lo: | decryption round 0   | =              | input key (round 0)  |
+   127                                  ;     | decryption round 1   | = INV_MIX_COL[ | encryption round 1   | ]
+   128                                  ;     | decryption round 2   | = INV_MIX_COL[ | encryption round 2   | ]
+   129                                  ;     ....                       ....
+   130                                  ;     | decryption round N-1 | = INV_MIX_COL[ | encryption round N-1 | ]
+   131                                  ; hi: | decryption round N   | =              | encryption round N   |
+   132                                  ;
+   133                                  ; This layout is faster when the assembler key scheduling provided here
+   134                                  ; is used.
+   135                                  ;
+   136                                  ; The DLL interface must use the _stdcall convention in which the number
+   137                                  ; of bytes of parameter space is added after an @ to the sutine's name.
+   138                                  ; We must also remove our parameters from the stack before return (see
+   139                                  ; the do_exit macro). Define DLL_EXPORT for the Dynamic Link Library version.
+   140                                  
+   141                                  ;%define DLL_EXPORT
+   142                                  
+   143                                  ; End of user defines
+   144                                  
+   145                                  %ifdef AES_VAR
+   146                                  %ifndef AES_128
+   147                                  %define AES_128
+   148                                  %endif
+   149                                  %ifndef AES_192
+   150                                  %define AES_192
+   151                                  %endif
+   152                                  %ifndef AES_256
+   153                                  %define AES_256
+   154                                  %endif
+   155                                  %endif
+   156                                  
+   157                                  %ifdef AES_VAR
+   158                                  %define KS_LENGTH       60
+   159                                  %elifdef AES_256
+   160                                  %define KS_LENGTH       60
+   161                                  %elifdef AES_192
+   162                                  %define KS_LENGTH       52
+   163                                  %else
+   164                                  %define KS_LENGTH       44
+   165                                  %endif
+   166                                  
+   167                                  %define     r0  rax
+   168                                  %define     r1  rdx
+   169                                  %define     r2  rcx
+   170                                  %define     r3  rbx
+   171                                  %define     r4  rsi
+   172                                  %define     r5  rdi
+   173                                  %define     r6  rbp
+   174                                  %define     r7  rsp
+   175                                  
+   176                                  %define     raxd    eax
+   177                                  %define     rdxd    edx
+   178                                  %define     rcxd    ecx
+   179                                  %define     rbxd    ebx
+   180                                  %define     rsid    esi
+   181                                  %define     rdid    edi
+   182                                  %define     rbpd    ebp
+   183                                  %define     rspd    esp
+   184                                  
+   185                                  %define     raxb    al
+   186                                  %define     rdxb    dl
+   187                                  %define     rcxb    cl
+   188                                  %define     rbxb    bl
+   189                                  %define     rsib    sil
+   190                                  %define     rdib    dil
+   191                                  %define     rbpb    bpl
+   192                                  %define     rspb    spl
+   193                                  
+   194                                  %define     r0h ah
+   195                                  %define     r1h dh
+   196                                  %define     r2h ch
+   197                                  %define     r3h bh
+   198                                  
+   199                                  %define     r0d eax
+   200                                  %define     r1d edx
+   201                                  %define     r2d ecx
+   202                                  %define     r3d ebx
+   203                                  
+   204                                  ; finite field multiplies by {02}, {04} and {08}
+   205                                  
+   206                                  %define f2(x)   ((x<<1)^(((x>>7)&1)*0x11b))
+   207                                  %define f4(x)   ((x<<2)^(((x>>6)&1)*0x11b)^(((x>>6)&2)*0x11b))
+   208                                  %define f8(x)   ((x<<3)^(((x>>5)&1)*0x11b)^(((x>>5)&2)*0x11b)^(((x>>5)&4)*0x11b))
+   209                                  
+   210                                  ; finite field multiplies required in table generation
+   211                                  
+   212                                  %define f3(x)   (f2(x) ^ x)
+   213                                  %define f9(x)   (f8(x) ^ x)
+   214                                  %define fb(x)   (f8(x) ^ f2(x) ^ x)
+   215                                  %define fd(x)   (f8(x) ^ f4(x) ^ x)
+   216                                  %define fe(x)   (f8(x) ^ f4(x) ^ f2(x))
+   217                                  
+   218                                  ; macro for expanding S-box data
+   219                                  
+   220                                  %macro enc_vals 1
+   221                                      db  %1(0x63),%1(0x7c),%1(0x77),%1(0x7b),%1(0xf2),%1(0x6b),%1(0x6f),%1(0xc5)
+   222                                      db  %1(0x30),%1(0x01),%1(0x67),%1(0x2b),%1(0xfe),%1(0xd7),%1(0xab),%1(0x76)
+   223                                      db  %1(0xca),%1(0x82),%1(0xc9),%1(0x7d),%1(0xfa),%1(0x59),%1(0x47),%1(0xf0)
+   224                                      db  %1(0xad),%1(0xd4),%1(0xa2),%1(0xaf),%1(0x9c),%1(0xa4),%1(0x72),%1(0xc0)
+   225                                      db  %1(0xb7),%1(0xfd),%1(0x93),%1(0x26),%1(0x36),%1(0x3f),%1(0xf7),%1(0xcc)
+   226                                      db  %1(0x34),%1(0xa5),%1(0xe5),%1(0xf1),%1(0x71),%1(0xd8),%1(0x31),%1(0x15)
+   227                                      db  %1(0x04),%1(0xc7),%1(0x23),%1(0xc3),%1(0x18),%1(0x96),%1(0x05),%1(0x9a)
+   228                                      db  %1(0x07),%1(0x12),%1(0x80),%1(0xe2),%1(0xeb),%1(0x27),%1(0xb2),%1(0x75)
+   229                                      db  %1(0x09),%1(0x83),%1(0x2c),%1(0x1a),%1(0x1b),%1(0x6e),%1(0x5a),%1(0xa0)
+   230                                      db  %1(0x52),%1(0x3b),%1(0xd6),%1(0xb3),%1(0x29),%1(0xe3),%1(0x2f),%1(0x84)
+   231                                      db  %1(0x53),%1(0xd1),%1(0x00),%1(0xed),%1(0x20),%1(0xfc),%1(0xb1),%1(0x5b)
+   232                                      db  %1(0x6a),%1(0xcb),%1(0xbe),%1(0x39),%1(0x4a),%1(0x4c),%1(0x58),%1(0xcf)
+   233                                      db  %1(0xd0),%1(0xef),%1(0xaa),%1(0xfb),%1(0x43),%1(0x4d),%1(0x33),%1(0x85)
+   234                                      db  %1(0x45),%1(0xf9),%1(0x02),%1(0x7f),%1(0x50),%1(0x3c),%1(0x9f),%1(0xa8)
+   235                                      db  %1(0x51),%1(0xa3),%1(0x40),%1(0x8f),%1(0x92),%1(0x9d),%1(0x38),%1(0xf5)
+   236                                      db  %1(0xbc),%1(0xb6),%1(0xda),%1(0x21),%1(0x10),%1(0xff),%1(0xf3),%1(0xd2)
+   237                                      db  %1(0xcd),%1(0x0c),%1(0x13),%1(0xec),%1(0x5f),%1(0x97),%1(0x44),%1(0x17)
+   238                                      db  %1(0xc4),%1(0xa7),%1(0x7e),%1(0x3d),%1(0x64),%1(0x5d),%1(0x19),%1(0x73)
+   239                                      db  %1(0x60),%1(0x81),%1(0x4f),%1(0xdc),%1(0x22),%1(0x2a),%1(0x90),%1(0x88)
+   240                                      db  %1(0x46),%1(0xee),%1(0xb8),%1(0x14),%1(0xde),%1(0x5e),%1(0x0b),%1(0xdb)
+   241                                      db  %1(0xe0),%1(0x32),%1(0x3a),%1(0x0a),%1(0x49),%1(0x06),%1(0x24),%1(0x5c)
+   242                                      db  %1(0xc2),%1(0xd3),%1(0xac),%1(0x62),%1(0x91),%1(0x95),%1(0xe4),%1(0x79)
+   243                                      db  %1(0xe7),%1(0xc8),%1(0x37),%1(0x6d),%1(0x8d),%1(0xd5),%1(0x4e),%1(0xa9)
+   244                                      db  %1(0x6c),%1(0x56),%1(0xf4),%1(0xea),%1(0x65),%1(0x7a),%1(0xae),%1(0x08)
+   245                                      db  %1(0xba),%1(0x78),%1(0x25),%1(0x2e),%1(0x1c),%1(0xa6),%1(0xb4),%1(0xc6)
+   246                                      db  %1(0xe8),%1(0xdd),%1(0x74),%1(0x1f),%1(0x4b),%1(0xbd),%1(0x8b),%1(0x8a)
+   247                                      db  %1(0x70),%1(0x3e),%1(0xb5),%1(0x66),%1(0x48),%1(0x03),%1(0xf6),%1(0x0e)
+   248                                      db  %1(0x61),%1(0x35),%1(0x57),%1(0xb9),%1(0x86),%1(0xc1),%1(0x1d),%1(0x9e)
+   249                                      db  %1(0xe1),%1(0xf8),%1(0x98),%1(0x11),%1(0x69),%1(0xd9),%1(0x8e),%1(0x94)
+   250                                      db  %1(0x9b),%1(0x1e),%1(0x87),%1(0xe9),%1(0xce),%1(0x55),%1(0x28),%1(0xdf)
+   251                                      db  %1(0x8c),%1(0xa1),%1(0x89),%1(0x0d),%1(0xbf),%1(0xe6),%1(0x42),%1(0x68)
+   252                                      db  %1(0x41),%1(0x99),%1(0x2d),%1(0x0f),%1(0xb0),%1(0x54),%1(0xbb),%1(0x16)
+   253                                  %endmacro
+   254                                  
+   255                                  %macro dec_vals 1
+   256                                      db  %1(0x52),%1(0x09),%1(0x6a),%1(0xd5),%1(0x30),%1(0x36),%1(0xa5),%1(0x38)
+   257                                      db  %1(0xbf),%1(0x40),%1(0xa3),%1(0x9e),%1(0x81),%1(0xf3),%1(0xd7),%1(0xfb)
+   258                                      db  %1(0x7c),%1(0xe3),%1(0x39),%1(0x82),%1(0x9b),%1(0x2f),%1(0xff),%1(0x87)
+   259                                      db  %1(0x34),%1(0x8e),%1(0x43),%1(0x44),%1(0xc4),%1(0xde),%1(0xe9),%1(0xcb)
+   260                                      db  %1(0x54),%1(0x7b),%1(0x94),%1(0x32),%1(0xa6),%1(0xc2),%1(0x23),%1(0x3d)
+   261                                      db  %1(0xee),%1(0x4c),%1(0x95),%1(0x0b),%1(0x42),%1(0xfa),%1(0xc3),%1(0x4e)
+   262                                      db  %1(0x08),%1(0x2e),%1(0xa1),%1(0x66),%1(0x28),%1(0xd9),%1(0x24),%1(0xb2)
+   263                                      db  %1(0x76),%1(0x5b),%1(0xa2),%1(0x49),%1(0x6d),%1(0x8b),%1(0xd1),%1(0x25)
+   264                                      db  %1(0x72),%1(0xf8),%1(0xf6),%1(0x64),%1(0x86),%1(0x68),%1(0x98),%1(0x16)
+   265                                      db  %1(0xd4),%1(0xa4),%1(0x5c),%1(0xcc),%1(0x5d),%1(0x65),%1(0xb6),%1(0x92)
+   266                                      db  %1(0x6c),%1(0x70),%1(0x48),%1(0x50),%1(0xfd),%1(0xed),%1(0xb9),%1(0xda)
+   267                                      db  %1(0x5e),%1(0x15),%1(0x46),%1(0x57),%1(0xa7),%1(0x8d),%1(0x9d),%1(0x84)
+   268                                      db  %1(0x90),%1(0xd8),%1(0xab),%1(0x00),%1(0x8c),%1(0xbc),%1(0xd3),%1(0x0a)
+   269                                      db  %1(0xf7),%1(0xe4),%1(0x58),%1(0x05),%1(0xb8),%1(0xb3),%1(0x45),%1(0x06)
+   270                                      db  %1(0xd0),%1(0x2c),%1(0x1e),%1(0x8f),%1(0xca),%1(0x3f),%1(0x0f),%1(0x02)
+   271                                      db  %1(0xc1),%1(0xaf),%1(0xbd),%1(0x03),%1(0x01),%1(0x13),%1(0x8a),%1(0x6b)
+   272                                      db  %1(0x3a),%1(0x91),%1(0x11),%1(0x41),%1(0x4f),%1(0x67),%1(0xdc),%1(0xea)
+   273                                      db  %1(0x97),%1(0xf2),%1(0xcf),%1(0xce),%1(0xf0),%1(0xb4),%1(0xe6),%1(0x73)
+   274                                      db  %1(0x96),%1(0xac),%1(0x74),%1(0x22),%1(0xe7),%1(0xad),%1(0x35),%1(0x85)
+   275                                      db  %1(0xe2),%1(0xf9),%1(0x37),%1(0xe8),%1(0x1c),%1(0x75),%1(0xdf),%1(0x6e)
+   276                                      db  %1(0x47),%1(0xf1),%1(0x1a),%1(0x71),%1(0x1d),%1(0x29),%1(0xc5),%1(0x89)
+   277                                      db  %1(0x6f),%1(0xb7),%1(0x62),%1(0x0e),%1(0xaa),%1(0x18),%1(0xbe),%1(0x1b)
+   278                                      db  %1(0xfc),%1(0x56),%1(0x3e),%1(0x4b),%1(0xc6),%1(0xd2),%1(0x79),%1(0x20)
+   279                                      db  %1(0x9a),%1(0xdb),%1(0xc0),%1(0xfe),%1(0x78),%1(0xcd),%1(0x5a),%1(0xf4)
+   280                                      db  %1(0x1f),%1(0xdd),%1(0xa8),%1(0x33),%1(0x88),%1(0x07),%1(0xc7),%1(0x31)
+   281                                      db  %1(0xb1),%1(0x12),%1(0x10),%1(0x59),%1(0x27),%1(0x80),%1(0xec),%1(0x5f)
+   282                                      db  %1(0x60),%1(0x51),%1(0x7f),%1(0xa9),%1(0x19),%1(0xb5),%1(0x4a),%1(0x0d)
+   283                                      db  %1(0x2d),%1(0xe5),%1(0x7a),%1(0x9f),%1(0x93),%1(0xc9),%1(0x9c),%1(0xef)
+   284                                      db  %1(0xa0),%1(0xe0),%1(0x3b),%1(0x4d),%1(0xae),%1(0x2a),%1(0xf5),%1(0xb0)
+   285                                      db  %1(0xc8),%1(0xeb),%1(0xbb),%1(0x3c),%1(0x83),%1(0x53),%1(0x99),%1(0x61)
+   286                                      db  %1(0x17),%1(0x2b),%1(0x04),%1(0x7e),%1(0xba),%1(0x77),%1(0xd6),%1(0x26)
+   287                                      db  %1(0xe1),%1(0x69),%1(0x14),%1(0x63),%1(0x55),%1(0x21),%1(0x0c),%1(0x7d)
+   288                                  %endmacro
+   289                                  
+   290                                  %define u8(x)   f2(x), x, x, f3(x), f2(x), x, x, f3(x)
+   291                                  %define v8(x)   fe(x), f9(x), fd(x), fb(x), fe(x), f9(x), fd(x), x
+   292                                  %define w8(x)   x, 0, 0, 0, x, 0, 0, 0
+   293                                  
+   294                                  %define tptr    rbp     ; table pointer
+   295                                  %define kptr    r8      ; key schedule pointer
+   296                                  %define fofs    128     ; adjust offset in key schedule to keep |disp| < 128
+   297                                  %define fk_ref(x,y) [kptr-16*x+fofs+4*y]
+   298                                  %ifdef  AES_REV_DKS
+   299                                  %define rofs    128
+   300                                  %define ik_ref(x,y) [kptr-16*x+rofs+4*y]
+   301                                  %else
+   302                                  %define rofs    -128
+   303                                  %define ik_ref(x,y) [kptr+16*x+rofs+4*y]
+   304                                  %endif
+   305                                  
+   306                                  %define tab_0(x)   [tptr+8*x]
+   307                                  %define tab_1(x)   [tptr+8*x+3]
+   308                                  %define tab_2(x)   [tptr+8*x+2]
+   309                                  %define tab_3(x)   [tptr+8*x+1]
+   310                                  %define tab_f(x)   byte [tptr+8*x+1]
+   311                                  %define tab_i(x)   byte [tptr+8*x+7]
+   312                                  %define t_ref(x,r) tab_ %+ x(r)
+   313                                  
+   314                                  %macro ff_rnd 5                 ; normal forward round
+   315                                      mov     %1d, fk_ref(%5,0)
+   316                                      mov     %2d, fk_ref(%5,1)
+   317                                      mov     %3d, fk_ref(%5,2)
+   318                                      mov     %4d, fk_ref(%5,3)
+   319                                  
+   320                                      movzx   esi, al
+   321                                      movzx   edi, ah
+   322                                      shr     eax, 16
+   323                                      xor     %1d, t_ref(0,rsi)
+   324                                      xor     %4d, t_ref(1,rdi)
+   325                                      movzx   esi, al
+   326                                      movzx   edi, ah
+   327                                      xor     %3d, t_ref(2,rsi)
+   328                                      xor     %2d, t_ref(3,rdi)
+   329                                  
+   330                                      movzx   esi, bl
+   331                                      movzx   edi, bh
+   332                                      shr     ebx, 16
+   333                                      xor     %2d, t_ref(0,rsi)
+   334                                      xor     %1d, t_ref(1,rdi)
+   335                                      movzx   esi, bl
+   336                                      movzx   edi, bh
+   337                                      xor     %4d, t_ref(2,rsi)
+   338                                      xor     %3d, t_ref(3,rdi)
+   339                                  
+   340                                      movzx   esi, cl
+   341                                      movzx   edi, ch
+   342                                      shr     ecx, 16
+   343                                      xor     %3d, t_ref(0,rsi)
+   344                                      xor     %2d, t_ref(1,rdi)
+   345                                      movzx   esi, cl
+   346                                      movzx   edi, ch
+   347                                      xor     %1d, t_ref(2,rsi)
+   348                                      xor     %4d, t_ref(3,rdi)
+   349                                  
+   350                                      movzx   esi, dl
+   351                                      movzx   edi, dh
+   352                                      shr     edx, 16
+   353                                      xor     %4d, t_ref(0,rsi)
+   354                                      xor     %3d, t_ref(1,rdi)
+   355                                      movzx   esi, dl
+   356                                      movzx   edi, dh
+   357                                      xor     %2d, t_ref(2,rsi)
+   358                                      xor     %1d, t_ref(3,rdi)
+   359                                  
+   360                                      mov     eax,%1d
+   361                                      mov     ebx,%2d
+   362                                      mov     ecx,%3d
+   363                                      mov     edx,%4d
+   364                                  %endmacro
+   365                                  
+   366                                  %ifdef LAST_ROUND_TABLES
+   367                                  
+   368                                  %macro fl_rnd 5                 ; last forward round
+   369                                      add     tptr, 2048
+   370                                      mov     %1d, fk_ref(%5,0)
+   371                                      mov     %2d, fk_ref(%5,1)
+   372                                      mov     %3d, fk_ref(%5,2)
+   373                                      mov     %4d, fk_ref(%5,3)
+   374                                  
+   375                                      movzx   esi, al
+   376                                      movzx   edi, ah
+   377                                      shr     eax, 16
+   378                                      xor     %1d, t_ref(0,rsi)
+   379                                      xor     %4d, t_ref(1,rdi)
+   380                                      movzx   esi, al
+   381                                      movzx   edi, ah
+   382                                      xor     %3d, t_ref(2,rsi)
+   383                                      xor     %2d, t_ref(3,rdi)
+   384                                  
+   385                                      movzx   esi, bl
+   386                                      movzx   edi, bh
+   387                                      shr     ebx, 16
+   388                                      xor     %2d, t_ref(0,rsi)
+   389                                      xor     %1d, t_ref(1,rdi)
+   390                                      movzx   esi, bl
+   391                                      movzx   edi, bh
+   392                                      xor     %4d, t_ref(2,rsi)
+   393                                      xor     %3d, t_ref(3,rdi)
+   394                                  
+   395                                      movzx   esi, cl
+   396                                      movzx   edi, ch
+   397                                      shr     ecx, 16
+   398                                      xor     %3d, t_ref(0,rsi)
+   399                                      xor     %2d, t_ref(1,rdi)
+   400                                      movzx   esi, cl
+   401                                      movzx   edi, ch
+   402                                      xor     %1d, t_ref(2,rsi)
+   403                                      xor     %4d, t_ref(3,rdi)
+   404                                  
+   405                                      movzx   esi, dl
+   406                                      movzx   edi, dh
+   407                                      shr     edx, 16
+   408                                      xor     %4d, t_ref(0,rsi)
+   409                                      xor     %3d, t_ref(1,rdi)
+   410                                      movzx   esi, dl
+   411                                      movzx   edi, dh
+   412                                      xor     %2d, t_ref(2,rsi)
+   413                                      xor     %1d, t_ref(3,rdi)
+   414                                  %endmacro
+   415                                  
+   416                                  %else
+   417                                  
+   418                                  %macro fl_rnd 5                 ; last forward round
+   419                                      mov     %1d, fk_ref(%5,0)
+   420                                      mov     %2d, fk_ref(%5,1)
+   421                                      mov     %3d, fk_ref(%5,2)
+   422                                      mov     %4d, fk_ref(%5,3)
+   423                                  
+   424                                      movzx   esi, al
+   425                                      movzx   edi, ah
+   426                                      shr     eax, 16
+   427                                      movzx   esi, t_ref(f,rsi)
+   428                                      movzx   edi, t_ref(f,rdi)
+   429                                      xor     %1d, esi
+   430                                      rol     edi, 8
+   431                                      xor     %4d, edi
+   432                                      movzx   esi, al
+   433                                      movzx   edi, ah
+   434                                      movzx   esi, t_ref(f,rsi)
+   435                                      movzx   edi, t_ref(f,rdi)
+   436                                      rol     esi, 16
+   437                                      rol     edi, 24
+   438                                      xor     %3d, esi
+   439                                      xor     %2d, edi
+   440                                  
+   441                                      movzx   esi, bl
+   442                                      movzx   edi, bh
+   443                                      shr     ebx, 16
+   444                                      movzx   esi, t_ref(f,rsi)
+   445                                      movzx   edi, t_ref(f,rdi)
+   446                                      xor     %2d, esi
+   447                                      rol     edi, 8
+   448                                      xor     %1d, edi
+   449                                      movzx   esi, bl
+   450                                      movzx   edi, bh
+   451                                      movzx   esi, t_ref(f,rsi)
+   452                                      movzx   edi, t_ref(f,rdi)
+   453                                      rol     esi, 16
+   454                                      rol     edi, 24
+   455                                      xor     %4d, esi
+   456                                      xor     %3d, edi
+   457                                  
+   458                                      movzx   esi, cl
+   459                                      movzx   edi, ch
+   460                                      movzx   esi, t_ref(f,rsi)
+   461                                      movzx   edi, t_ref(f,rdi)
+   462                                      shr     ecx, 16
+   463                                      xor     %3d, esi
+   464                                      rol     edi, 8
+   465                                      xor     %2d, edi
+   466                                      movzx   esi, cl
+   467                                      movzx   edi, ch
+   468                                      movzx   esi, t_ref(f,rsi)
+   469                                      movzx   edi, t_ref(f,rdi)
+   470                                      rol     esi, 16
+   471                                      rol     edi, 24
+   472                                      xor     %1d, esi
+   473                                      xor     %4d, edi
+   474                                  
+   475                                      movzx   esi, dl
+   476                                      movzx   edi, dh
+   477                                      movzx   esi, t_ref(f,rsi)
+   478                                      movzx   edi, t_ref(f,rdi)
+   479                                      shr     edx, 16
+   480                                      xor     %4d, esi
+   481                                      rol     edi, 8
+   482                                      xor     %3d, edi
+   483                                      movzx   esi, dl
+   484                                      movzx   edi, dh
+   485                                      movzx   esi, t_ref(f,rsi)
+   486                                      movzx   edi, t_ref(f,rdi)
+   487                                      rol     esi, 16
+   488                                      rol     edi, 24
+   489                                      xor     %2d, esi
+   490                                      xor     %1d, edi
+   491                                  %endmacro
+   492                                  
+   493                                  %endif
+   494                                  
+   495                                  %macro ii_rnd 5                 ; normal inverse round
+   496                                      mov     %1d, ik_ref(%5,0)
+   497                                      mov     %2d, ik_ref(%5,1)
+   498                                      mov     %3d, ik_ref(%5,2)
+   499                                      mov     %4d, ik_ref(%5,3)
+   500                                  
+   501                                      movzx   esi, al
+   502                                      movzx   edi, ah
+   503                                      shr     eax, 16
+   504                                      xor     %1d, t_ref(0,rsi)
+   505                                      xor     %2d, t_ref(1,rdi)
+   506                                      movzx   esi, al
+   507                                      movzx   edi, ah
+   508                                      xor     %3d, t_ref(2,rsi)
+   509                                      xor     %4d, t_ref(3,rdi)
+   510                                  
+   511                                      movzx   esi, bl
+   512                                      movzx   edi, bh
+   513                                      shr     ebx, 16
+   514                                      xor     %2d, t_ref(0,rsi)
+   515                                      xor     %3d, t_ref(1,rdi)
+   516                                      movzx   esi, bl
+   517                                      movzx   edi, bh
+   518                                      xor     %4d, t_ref(2,rsi)
+   519                                      xor     %1d, t_ref(3,rdi)
+   520                                  
+   521                                      movzx   esi, cl
+   522                                      movzx   edi, ch
+   523                                      shr     ecx, 16
+   524                                      xor     %3d, t_ref(0,rsi)
+   525                                      xor     %4d, t_ref(1,rdi)
+   526                                      movzx   esi, cl
+   527                                      movzx   edi, ch
+   528                                      xor     %1d, t_ref(2,rsi)
+   529                                      xor     %2d, t_ref(3,rdi)
+   530                                  
+   531                                      movzx   esi, dl
+   532                                      movzx   edi, dh
+   533                                      shr     edx, 16
+   534                                      xor     %4d, t_ref(0,rsi)
+   535                                      xor     %1d, t_ref(1,rdi)
+   536                                      movzx   esi, dl
+   537                                      movzx   edi, dh
+   538                                      xor     %2d, t_ref(2,rsi)
+   539                                      xor     %3d, t_ref(3,rdi)
+   540                                  
+   541                                      mov     eax,%1d
+   542                                      mov     ebx,%2d
+   543                                      mov     ecx,%3d
+   544                                      mov     edx,%4d
+   545                                  %endmacro
+   546                                  
+   547                                  %ifdef LAST_ROUND_TABLES
+   548                                  
+   549                                  %macro il_rnd 5                 ; last inverse round
+   550                                      add     tptr, 2048
+   551                                      mov     %1d, ik_ref(%5,0)
+   552                                      mov     %2d, ik_ref(%5,1)
+   553                                      mov     %3d, ik_ref(%5,2)
+   554                                      mov     %4d, ik_ref(%5,3)
+   555                                  
+   556                                      movzx   esi, al
+   557                                      movzx   edi, ah
+   558                                      shr     eax, 16
+   559                                      xor     %1d, t_ref(0,rsi)
+   560                                      xor     %2d, t_ref(1,rdi)
+   561                                      movzx   esi, al
+   562                                      movzx   edi, ah
+   563                                      xor     %3d, t_ref(2,rsi)
+   564                                      xor     %4d, t_ref(3,rdi)
+   565                                  
+   566                                      movzx   esi, bl
+   567                                      movzx   edi, bh
+   568                                      shr     ebx, 16
+   569                                      xor     %2d, t_ref(0,rsi)
+   570                                      xor     %3d, t_ref(1,rdi)
+   571                                      movzx   esi, bl
+   572                                      movzx   edi, bh
+   573                                      xor     %4d, t_ref(2,rsi)
+   574                                      xor     %1d, t_ref(3,rdi)
+   575                                  
+   576                                      movzx   esi, cl
+   577                                      movzx   edi, ch
+   578                                      shr     ecx, 16
+   579                                      xor     %3d, t_ref(0,rsi)
+   580                                      xor     %4d, t_ref(1,rdi)
+   581                                      movzx   esi, cl
+   582                                      movzx   edi, ch
+   583                                      xor     %1d, t_ref(2,rsi)
+   584                                      xor     %2d, t_ref(3,rdi)
+   585                                  
+   586                                      movzx   esi, dl
+   587                                      movzx   edi, dh
+   588                                      shr     edx, 16
+   589                                      xor     %4d, t_ref(0,rsi)
+   590                                      xor     %1d, t_ref(1,rdi)
+   591                                      movzx   esi, dl
+   592                                      movzx   edi, dh
+   593                                      xor     %2d, t_ref(2,rsi)
+   594                                      xor     %3d, t_ref(3,rdi)
+   595                                  %endmacro
+   596                                  
+   597                                  %else
+   598                                  
+   599                                  %macro il_rnd 5                 ; last inverse round
+   600                                      mov     %1d, ik_ref(%5,0)
+   601                                      mov     %2d, ik_ref(%5,1)
+   602                                      mov     %3d, ik_ref(%5,2)
+   603                                      mov     %4d, ik_ref(%5,3)
+   604                                  
+   605                                      movzx   esi, al
+   606                                      movzx   edi, ah
+   607                                      movzx   esi, t_ref(i,rsi)
+   608                                      movzx   edi, t_ref(i,rdi)
+   609                                      shr     eax, 16
+   610                                      xor     %1d, esi
+   611                                      rol     edi, 8
+   612                                      xor     %2d, edi
+   613                                      movzx   esi, al
+   614                                      movzx   edi, ah
+   615                                      movzx   esi, t_ref(i,rsi)
+   616                                      movzx   edi, t_ref(i,rdi)
+   617                                      rol     esi, 16
+   618                                      rol     edi, 24
+   619                                      xor     %3d, esi
+   620                                      xor     %4d, edi
+   621                                  
+   622                                      movzx   esi, bl
+   623                                      movzx   edi, bh
+   624                                      movzx   esi, t_ref(i,rsi)
+   625                                      movzx   edi, t_ref(i,rdi)
+   626                                      shr     ebx, 16
+   627                                      xor     %2d, esi
+   628                                      rol     edi, 8
+   629                                      xor     %3d, edi
+   630                                      movzx   esi, bl
+   631                                      movzx   edi, bh
+   632                                      movzx   esi, t_ref(i,rsi)
+   633                                      movzx   edi, t_ref(i,rdi)
+   634                                      rol     esi, 16
+   635                                      rol     edi, 24
+   636                                      xor     %4d, esi
+   637                                      xor     %1d, edi
+   638                                  
+   639                                      movzx   esi, cl
+   640                                      movzx   edi, ch
+   641                                      movzx   esi, t_ref(i,rsi)
+   642                                      movzx   edi, t_ref(i,rdi)
+   643                                      shr     ecx, 16
+   644                                      xor     %3d, esi
+   645                                      rol     edi, 8
+   646                                      xor     %4d, edi
+   647                                      movzx   esi, cl
+   648                                      movzx   edi, ch
+   649                                      movzx   esi, t_ref(i,rsi)
+   650                                      movzx   edi, t_ref(i,rdi)
+   651                                      rol     esi, 16
+   652                                      rol     edi, 24
+   653                                      xor     %1d, esi
+   654                                      xor     %2d, edi
+   655                                  
+   656                                      movzx   esi, dl
+   657                                      movzx   edi, dh
+   658                                      movzx   esi, t_ref(i,rsi)
+   659                                      movzx   edi, t_ref(i,rdi)
+   660                                      shr     edx, 16
+   661                                      xor     %4d, esi
+   662                                      rol     edi, 8
+   663                                      xor     %1d, edi
+   664                                      movzx   esi, dl
+   665                                      movzx   edi, dh
+   666                                      movzx   esi, t_ref(i,rsi)
+   667                                      movzx   edi, t_ref(i,rdi)
+   668                                      rol     esi, 16
+   669                                      rol     edi, 24
+   670                                      xor     %2d, esi
+   671                                      xor     %3d, edi
+   672                                  %endmacro
+   673                                  
+   674                                  %endif
+   675                                  
+   676                                  %ifdef ENCRYPTION
+   677                                  
+   678                                      global  aes_encrypt
+   679                                  %ifdef DLL_EXPORT
+   680                                      export  aes_encrypt
+   681                                  %endif
+   682                                  
+   683                                      section .data align=64
+   684                                      align   64
+   685                                  enc_tab:
+   686                                      enc_vals u8
+   687 00000000 C66363A5C66363A5F8- <1>  db %1(0x63),%1(0x7c),%1(0x77),%1(0x7b),%1(0xf2),%1(0x6b),%1(0x6f),%1(0xc5)
+   688 00000009 7C7C84F87C7C84EE77- <1>
+   689 00000012 7799EE777799F67B7B- <1>
+   690 0000001B 8DF67B7B8DFFF2F20D- <1>
+   691 00000024 FFF2F20DD66B6BBDD6- <1>
+   692 0000002D 6B6BBDDE6F6FB1DE6F- <1>
+   693 00000036 6FB191C5C55491C5C5- <1>
+   694 0000003F 54                  <1>
+   695 00000040 603030506030305002- <1>  db %1(0x30),%1(0x01),%1(0x67),%1(0x2b),%1(0xfe),%1(0xd7),%1(0xab),%1(0x76)
+   696 00000049 01010302010103CE67- <1>
+   697 00000052 67A9CE6767A9562B2B- <1>
+   698 0000005B 7D562B2B7DE7FEFE19- <1>
+   699 00000064 E7FEFE19B5D7D762B5- <1>
+   700 0000006D D7D7624DABABE64DAB- <1>
+   701 00000076 ABE6EC76769AEC7676- <1>
+   702 0000007F 9A                  <1>
+   703 00000080 8FCACA458FCACA451F- <1>  db %1(0xca),%1(0x82),%1(0xc9),%1(0x7d),%1(0xfa),%1(0x59),%1(0x47),%1(0xf0)
+   704 00000089 82829D1F82829D89C9- <1>
+   705 00000092 C94089C9C940FA7D7D- <1>
+   706 0000009B 87FA7D7D87EFFAFA15- <1>
+   707 000000A4 EFFAFA15B25959EBB2- <1>
+   708 000000AD 5959EB8E4747C98E47- <1>
+   709 000000B6 47C9FBF0F00BFBF0F0- <1>
+   710 000000BF 0B                  <1>
+   711 000000C0 41ADADEC41ADADECB3- <1>  db %1(0xad),%1(0xd4),%1(0xa2),%1(0xaf),%1(0x9c),%1(0xa4),%1(0x72),%1(0xc0)
+   712 000000C9 D4D467B3D4D4675FA2- <1>
+   713 000000D2 A2FD5FA2A2FD45AFAF- <1>
+   714 000000DB EA45AFAFEA239C9CBF- <1>
+   715 000000E4 239C9CBF53A4A4F753- <1>
+   716 000000ED A4A4F7E4727296E472- <1>
+   717 000000F6 72969BC0C05B9BC0C0- <1>
+   718 000000FF 5B                  <1>
+   719 00000100 75B7B7C275B7B7C2E1- <1>  db %1(0xb7),%1(0xfd),%1(0x93),%1(0x26),%1(0x36),%1(0x3f),%1(0xf7),%1(0xcc)
+   720 00000109 FDFD1CE1FDFD1C3D93- <1>
+   721 00000112 93AE3D9393AE4C2626- <1>
+   722 0000011B 6A4C26266A6C36365A- <1>
+   723 00000124 6C36365A7E3F3F417E- <1>
+   724 0000012D 3F3F41F5F7F702F5F7- <1>
+   725 00000136 F70283CCCC4F83CCCC- <1>
+   726 0000013F 4F                  <1>
+   727 00000140 6834345C6834345C51- <1>  db %1(0x34),%1(0xa5),%1(0xe5),%1(0xf1),%1(0x71),%1(0xd8),%1(0x31),%1(0x15)
+   728 00000149 A5A5F451A5A5F4D1E5- <1>
+   729 00000152 E534D1E5E534F9F1F1- <1>
+   730 0000015B 08F9F1F108E2717193- <1>
+   731 00000164 E2717193ABD8D873AB- <1>
+   732 0000016D D8D873623131536231- <1>
+   733 00000176 31532A15153F2A1515- <1>
+   734 0000017F 3F                  <1>
+   735 00000180 0804040C0804040C95- <1>  db %1(0x04),%1(0xc7),%1(0x23),%1(0xc3),%1(0x18),%1(0x96),%1(0x05),%1(0x9a)
+   736 00000189 C7C75295C7C7524623- <1>
+   737 00000192 2365462323659DC3C3- <1>
+   738 0000019B 5E9DC3C35E30181828- <1>
+   739 000001A4 30181828379696A137- <1>
+   740 000001AD 9696A10A05050F0A05- <1>
+   741 000001B6 050F2F9A9AB52F9A9A- <1>
+   742 000001BF B5                  <1>
+   743 000001C0 0E0707090E07070924- <1>  db %1(0x07),%1(0x12),%1(0x80),%1(0xe2),%1(0xeb),%1(0x27),%1(0xb2),%1(0x75)
+   744 000001C9 121236241212361B80- <1>
+   745 000001D2 809B1B80809BDFE2E2- <1>
+   746 000001DB 3DDFE2E23DCDEBEB26- <1>
+   747 000001E4 CDEBEB264E2727694E- <1>
+   748 000001ED 2727697FB2B2CD7FB2- <1>
+   749 000001F6 B2CDEA75759FEA7575- <1>
+   750 000001FF 9F                  <1>
+   751 00000200 1209091B1209091B1D- <1>  db %1(0x09),%1(0x83),%1(0x2c),%1(0x1a),%1(0x1b),%1(0x6e),%1(0x5a),%1(0xa0)
+   752 00000209 83839E1D83839E582C- <1>
+   753 00000212 2C74582C2C74341A1A- <1>
+   754 0000021B 2E341A1A2E361B1B2D- <1>
+   755 00000224 361B1B2DDC6E6EB2DC- <1>
+   756 0000022D 6E6EB2B45A5AEEB45A- <1>
+   757 00000236 5AEE5BA0A0FB5BA0A0- <1>
+   758 0000023F FB                  <1>
+   759 00000240 A45252F6A45252F676- <1>  db %1(0x52),%1(0x3b),%1(0xd6),%1(0xb3),%1(0x29),%1(0xe3),%1(0x2f),%1(0x84)
+   760 00000249 3B3B4D763B3B4DB7D6- <1>
+   761 00000252 D661B7D6D6617DB3B3- <1>
+   762 0000025B CE7DB3B3CE5229297B- <1>
+   763 00000264 5229297BDDE3E33EDD- <1>
+   764 0000026D E3E33E5E2F2F715E2F- <1>
+   765 00000276 2F7113848497138484- <1>
+   766 0000027F 97                  <1>
+   767 00000280 A65353F5A65353F5B9- <1>  db %1(0x53),%1(0xd1),%1(0x00),%1(0xed),%1(0x20),%1(0xfc),%1(0xb1),%1(0x5b)
+   768 00000289 D1D168B9D1D1680000- <1>
+   769 00000292 000000000000C1EDED- <1>
+   770 0000029B 2CC1EDED2C40202060- <1>
+   771 000002A4 40202060E3FCFC1FE3- <1>
+   772 000002AD FCFC1F79B1B1C879B1- <1>
+   773 000002B6 B1C8B65B5BEDB65B5B- <1>
+   774 000002BF ED                  <1>
+   775 000002C0 D46A6ABED46A6ABE8D- <1>  db %1(0x6a),%1(0xcb),%1(0xbe),%1(0x39),%1(0x4a),%1(0x4c),%1(0x58),%1(0xcf)
+   776 000002C9 CBCB468DCBCB4667BE- <1>
+   777 000002D2 BED967BEBED9723939- <1>
+   778 000002DB 4B7239394B944A4ADE- <1>
+   779 000002E4 944A4ADE984C4CD498- <1>
+   780 000002ED 4C4CD4B05858E8B058- <1>
+   781 000002F6 58E885CFCF4A85CFCF- <1>
+   782 000002FF 4A                  <1>
+   783 00000300 BBD0D06BBBD0D06BC5- <1>  db %1(0xd0),%1(0xef),%1(0xaa),%1(0xfb),%1(0x43),%1(0x4d),%1(0x33),%1(0x85)
+   784 00000309 EFEF2AC5EFEF2A4FAA- <1>
+   785 00000312 AAE54FAAAAE5EDFBFB- <1>
+   786 0000031B 16EDFBFB16864343C5- <1>
+   787 00000324 864343C59A4D4DD79A- <1>
+   788 0000032D 4D4DD7663333556633- <1>
+   789 00000336 335511858594118585- <1>
+   790 0000033F 94                  <1>
+   791 00000340 8A4545CF8A4545CFE9- <1>  db %1(0x45),%1(0xf9),%1(0x02),%1(0x7f),%1(0x50),%1(0x3c),%1(0x9f),%1(0xa8)
+   792 00000349 F9F910E9F9F9100402- <1>
+   793 00000352 020604020206FE7F7F- <1>
+   794 0000035B 81FE7F7F81A05050F0- <1>
+   795 00000364 A05050F0783C3C4478- <1>
+   796 0000036D 3C3C44259F9FBA259F- <1>
+   797 00000376 9FBA4BA8A8E34BA8A8- <1>
+   798 0000037F E3                  <1>
+   799 00000380 A25151F3A25151F35D- <1>  db %1(0x51),%1(0xa3),%1(0x40),%1(0x8f),%1(0x92),%1(0x9d),%1(0x38),%1(0xf5)
+   800 00000389 A3A3FE5DA3A3FE8040- <1>
+   801 00000392 40C0804040C0058F8F- <1>
+   802 0000039B 8A058F8F8A3F9292AD- <1>
+   803 000003A4 3F9292AD219D9DBC21- <1>
+   804 000003AD 9D9DBC703838487038- <1>
+   805 000003B6 3848F1F5F504F1F5F5- <1>
+   806 000003BF 04                  <1>
+   807 000003C0 63BCBCDF63BCBCDF77- <1>  db %1(0xbc),%1(0xb6),%1(0xda),%1(0x21),%1(0x10),%1(0xff),%1(0xf3),%1(0xd2)
+   808 000003C9 B6B6C177B6B6C1AFDA- <1>
+   809 000003D2 DA75AFDADA75422121- <1>
+   810 000003DB 634221216320101030- <1>
+   811 000003E4 20101030E5FFFF1AE5- <1>
+   812 000003ED FFFF1AFDF3F30EFDF3- <1>
+   813 000003F6 F30EBFD2D26DBFD2D2- <1>
+   814 000003FF 6D                  <1>
+   815 00000400 81CDCD4C81CDCD4C18- <1>  db %1(0xcd),%1(0x0c),%1(0x13),%1(0xec),%1(0x5f),%1(0x97),%1(0x44),%1(0x17)
+   816 00000409 0C0C14180C0C142613- <1>
+   817 00000412 133526131335C3ECEC- <1>
+   818 0000041B 2FC3ECEC2FBE5F5FE1- <1>
+   819 00000424 BE5F5FE1359797A235- <1>
+   820 0000042D 9797A2884444CC8844- <1>
+   821 00000436 44CC2E1717392E1717- <1>
+   822 0000043F 39                  <1>
+   823 00000440 93C4C45793C4C45755- <1>  db %1(0xc4),%1(0xa7),%1(0x7e),%1(0x3d),%1(0x64),%1(0x5d),%1(0x19),%1(0x73)
+   824 00000449 A7A7F255A7A7F2FC7E- <1>
+   825 00000452 7E82FC7E7E827A3D3D- <1>
+   826 0000045B 477A3D3D47C86464AC- <1>
+   827 00000464 C86464ACBA5D5DE7BA- <1>
+   828 0000046D 5D5DE73219192B3219- <1>
+   829 00000476 192BE6737395E67373- <1>
+   830 0000047F 95                  <1>
+   831 00000480 C06060A0C06060A019- <1>  db %1(0x60),%1(0x81),%1(0x4f),%1(0xdc),%1(0x22),%1(0x2a),%1(0x90),%1(0x88)
+   832 00000489 818198198181989E4F- <1>
+   833 00000492 4FD19E4F4FD1A3DCDC- <1>
+   834 0000049B 7FA3DCDC7F44222266- <1>
+   835 000004A4 44222266542A2A7E54- <1>
+   836 000004AD 2A2A7E3B9090AB3B90- <1>
+   837 000004B6 90AB0B8888830B8888- <1>
+   838 000004BF 83                  <1>
+   839 000004C0 8C4646CA8C4646CAC7- <1>  db %1(0x46),%1(0xee),%1(0xb8),%1(0x14),%1(0xde),%1(0x5e),%1(0x0b),%1(0xdb)
+   840 000004C9 EEEE29C7EEEE296BB8- <1>
+   841 000004D2 B8D36BB8B8D3281414- <1>
+   842 000004DB 3C2814143CA7DEDE79- <1>
+   843 000004E4 A7DEDE79BC5E5EE2BC- <1>
+   844 000004ED 5E5EE2160B0B1D160B- <1>
+   845 000004F6 0B1DADDBDB76ADDBDB- <1>
+   846 000004FF 76                  <1>
+   847 00000500 DBE0E03BDBE0E03B64- <1>  db %1(0xe0),%1(0x32),%1(0x3a),%1(0x0a),%1(0x49),%1(0x06),%1(0x24),%1(0x5c)
+   848 00000509 32325664323256743A- <1>
+   849 00000512 3A4E743A3A4E140A0A- <1>
+   850 0000051B 1E140A0A1E924949DB- <1>
+   851 00000524 924949DB0C06060A0C- <1>
+   852 0000052D 06060A4824246C4824- <1>
+   853 00000536 246CB85C5CE4B85C5C- <1>
+   854 0000053F E4                  <1>
+   855 00000540 9FC2C25D9FC2C25DBD- <1>  db %1(0xc2),%1(0xd3),%1(0xac),%1(0x62),%1(0x91),%1(0x95),%1(0xe4),%1(0x79)
+   856 00000549 D3D36EBDD3D36E43AC- <1>
+   857 00000552 ACEF43ACACEFC46262- <1>
+   858 0000055B A6C46262A6399191A8- <1>
+   859 00000564 399191A8319595A431- <1>
+   860 0000056D 9595A4D3E4E437D3E4- <1>
+   861 00000576 E437F279798BF27979- <1>
+   862 0000057F 8B                  <1>
+   863 00000580 D5E7E732D5E7E7328B- <1>  db %1(0xe7),%1(0xc8),%1(0x37),%1(0x6d),%1(0x8d),%1(0xd5),%1(0x4e),%1(0xa9)
+   864 00000589 C8C8438BC8C8436E37- <1>
+   865 00000592 37596E373759DA6D6D- <1>
+   866 0000059B B7DA6D6DB7018D8D8C- <1>
+   867 000005A4 018D8D8CB1D5D564B1- <1>
+   868 000005AD D5D5649C4E4ED29C4E- <1>
+   869 000005B6 4ED249A9A9E049A9A9- <1>
+   870 000005BF E0                  <1>
+   871 000005C0 D86C6CB4D86C6CB4AC- <1>  db %1(0x6c),%1(0x56),%1(0xf4),%1(0xea),%1(0x65),%1(0x7a),%1(0xae),%1(0x08)
+   872 000005C9 5656FAAC5656FAF3F4- <1>
+   873 000005D2 F407F3F4F407CFEAEA- <1>
+   874 000005DB 25CFEAEA25CA6565AF- <1>
+   875 000005E4 CA6565AFF47A7A8EF4- <1>
+   876 000005ED 7A7A8E47AEAEE947AE- <1>
+   877 000005F6 AEE910080818100808- <1>
+   878 000005FF 18                  <1>
+   879 00000600 6FBABAD56FBABAD5F0- <1>  db %1(0xba),%1(0x78),%1(0x25),%1(0x2e),%1(0x1c),%1(0xa6),%1(0xb4),%1(0xc6)
+   880 00000609 787888F07878884A25- <1>
+   881 00000612 256F4A25256F5C2E2E- <1>
+   882 0000061B 725C2E2E72381C1C24- <1>
+   883 00000624 381C1C2457A6A6F157- <1>
+   884 0000062D A6A6F173B4B4C773B4- <1>
+   885 00000636 B4C797C6C65197C6C6- <1>
+   886 0000063F 51                  <1>
+   887 00000640 CBE8E823CBE8E823A1- <1>  db %1(0xe8),%1(0xdd),%1(0x74),%1(0x1f),%1(0x4b),%1(0xbd),%1(0x8b),%1(0x8a)
+   888 00000649 DDDD7CA1DDDD7CE874- <1>
+   889 00000652 749CE874749C3E1F1F- <1>
+   890 0000065B 213E1F1F21964B4BDD- <1>
+   891 00000664 964B4BDD61BDBDDC61- <1>
+   892 0000066D BDBDDC0D8B8B860D8B- <1>
+   893 00000676 8B860F8A8A850F8A8A- <1>
+   894 0000067F 85                  <1>
+   895 00000680 E0707090E07070907C- <1>  db %1(0x70),%1(0x3e),%1(0xb5),%1(0x66),%1(0x48),%1(0x03),%1(0xf6),%1(0x0e)
+   896 00000689 3E3E427C3E3E4271B5- <1>
+   897 00000692 B5C471B5B5C4CC6666- <1>
+   898 0000069B AACC6666AA904848D8- <1>
+   899 000006A4 904848D80603030506- <1>
+   900 000006AD 030305F7F6F601F7F6- <1>
+   901 000006B6 F6011C0E0E121C0E0E- <1>
+   902 000006BF 12                  <1>
+   903 000006C0 C26161A3C26161A36A- <1>  db %1(0x61),%1(0x35),%1(0x57),%1(0xb9),%1(0x86),%1(0xc1),%1(0x1d),%1(0x9e)
+   904 000006C9 35355F6A35355FAE57- <1>
+   905 000006D2 57F9AE5757F969B9B9- <1>
+   906 000006DB D069B9B9D017868691- <1>
+   907 000006E4 1786869199C1C15899- <1>
+   908 000006ED C1C1583A1D1D273A1D- <1>
+   909 000006F6 1D27279E9EB9279E9E- <1>
+   910 000006FF B9                  <1>
+   911 00000700 D9E1E138D9E1E138EB- <1>  db %1(0xe1),%1(0xf8),%1(0x98),%1(0x11),%1(0x69),%1(0xd9),%1(0x8e),%1(0x94)
+   912 00000709 F8F813EBF8F8132B98- <1>
+   913 00000712 98B32B9898B3221111- <1>
+   914 0000071B 3322111133D26969BB- <1>
+   915 00000724 D26969BBA9D9D970A9- <1>
+   916 0000072D D9D970078E8E89078E- <1>
+   917 00000736 8E89339494A7339494- <1>
+   918 0000073F A7                  <1>
+   919 00000740 2D9B9BB62D9B9BB63C- <1>  db %1(0x9b),%1(0x1e),%1(0x87),%1(0xe9),%1(0xce),%1(0x55),%1(0x28),%1(0xdf)
+   920 00000749 1E1E223C1E1E221587- <1>
+   921 00000752 879215878792C9E9E9- <1>
+   922 0000075B 20C9E9E92087CECE49- <1>
+   923 00000764 87CECE49AA5555FFAA- <1>
+   924 0000076D 5555FF502828785028- <1>
+   925 00000776 2878A5DFDF7AA5DFDF- <1>
+   926 0000077F 7A                  <1>
+   927 00000780 038C8C8F038C8C8F59- <1>  db %1(0x8c),%1(0xa1),%1(0x89),%1(0x0d),%1(0xbf),%1(0xe6),%1(0x42),%1(0x68)
+   928 00000789 A1A1F859A1A1F80989- <1>
+   929 00000792 8980098989801A0D0D- <1>
+   930 0000079B 171A0D0D1765BFBFDA- <1>
+   931 000007A4 65BFBFDAD7E6E631D7- <1>
+   932 000007AD E6E631844242C68442- <1>
+   933 000007B6 42C6D06868B8D06868- <1>
+   934 000007BF B8                  <1>
+   935 000007C0 824141C3824141C329- <1>  db %1(0x41),%1(0x99),%1(0x2d),%1(0x0f),%1(0xb0),%1(0x54),%1(0xbb),%1(0x16)
+   936 000007C9 9999B0299999B05A2D- <1>
+   937 000007D2 2D775A2D2D771E0F0F- <1>
+   938 000007DB 111E0F0F117BB0B0CB- <1>
+   939 000007E4 7BB0B0CBA85454FCA8- <1>
+   940 000007ED 5454FC6DBBBBD66DBB- <1>
+   941 000007F6 BBD62C16163A2C1616- <1>
+   942 000007FF 3A                  <1>
+   943                                  %ifdef LAST_ROUND_TABLES
+   944                                      enc_vals w8
+   945 00000800 63000000630000007C- <1>  db %1(0x63),%1(0x7c),%1(0x77),%1(0x7b),%1(0xf2),%1(0x6b),%1(0x6f),%1(0xc5)
+   946 00000809 0000007C0000007700- <1>
+   947 00000812 0000770000007B0000- <1>
+   948 0000081B 007B000000F2000000- <1>
+   949 00000824 F20000006B0000006B- <1>
+   950 0000082D 0000006F0000006F00- <1>
+   951 00000836 0000C5000000C50000- <1>
+   952 0000083F 00                  <1>
+   953 00000840 300000003000000001- <1>  db %1(0x30),%1(0x01),%1(0x67),%1(0x2b),%1(0xfe),%1(0xd7),%1(0xab),%1(0x76)
+   954 00000849 000000010000006700- <1>
+   955 00000852 0000670000002B0000- <1>
+   956 0000085B 002B000000FE000000- <1>
+   957 00000864 FE000000D7000000D7- <1>
+   958 0000086D 000000AB000000AB00- <1>
+   959 00000876 000076000000760000- <1>
+   960 0000087F 00                  <1>
+   961 00000880 CA000000CA00000082- <1>  db %1(0xca),%1(0x82),%1(0xc9),%1(0x7d),%1(0xfa),%1(0x59),%1(0x47),%1(0xf0)
+   962 00000889 00000082000000C900- <1>
+   963 00000892 0000C90000007D0000- <1>
+   964 0000089B 007D000000FA000000- <1>
+   965 000008A4 FA0000005900000059- <1>
+   966 000008AD 000000470000004700- <1>
+   967 000008B6 0000F0000000F00000- <1>
+   968 000008BF 00                  <1>
+   969 000008C0 AD000000AD000000D4- <1>  db %1(0xad),%1(0xd4),%1(0xa2),%1(0xaf),%1(0x9c),%1(0xa4),%1(0x72),%1(0xc0)
+   970 000008C9 000000D4000000A200- <1>
+   971 000008D2 0000A2000000AF0000- <1>
+   972 000008DB 00AF0000009C000000- <1>
+   973 000008E4 9C000000A4000000A4- <1>
+   974 000008ED 000000720000007200- <1>
+   975 000008F6 0000C0000000C00000- <1>
+   976 000008FF 00                  <1>
+   977 00000900 B7000000B7000000FD- <1>  db %1(0xb7),%1(0xfd),%1(0x93),%1(0x26),%1(0x36),%1(0x3f),%1(0xf7),%1(0xcc)
+   978 00000909 000000FD0000009300- <1>
+   979 00000912 000093000000260000- <1>
+   980 0000091B 002600000036000000- <1>
+   981 00000924 360000003F0000003F- <1>
+   982 0000092D 000000F7000000F700- <1>
+   983 00000936 0000CC000000CC0000- <1>
+   984 0000093F 00                  <1>
+   985 00000940 3400000034000000A5- <1>  db %1(0x34),%1(0xa5),%1(0xe5),%1(0xf1),%1(0x71),%1(0xd8),%1(0x31),%1(0x15)
+   986 00000949 000000A5000000E500- <1>
+   987 00000952 0000E5000000F10000- <1>
+   988 0000095B 00F100000071000000- <1>
+   989 00000964 71000000D8000000D8- <1>
+   990 0000096D 000000310000003100- <1>
+   991 00000976 000015000000150000- <1>
+   992 0000097F 00                  <1>
+   993 00000980 0400000004000000C7- <1>  db %1(0x04),%1(0xc7),%1(0x23),%1(0xc3),%1(0x18),%1(0x96),%1(0x05),%1(0x9a)
+   994 00000989 000000C70000002300- <1>
+   995 00000992 000023000000C30000- <1>
+   996 0000099B 00C300000018000000- <1>
+   997 000009A4 180000009600000096- <1>
+   998 000009AD 000000050000000500- <1>
+   999 000009B6 00009A0000009A0000- <1>
+  1000 000009BF 00                  <1>
+  1001 000009C0 070000000700000012- <1>  db %1(0x07),%1(0x12),%1(0x80),%1(0xe2),%1(0xeb),%1(0x27),%1(0xb2),%1(0x75)
+  1002 000009C9 000000120000008000- <1>
+  1003 000009D2 000080000000E20000- <1>
+  1004 000009DB 00E2000000EB000000- <1>
+  1005 000009E4 EB0000002700000027- <1>
+  1006 000009ED 000000B2000000B200- <1>
+  1007 000009F6 000075000000750000- <1>
+  1008 000009FF 00                  <1>
+  1009 00000A00 090000000900000083- <1>  db %1(0x09),%1(0x83),%1(0x2c),%1(0x1a),%1(0x1b),%1(0x6e),%1(0x5a),%1(0xa0)
+  1010 00000A09 000000830000002C00- <1>
+  1011 00000A12 00002C0000001A0000- <1>
+  1012 00000A1B 001A0000001B000000- <1>
+  1013 00000A24 1B0000006E0000006E- <1>
+  1014 00000A2D 0000005A0000005A00- <1>
+  1015 00000A36 0000A0000000A00000- <1>
+  1016 00000A3F 00                  <1>
+  1017 00000A40 52000000520000003B- <1>  db %1(0x52),%1(0x3b),%1(0xd6),%1(0xb3),%1(0x29),%1(0xe3),%1(0x2f),%1(0x84)
+  1018 00000A49 0000003B000000D600- <1>
+  1019 00000A52 0000D6000000B30000- <1>
+  1020 00000A5B 00B300000029000000- <1>
+  1021 00000A64 29000000E3000000E3- <1>
+  1022 00000A6D 0000002F0000002F00- <1>
+  1023 00000A76 000084000000840000- <1>
+  1024 00000A7F 00                  <1>
+  1025 00000A80 5300000053000000D1- <1>  db %1(0x53),%1(0xd1),%1(0x00),%1(0xed),%1(0x20),%1(0xfc),%1(0xb1),%1(0x5b)
+  1026 00000A89 000000D10000000000- <1>
+  1027 00000A92 000000000000ED0000- <1>
+  1028 00000A9B 00ED00000020000000- <1>
+  1029 00000AA4 20000000FC000000FC- <1>
+  1030 00000AAD 000000B1000000B100- <1>
+  1031 00000AB6 00005B0000005B0000- <1>
+  1032 00000ABF 00                  <1>
+  1033 00000AC0 6A0000006A000000CB- <1>  db %1(0x6a),%1(0xcb),%1(0xbe),%1(0x39),%1(0x4a),%1(0x4c),%1(0x58),%1(0xcf)
+  1034 00000AC9 000000CB000000BE00- <1>
+  1035 00000AD2 0000BE000000390000- <1>
+  1036 00000ADB 00390000004A000000- <1>
+  1037 00000AE4 4A0000004C0000004C- <1>
+  1038 00000AED 000000580000005800- <1>
+  1039 00000AF6 0000CF000000CF0000- <1>
+  1040 00000AFF 00                  <1>
+  1041 00000B00 D0000000D0000000EF- <1>  db %1(0xd0),%1(0xef),%1(0xaa),%1(0xfb),%1(0x43),%1(0x4d),%1(0x33),%1(0x85)
+  1042 00000B09 000000EF000000AA00- <1>
+  1043 00000B12 0000AA000000FB0000- <1>
+  1044 00000B1B 00FB00000043000000- <1>
+  1045 00000B24 430000004D0000004D- <1>
+  1046 00000B2D 000000330000003300- <1>
+  1047 00000B36 000085000000850000- <1>
+  1048 00000B3F 00                  <1>
+  1049 00000B40 4500000045000000F9- <1>  db %1(0x45),%1(0xf9),%1(0x02),%1(0x7f),%1(0x50),%1(0x3c),%1(0x9f),%1(0xa8)
+  1050 00000B49 000000F90000000200- <1>
+  1051 00000B52 0000020000007F0000- <1>
+  1052 00000B5B 007F00000050000000- <1>
+  1053 00000B64 500000003C0000003C- <1>
+  1054 00000B6D 0000009F0000009F00- <1>
+  1055 00000B76 0000A8000000A80000- <1>
+  1056 00000B7F 00                  <1>
+  1057 00000B80 5100000051000000A3- <1>  db %1(0x51),%1(0xa3),%1(0x40),%1(0x8f),%1(0x92),%1(0x9d),%1(0x38),%1(0xf5)
+  1058 00000B89 000000A30000004000- <1>
+  1059 00000B92 0000400000008F0000- <1>
+  1060 00000B9B 008F00000092000000- <1>
+  1061 00000BA4 920000009D0000009D- <1>
+  1062 00000BAD 000000380000003800- <1>
+  1063 00000BB6 0000F5000000F50000- <1>
+  1064 00000BBF 00                  <1>
+  1065 00000BC0 BC000000BC000000B6- <1>  db %1(0xbc),%1(0xb6),%1(0xda),%1(0x21),%1(0x10),%1(0xff),%1(0xf3),%1(0xd2)
+  1066 00000BC9 000000B6000000DA00- <1>
+  1067 00000BD2 0000DA000000210000- <1>
+  1068 00000BDB 002100000010000000- <1>
+  1069 00000BE4 10000000FF000000FF- <1>
+  1070 00000BED 000000F3000000F300- <1>
+  1071 00000BF6 0000D2000000D20000- <1>
+  1072 00000BFF 00                  <1>
+  1073 00000C00 CD000000CD0000000C- <1>  db %1(0xcd),%1(0x0c),%1(0x13),%1(0xec),%1(0x5f),%1(0x97),%1(0x44),%1(0x17)
+  1074 00000C09 0000000C0000001300- <1>
+  1075 00000C12 000013000000EC0000- <1>
+  1076 00000C1B 00EC0000005F000000- <1>
+  1077 00000C24 5F0000009700000097- <1>
+  1078 00000C2D 000000440000004400- <1>
+  1079 00000C36 000017000000170000- <1>
+  1080 00000C3F 00                  <1>
+  1081 00000C40 C4000000C4000000A7- <1>  db %1(0xc4),%1(0xa7),%1(0x7e),%1(0x3d),%1(0x64),%1(0x5d),%1(0x19),%1(0x73)
+  1082 00000C49 000000A70000007E00- <1>
+  1083 00000C52 00007E0000003D0000- <1>
+  1084 00000C5B 003D00000064000000- <1>
+  1085 00000C64 640000005D0000005D- <1>
+  1086 00000C6D 000000190000001900- <1>
+  1087 00000C76 000073000000730000- <1>
+  1088 00000C7F 00                  <1>
+  1089 00000C80 600000006000000081- <1>  db %1(0x60),%1(0x81),%1(0x4f),%1(0xdc),%1(0x22),%1(0x2a),%1(0x90),%1(0x88)
+  1090 00000C89 000000810000004F00- <1>
+  1091 00000C92 00004F000000DC0000- <1>
+  1092 00000C9B 00DC00000022000000- <1>
+  1093 00000CA4 220000002A0000002A- <1>
+  1094 00000CAD 000000900000009000- <1>
+  1095 00000CB6 000088000000880000- <1>
+  1096 00000CBF 00                  <1>
+  1097 00000CC0 4600000046000000EE- <1>  db %1(0x46),%1(0xee),%1(0xb8),%1(0x14),%1(0xde),%1(0x5e),%1(0x0b),%1(0xdb)
+  1098 00000CC9 000000EE000000B800- <1>
+  1099 00000CD2 0000B8000000140000- <1>
+  1100 00000CDB 0014000000DE000000- <1>
+  1101 00000CE4 DE0000005E0000005E- <1>
+  1102 00000CED 0000000B0000000B00- <1>
+  1103 00000CF6 0000DB000000DB0000- <1>
+  1104 00000CFF 00                  <1>
+  1105 00000D00 E0000000E000000032- <1>  db %1(0xe0),%1(0x32),%1(0x3a),%1(0x0a),%1(0x49),%1(0x06),%1(0x24),%1(0x5c)
+  1106 00000D09 000000320000003A00- <1>
+  1107 00000D12 00003A0000000A0000- <1>
+  1108 00000D1B 000A00000049000000- <1>
+  1109 00000D24 490000000600000006- <1>
+  1110 00000D2D 000000240000002400- <1>
+  1111 00000D36 00005C0000005C0000- <1>
+  1112 00000D3F 00                  <1>
+  1113 00000D40 C2000000C2000000D3- <1>  db %1(0xc2),%1(0xd3),%1(0xac),%1(0x62),%1(0x91),%1(0x95),%1(0xe4),%1(0x79)
+  1114 00000D49 000000D3000000AC00- <1>
+  1115 00000D52 0000AC000000620000- <1>
+  1116 00000D5B 006200000091000000- <1>
+  1117 00000D64 910000009500000095- <1>
+  1118 00000D6D 000000E4000000E400- <1>
+  1119 00000D76 000079000000790000- <1>
+  1120 00000D7F 00                  <1>
+  1121 00000D80 E7000000E7000000C8- <1>  db %1(0xe7),%1(0xc8),%1(0x37),%1(0x6d),%1(0x8d),%1(0xd5),%1(0x4e),%1(0xa9)
+  1122 00000D89 000000C80000003700- <1>
+  1123 00000D92 0000370000006D0000- <1>
+  1124 00000D9B 006D0000008D000000- <1>
+  1125 00000DA4 8D000000D5000000D5- <1>
+  1126 00000DAD 0000004E0000004E00- <1>
+  1127 00000DB6 0000A9000000A90000- <1>
+  1128 00000DBF 00                  <1>
+  1129 00000DC0 6C0000006C00000056- <1>  db %1(0x6c),%1(0x56),%1(0xf4),%1(0xea),%1(0x65),%1(0x7a),%1(0xae),%1(0x08)
+  1130 00000DC9 00000056000000F400- <1>
+  1131 00000DD2 0000F4000000EA0000- <1>
+  1132 00000DDB 00EA00000065000000- <1>
+  1133 00000DE4 650000007A0000007A- <1>
+  1134 00000DED 000000AE000000AE00- <1>
+  1135 00000DF6 000008000000080000- <1>
+  1136 00000DFF 00                  <1>
+  1137 00000E00 BA000000BA00000078- <1>  db %1(0xba),%1(0x78),%1(0x25),%1(0x2e),%1(0x1c),%1(0xa6),%1(0xb4),%1(0xc6)
+  1138 00000E09 000000780000002500- <1>
+  1139 00000E12 0000250000002E0000- <1>
+  1140 00000E1B 002E0000001C000000- <1>
+  1141 00000E24 1C000000A6000000A6- <1>
+  1142 00000E2D 000000B4000000B400- <1>
+  1143 00000E36 0000C6000000C60000- <1>
+  1144 00000E3F 00                  <1>
+  1145 00000E40 E8000000E8000000DD- <1>  db %1(0xe8),%1(0xdd),%1(0x74),%1(0x1f),%1(0x4b),%1(0xbd),%1(0x8b),%1(0x8a)
+  1146 00000E49 000000DD0000007400- <1>
+  1147 00000E52 0000740000001F0000- <1>
+  1148 00000E5B 001F0000004B000000- <1>
+  1149 00000E64 4B000000BD000000BD- <1>
+  1150 00000E6D 0000008B0000008B00- <1>
+  1151 00000E76 00008A0000008A0000- <1>
+  1152 00000E7F 00                  <1>
+  1153 00000E80 70000000700000003E- <1>  db %1(0x70),%1(0x3e),%1(0xb5),%1(0x66),%1(0x48),%1(0x03),%1(0xf6),%1(0x0e)
+  1154 00000E89 0000003E000000B500- <1>
+  1155 00000E92 0000B5000000660000- <1>
+  1156 00000E9B 006600000048000000- <1>
+  1157 00000EA4 480000000300000003- <1>
+  1158 00000EAD 000000F6000000F600- <1>
+  1159 00000EB6 00000E0000000E0000- <1>
+  1160 00000EBF 00                  <1>
+  1161 00000EC0 610000006100000035- <1>  db %1(0x61),%1(0x35),%1(0x57),%1(0xb9),%1(0x86),%1(0xc1),%1(0x1d),%1(0x9e)
+  1162 00000EC9 000000350000005700- <1>
+  1163 00000ED2 000057000000B90000- <1>
+  1164 00000EDB 00B900000086000000- <1>
+  1165 00000EE4 86000000C1000000C1- <1>
+  1166 00000EED 0000001D0000001D00- <1>
+  1167 00000EF6 00009E0000009E0000- <1>
+  1168 00000EFF 00                  <1>
+  1169 00000F00 E1000000E1000000F8- <1>  db %1(0xe1),%1(0xf8),%1(0x98),%1(0x11),%1(0x69),%1(0xd9),%1(0x8e),%1(0x94)
+  1170 00000F09 000000F80000009800- <1>
+  1171 00000F12 000098000000110000- <1>
+  1172 00000F1B 001100000069000000- <1>
+  1173 00000F24 69000000D9000000D9- <1>
+  1174 00000F2D 0000008E0000008E00- <1>
+  1175 00000F36 000094000000940000- <1>
+  1176 00000F3F 00                  <1>
+  1177 00000F40 9B0000009B0000001E- <1>  db %1(0x9b),%1(0x1e),%1(0x87),%1(0xe9),%1(0xce),%1(0x55),%1(0x28),%1(0xdf)
+  1178 00000F49 0000001E0000008700- <1>
+  1179 00000F52 000087000000E90000- <1>
+  1180 00000F5B 00E9000000CE000000- <1>
+  1181 00000F64 CE0000005500000055- <1>
+  1182 00000F6D 000000280000002800- <1>
+  1183 00000F76 0000DF000000DF0000- <1>
+  1184 00000F7F 00                  <1>
+  1185 00000F80 8C0000008C000000A1- <1>  db %1(0x8c),%1(0xa1),%1(0x89),%1(0x0d),%1(0xbf),%1(0xe6),%1(0x42),%1(0x68)
+  1186 00000F89 000000A10000008900- <1>
+  1187 00000F92 0000890000000D0000- <1>
+  1188 00000F9B 000D000000BF000000- <1>
+  1189 00000FA4 BF000000E6000000E6- <1>
+  1190 00000FAD 000000420000004200- <1>
+  1191 00000FB6 000068000000680000- <1>
+  1192 00000FBF 00                  <1>
+  1193 00000FC0 410000004100000099- <1>  db %1(0x41),%1(0x99),%1(0x2d),%1(0x0f),%1(0xb0),%1(0x54),%1(0xbb),%1(0x16)
+  1194 00000FC9 000000990000002D00- <1>
+  1195 00000FD2 00002D0000000F0000- <1>
+  1196 00000FDB 000F000000B0000000- <1>
+  1197 00000FE4 B00000005400000054- <1>
+  1198 00000FED 000000BB000000BB00- <1>
+  1199 00000FF6 000016000000160000- <1>
+  1200 00000FFF 00                  <1>
+  1201                                  %endif
+  1202                                  
+  1203                                      section .text align=16
+  1204                                      align   16
+  1205                                  
+  1206                                  %ifdef _SEH_
+  1207                                  proc_frame aes_encrypt
+  1208                                  	alloc_stack	7*8			; 7 to align stack to 16 bytes
+  1209                                  	save_reg	rsi,4*8
+  1210                                  	save_reg	rdi,5*8
+  1211                                  	save_reg	rbx,1*8
+  1212                                  	save_reg	rbp,2*8
+  1213                                  	save_reg	r12,3*8
+  1214                                  end_prologue
+  1215                                      mov     rdi, rcx        ; input pointer
+  1216                                      mov     [rsp+0*8], rdx  ; output pointer
+  1217                                  %else
+  1218                                  	aes_encrypt:
+  1219                                  	%ifdef __GNUC__
+  1220                                  		sub     rsp, 4*8        ; gnu/linux binary interface
+  1221                                  		mov     [rsp+0*8], rsi  ; output pointer
+  1222                                  		mov     r8, rdx         ; context
+  1223                                  	%else
+  1224 00000000 4883EC30                		sub     rsp, 6*8        ; windows binary interface
+  1225 00000004 4889742420              		mov     [rsp+4*8], rsi
+  1226 00000009 48897C2428              		mov     [rsp+5*8], rdi
+  1227 0000000E 4889CF                  		mov     rdi, rcx        ; input pointer
+  1228 00000011 48891424                		mov     [rsp+0*8], rdx  ; output pointer
+  1229                                  	%endif
+  1230 00000015 48895C2408              		mov     [rsp+1*8], rbx  ; input pointer in rdi
+  1231 0000001A 48896C2410              		mov     [rsp+2*8], rbp  ; output pointer in [rsp]
+  1232 0000001F 4C89642418              		mov     [rsp+3*8], r12  ; context in r8
+  1233                                  %endif
+  1234                                  
+  1235 00000024 410FB6B0F0000000            movzx   esi, byte [kptr+4*KS_LENGTH]
+  1236 0000002C 488D2D(00000000)            lea     tptr, [rel enc_tab]
+  1237 00000033 4981E880000000              sub     kptr, fofs
+  1238                                  
+  1239 0000003A 8B07                        mov     eax, [rdi+0*4]
+  1240 0000003C 8B5F04                      mov     ebx, [rdi+1*4]
+  1241 0000003F 8B4F08                      mov     ecx, [rdi+2*4]
+  1242 00000042 8B570C                      mov     edx, [rdi+3*4]
+  1243                                  
+  1244 00000045 41338080000000              xor     eax, [kptr+fofs]
+  1245 0000004C 41339884000000              xor     ebx, [kptr+fofs+4]
+  1246 00000053 41338888000000              xor     ecx, [kptr+fofs+8]
+  1247 0000005A 4133908C000000              xor     edx, [kptr+fofs+12]
+  1248                                  
+  1249 00000061 4D8D0430                    lea     kptr,[kptr+rsi]
+  1250 00000065 81FEA0000000                cmp     esi, 10*16
+  1251 0000006B 0F84C3020000                je      .3
+  1252 00000071 81FEC0000000                cmp     esi, 12*16
+  1253 00000077 0F8467010000                je      .2
+  1254 0000007D 81FEE0000000                cmp     esi, 14*16
+  1255 00000083 740F                        je      .1
+  1256 00000085 48B8FFFFFFFFFFFFFF-         mov     rax, -1
+  1257 0000008E FF                 
+  1258 0000008F E94C090000                  jmp     .4
+  1259                                  
+  1260                                  .1: ff_rnd  r9, r10, r11, r12, 13
+  1261                              <1> .1: 
+  1262 00000094 458B48B0            <1>  mov %1d, fk_ref(%5,0)
+  1263 00000098 458B50B4            <1>  mov %2d, fk_ref(%5,1)
+  1264 0000009C 458B58B8            <1>  mov %3d, fk_ref(%5,2)
+  1265 000000A0 458B60BC            <1>  mov %4d, fk_ref(%5,3)
+  1266                              <1> 
+  1267 000000A4 0FB6F0              <1>  movzx esi, al
+  1268 000000A7 0FB6FC              <1>  movzx edi, ah
+  1269 000000AA C1E810              <1>  shr eax, 16
+  1270 000000AD 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1271 000000B2 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1272 000000B7 0FB6F0              <1>  movzx esi, al
+  1273 000000BA 0FB6FC              <1>  movzx edi, ah
+  1274 000000BD 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1275 000000C2 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1276                              <1> 
+  1277 000000C7 0FB6F3              <1>  movzx esi, bl
+  1278 000000CA 0FB6FF              <1>  movzx edi, bh
+  1279 000000CD C1EB10              <1>  shr ebx, 16
+  1280 000000D0 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1281 000000D5 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1282 000000DA 0FB6F3              <1>  movzx esi, bl
+  1283 000000DD 0FB6FF              <1>  movzx edi, bh
+  1284 000000E0 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1285 000000E5 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1286                              <1> 
+  1287 000000EA 0FB6F1              <1>  movzx esi, cl
+  1288 000000ED 0FB6FD              <1>  movzx edi, ch
+  1289 000000F0 C1E910              <1>  shr ecx, 16
+  1290 000000F3 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1291 000000F8 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1292 000000FD 0FB6F1              <1>  movzx esi, cl
+  1293 00000100 0FB6FD              <1>  movzx edi, ch
+  1294 00000103 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1295 00000108 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1296                              <1> 
+  1297 0000010D 0FB6F2              <1>  movzx esi, dl
+  1298 00000110 0FB6FE              <1>  movzx edi, dh
+  1299 00000113 C1EA10              <1>  shr edx, 16
+  1300 00000116 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1301 0000011B 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1302 00000120 0FB6F2              <1>  movzx esi, dl
+  1303 00000123 0FB6FE              <1>  movzx edi, dh
+  1304 00000126 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1305 0000012B 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1306                              <1> 
+  1307 00000130 4489C8              <1>  mov eax,%1d
+  1308 00000133 4489D3              <1>  mov ebx,%2d
+  1309 00000136 4489D9              <1>  mov ecx,%3d
+  1310 00000139 4489E2              <1>  mov edx,%4d
+  1311                                      ff_rnd  r9, r10, r11, r12, 12
+  1312 0000013C 458B48C0            <1>  mov %1d, fk_ref(%5,0)
+  1313 00000140 458B50C4            <1>  mov %2d, fk_ref(%5,1)
+  1314 00000144 458B58C8            <1>  mov %3d, fk_ref(%5,2)
+  1315 00000148 458B60CC            <1>  mov %4d, fk_ref(%5,3)
+  1316                              <1> 
+  1317 0000014C 0FB6F0              <1>  movzx esi, al
+  1318 0000014F 0FB6FC              <1>  movzx edi, ah
+  1319 00000152 C1E810              <1>  shr eax, 16
+  1320 00000155 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1321 0000015A 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1322 0000015F 0FB6F0              <1>  movzx esi, al
+  1323 00000162 0FB6FC              <1>  movzx edi, ah
+  1324 00000165 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1325 0000016A 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1326                              <1> 
+  1327 0000016F 0FB6F3              <1>  movzx esi, bl
+  1328 00000172 0FB6FF              <1>  movzx edi, bh
+  1329 00000175 C1EB10              <1>  shr ebx, 16
+  1330 00000178 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1331 0000017D 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1332 00000182 0FB6F3              <1>  movzx esi, bl
+  1333 00000185 0FB6FF              <1>  movzx edi, bh
+  1334 00000188 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1335 0000018D 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1336                              <1> 
+  1337 00000192 0FB6F1              <1>  movzx esi, cl
+  1338 00000195 0FB6FD              <1>  movzx edi, ch
+  1339 00000198 C1E910              <1>  shr ecx, 16
+  1340 0000019B 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1341 000001A0 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1342 000001A5 0FB6F1              <1>  movzx esi, cl
+  1343 000001A8 0FB6FD              <1>  movzx edi, ch
+  1344 000001AB 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1345 000001B0 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1346                              <1> 
+  1347 000001B5 0FB6F2              <1>  movzx esi, dl
+  1348 000001B8 0FB6FE              <1>  movzx edi, dh
+  1349 000001BB C1EA10              <1>  shr edx, 16
+  1350 000001BE 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1351 000001C3 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1352 000001C8 0FB6F2              <1>  movzx esi, dl
+  1353 000001CB 0FB6FE              <1>  movzx edi, dh
+  1354 000001CE 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1355 000001D3 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1356                              <1> 
+  1357 000001D8 4489C8              <1>  mov eax,%1d
+  1358 000001DB 4489D3              <1>  mov ebx,%2d
+  1359 000001DE 4489D9              <1>  mov ecx,%3d
+  1360 000001E1 4489E2              <1>  mov edx,%4d
+  1361                                  .2: ff_rnd  r9, r10, r11, r12, 11
+  1362                              <1> .2: 
+  1363 000001E4 458B48D0            <1>  mov %1d, fk_ref(%5,0)
+  1364 000001E8 458B50D4            <1>  mov %2d, fk_ref(%5,1)
+  1365 000001EC 458B58D8            <1>  mov %3d, fk_ref(%5,2)
+  1366 000001F0 458B60DC            <1>  mov %4d, fk_ref(%5,3)
+  1367                              <1> 
+  1368 000001F4 0FB6F0              <1>  movzx esi, al
+  1369 000001F7 0FB6FC              <1>  movzx edi, ah
+  1370 000001FA C1E810              <1>  shr eax, 16
+  1371 000001FD 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1372 00000202 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1373 00000207 0FB6F0              <1>  movzx esi, al
+  1374 0000020A 0FB6FC              <1>  movzx edi, ah
+  1375 0000020D 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1376 00000212 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1377                              <1> 
+  1378 00000217 0FB6F3              <1>  movzx esi, bl
+  1379 0000021A 0FB6FF              <1>  movzx edi, bh
+  1380 0000021D C1EB10              <1>  shr ebx, 16
+  1381 00000220 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1382 00000225 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1383 0000022A 0FB6F3              <1>  movzx esi, bl
+  1384 0000022D 0FB6FF              <1>  movzx edi, bh
+  1385 00000230 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1386 00000235 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1387                              <1> 
+  1388 0000023A 0FB6F1              <1>  movzx esi, cl
+  1389 0000023D 0FB6FD              <1>  movzx edi, ch
+  1390 00000240 C1E910              <1>  shr ecx, 16
+  1391 00000243 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1392 00000248 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1393 0000024D 0FB6F1              <1>  movzx esi, cl
+  1394 00000250 0FB6FD              <1>  movzx edi, ch
+  1395 00000253 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1396 00000258 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1397                              <1> 
+  1398 0000025D 0FB6F2              <1>  movzx esi, dl
+  1399 00000260 0FB6FE              <1>  movzx edi, dh
+  1400 00000263 C1EA10              <1>  shr edx, 16
+  1401 00000266 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1402 0000026B 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1403 00000270 0FB6F2              <1>  movzx esi, dl
+  1404 00000273 0FB6FE              <1>  movzx edi, dh
+  1405 00000276 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1406 0000027B 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1407                              <1> 
+  1408 00000280 4489C8              <1>  mov eax,%1d
+  1409 00000283 4489D3              <1>  mov ebx,%2d
+  1410 00000286 4489D9              <1>  mov ecx,%3d
+  1411 00000289 4489E2              <1>  mov edx,%4d
+  1412                                      ff_rnd  r9, r10, r11, r12, 10
+  1413 0000028C 458B48E0            <1>  mov %1d, fk_ref(%5,0)
+  1414 00000290 458B50E4            <1>  mov %2d, fk_ref(%5,1)
+  1415 00000294 458B58E8            <1>  mov %3d, fk_ref(%5,2)
+  1416 00000298 458B60EC            <1>  mov %4d, fk_ref(%5,3)
+  1417                              <1> 
+  1418 0000029C 0FB6F0              <1>  movzx esi, al
+  1419 0000029F 0FB6FC              <1>  movzx edi, ah
+  1420 000002A2 C1E810              <1>  shr eax, 16
+  1421 000002A5 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1422 000002AA 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1423 000002AF 0FB6F0              <1>  movzx esi, al
+  1424 000002B2 0FB6FC              <1>  movzx edi, ah
+  1425 000002B5 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1426 000002BA 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1427                              <1> 
+  1428 000002BF 0FB6F3              <1>  movzx esi, bl
+  1429 000002C2 0FB6FF              <1>  movzx edi, bh
+  1430 000002C5 C1EB10              <1>  shr ebx, 16
+  1431 000002C8 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1432 000002CD 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1433 000002D2 0FB6F3              <1>  movzx esi, bl
+  1434 000002D5 0FB6FF              <1>  movzx edi, bh
+  1435 000002D8 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1436 000002DD 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1437                              <1> 
+  1438 000002E2 0FB6F1              <1>  movzx esi, cl
+  1439 000002E5 0FB6FD              <1>  movzx edi, ch
+  1440 000002E8 C1E910              <1>  shr ecx, 16
+  1441 000002EB 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1442 000002F0 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1443 000002F5 0FB6F1              <1>  movzx esi, cl
+  1444 000002F8 0FB6FD              <1>  movzx edi, ch
+  1445 000002FB 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1446 00000300 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1447                              <1> 
+  1448 00000305 0FB6F2              <1>  movzx esi, dl
+  1449 00000308 0FB6FE              <1>  movzx edi, dh
+  1450 0000030B C1EA10              <1>  shr edx, 16
+  1451 0000030E 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1452 00000313 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1453 00000318 0FB6F2              <1>  movzx esi, dl
+  1454 0000031B 0FB6FE              <1>  movzx edi, dh
+  1455 0000031E 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1456 00000323 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1457                              <1> 
+  1458 00000328 4489C8              <1>  mov eax,%1d
+  1459 0000032B 4489D3              <1>  mov ebx,%2d
+  1460 0000032E 4489D9              <1>  mov ecx,%3d
+  1461 00000331 4489E2              <1>  mov edx,%4d
+  1462                                  .3: ff_rnd  r9, r10, r11, r12, 9
+  1463                              <1> .3: 
+  1464 00000334 458B48F0            <1>  mov %1d, fk_ref(%5,0)
+  1465 00000338 458B50F4            <1>  mov %2d, fk_ref(%5,1)
+  1466 0000033C 458B58F8            <1>  mov %3d, fk_ref(%5,2)
+  1467 00000340 458B60FC            <1>  mov %4d, fk_ref(%5,3)
+  1468                              <1> 
+  1469 00000344 0FB6F0              <1>  movzx esi, al
+  1470 00000347 0FB6FC              <1>  movzx edi, ah
+  1471 0000034A C1E810              <1>  shr eax, 16
+  1472 0000034D 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1473 00000352 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1474 00000357 0FB6F0              <1>  movzx esi, al
+  1475 0000035A 0FB6FC              <1>  movzx edi, ah
+  1476 0000035D 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1477 00000362 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1478                              <1> 
+  1479 00000367 0FB6F3              <1>  movzx esi, bl
+  1480 0000036A 0FB6FF              <1>  movzx edi, bh
+  1481 0000036D C1EB10              <1>  shr ebx, 16
+  1482 00000370 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1483 00000375 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1484 0000037A 0FB6F3              <1>  movzx esi, bl
+  1485 0000037D 0FB6FF              <1>  movzx edi, bh
+  1486 00000380 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1487 00000385 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1488                              <1> 
+  1489 0000038A 0FB6F1              <1>  movzx esi, cl
+  1490 0000038D 0FB6FD              <1>  movzx edi, ch
+  1491 00000390 C1E910              <1>  shr ecx, 16
+  1492 00000393 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1493 00000398 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1494 0000039D 0FB6F1              <1>  movzx esi, cl
+  1495 000003A0 0FB6FD              <1>  movzx edi, ch
+  1496 000003A3 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1497 000003A8 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1498                              <1> 
+  1499 000003AD 0FB6F2              <1>  movzx esi, dl
+  1500 000003B0 0FB6FE              <1>  movzx edi, dh
+  1501 000003B3 C1EA10              <1>  shr edx, 16
+  1502 000003B6 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1503 000003BB 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1504 000003C0 0FB6F2              <1>  movzx esi, dl
+  1505 000003C3 0FB6FE              <1>  movzx edi, dh
+  1506 000003C6 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1507 000003CB 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1508                              <1> 
+  1509 000003D0 4489C8              <1>  mov eax,%1d
+  1510 000003D3 4489D3              <1>  mov ebx,%2d
+  1511 000003D6 4489D9              <1>  mov ecx,%3d
+  1512 000003D9 4489E2              <1>  mov edx,%4d
+  1513                                      ff_rnd  r9, r10, r11, r12, 8
+  1514 000003DC 458B08              <1>  mov %1d, fk_ref(%5,0)
+  1515 000003DF 458B5004            <1>  mov %2d, fk_ref(%5,1)
+  1516 000003E3 458B5808            <1>  mov %3d, fk_ref(%5,2)
+  1517 000003E7 458B600C            <1>  mov %4d, fk_ref(%5,3)
+  1518                              <1> 
+  1519 000003EB 0FB6F0              <1>  movzx esi, al
+  1520 000003EE 0FB6FC              <1>  movzx edi, ah
+  1521 000003F1 C1E810              <1>  shr eax, 16
+  1522 000003F4 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1523 000003F9 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1524 000003FE 0FB6F0              <1>  movzx esi, al
+  1525 00000401 0FB6FC              <1>  movzx edi, ah
+  1526 00000404 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1527 00000409 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1528                              <1> 
+  1529 0000040E 0FB6F3              <1>  movzx esi, bl
+  1530 00000411 0FB6FF              <1>  movzx edi, bh
+  1531 00000414 C1EB10              <1>  shr ebx, 16
+  1532 00000417 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1533 0000041C 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1534 00000421 0FB6F3              <1>  movzx esi, bl
+  1535 00000424 0FB6FF              <1>  movzx edi, bh
+  1536 00000427 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1537 0000042C 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1538                              <1> 
+  1539 00000431 0FB6F1              <1>  movzx esi, cl
+  1540 00000434 0FB6FD              <1>  movzx edi, ch
+  1541 00000437 C1E910              <1>  shr ecx, 16
+  1542 0000043A 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1543 0000043F 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1544 00000444 0FB6F1              <1>  movzx esi, cl
+  1545 00000447 0FB6FD              <1>  movzx edi, ch
+  1546 0000044A 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1547 0000044F 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1548                              <1> 
+  1549 00000454 0FB6F2              <1>  movzx esi, dl
+  1550 00000457 0FB6FE              <1>  movzx edi, dh
+  1551 0000045A C1EA10              <1>  shr edx, 16
+  1552 0000045D 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1553 00000462 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1554 00000467 0FB6F2              <1>  movzx esi, dl
+  1555 0000046A 0FB6FE              <1>  movzx edi, dh
+  1556 0000046D 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1557 00000472 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1558                              <1> 
+  1559 00000477 4489C8              <1>  mov eax,%1d
+  1560 0000047A 4489D3              <1>  mov ebx,%2d
+  1561 0000047D 4489D9              <1>  mov ecx,%3d
+  1562 00000480 4489E2              <1>  mov edx,%4d
+  1563                                      ff_rnd  r9, r10, r11, r12, 7
+  1564 00000483 458B4810            <1>  mov %1d, fk_ref(%5,0)
+  1565 00000487 458B5014            <1>  mov %2d, fk_ref(%5,1)
+  1566 0000048B 458B5818            <1>  mov %3d, fk_ref(%5,2)
+  1567 0000048F 458B601C            <1>  mov %4d, fk_ref(%5,3)
+  1568                              <1> 
+  1569 00000493 0FB6F0              <1>  movzx esi, al
+  1570 00000496 0FB6FC              <1>  movzx edi, ah
+  1571 00000499 C1E810              <1>  shr eax, 16
+  1572 0000049C 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1573 000004A1 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1574 000004A6 0FB6F0              <1>  movzx esi, al
+  1575 000004A9 0FB6FC              <1>  movzx edi, ah
+  1576 000004AC 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1577 000004B1 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1578                              <1> 
+  1579 000004B6 0FB6F3              <1>  movzx esi, bl
+  1580 000004B9 0FB6FF              <1>  movzx edi, bh
+  1581 000004BC C1EB10              <1>  shr ebx, 16
+  1582 000004BF 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1583 000004C4 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1584 000004C9 0FB6F3              <1>  movzx esi, bl
+  1585 000004CC 0FB6FF              <1>  movzx edi, bh
+  1586 000004CF 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1587 000004D4 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1588                              <1> 
+  1589 000004D9 0FB6F1              <1>  movzx esi, cl
+  1590 000004DC 0FB6FD              <1>  movzx edi, ch
+  1591 000004DF C1E910              <1>  shr ecx, 16
+  1592 000004E2 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1593 000004E7 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1594 000004EC 0FB6F1              <1>  movzx esi, cl
+  1595 000004EF 0FB6FD              <1>  movzx edi, ch
+  1596 000004F2 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1597 000004F7 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1598                              <1> 
+  1599 000004FC 0FB6F2              <1>  movzx esi, dl
+  1600 000004FF 0FB6FE              <1>  movzx edi, dh
+  1601 00000502 C1EA10              <1>  shr edx, 16
+  1602 00000505 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1603 0000050A 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1604 0000050F 0FB6F2              <1>  movzx esi, dl
+  1605 00000512 0FB6FE              <1>  movzx edi, dh
+  1606 00000515 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1607 0000051A 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1608                              <1> 
+  1609 0000051F 4489C8              <1>  mov eax,%1d
+  1610 00000522 4489D3              <1>  mov ebx,%2d
+  1611 00000525 4489D9              <1>  mov ecx,%3d
+  1612 00000528 4489E2              <1>  mov edx,%4d
+  1613                                      ff_rnd  r9, r10, r11, r12, 6
+  1614 0000052B 458B4820            <1>  mov %1d, fk_ref(%5,0)
+  1615 0000052F 458B5024            <1>  mov %2d, fk_ref(%5,1)
+  1616 00000533 458B5828            <1>  mov %3d, fk_ref(%5,2)
+  1617 00000537 458B602C            <1>  mov %4d, fk_ref(%5,3)
+  1618                              <1> 
+  1619 0000053B 0FB6F0              <1>  movzx esi, al
+  1620 0000053E 0FB6FC              <1>  movzx edi, ah
+  1621 00000541 C1E810              <1>  shr eax, 16
+  1622 00000544 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1623 00000549 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1624 0000054E 0FB6F0              <1>  movzx esi, al
+  1625 00000551 0FB6FC              <1>  movzx edi, ah
+  1626 00000554 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1627 00000559 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1628                              <1> 
+  1629 0000055E 0FB6F3              <1>  movzx esi, bl
+  1630 00000561 0FB6FF              <1>  movzx edi, bh
+  1631 00000564 C1EB10              <1>  shr ebx, 16
+  1632 00000567 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1633 0000056C 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1634 00000571 0FB6F3              <1>  movzx esi, bl
+  1635 00000574 0FB6FF              <1>  movzx edi, bh
+  1636 00000577 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1637 0000057C 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1638                              <1> 
+  1639 00000581 0FB6F1              <1>  movzx esi, cl
+  1640 00000584 0FB6FD              <1>  movzx edi, ch
+  1641 00000587 C1E910              <1>  shr ecx, 16
+  1642 0000058A 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1643 0000058F 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1644 00000594 0FB6F1              <1>  movzx esi, cl
+  1645 00000597 0FB6FD              <1>  movzx edi, ch
+  1646 0000059A 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1647 0000059F 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1648                              <1> 
+  1649 000005A4 0FB6F2              <1>  movzx esi, dl
+  1650 000005A7 0FB6FE              <1>  movzx edi, dh
+  1651 000005AA C1EA10              <1>  shr edx, 16
+  1652 000005AD 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1653 000005B2 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1654 000005B7 0FB6F2              <1>  movzx esi, dl
+  1655 000005BA 0FB6FE              <1>  movzx edi, dh
+  1656 000005BD 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1657 000005C2 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1658                              <1> 
+  1659 000005C7 4489C8              <1>  mov eax,%1d
+  1660 000005CA 4489D3              <1>  mov ebx,%2d
+  1661 000005CD 4489D9              <1>  mov ecx,%3d
+  1662 000005D0 4489E2              <1>  mov edx,%4d
+  1663                                      ff_rnd  r9, r10, r11, r12, 5
+  1664 000005D3 458B4830            <1>  mov %1d, fk_ref(%5,0)
+  1665 000005D7 458B5034            <1>  mov %2d, fk_ref(%5,1)
+  1666 000005DB 458B5838            <1>  mov %3d, fk_ref(%5,2)
+  1667 000005DF 458B603C            <1>  mov %4d, fk_ref(%5,3)
+  1668                              <1> 
+  1669 000005E3 0FB6F0              <1>  movzx esi, al
+  1670 000005E6 0FB6FC              <1>  movzx edi, ah
+  1671 000005E9 C1E810              <1>  shr eax, 16
+  1672 000005EC 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1673 000005F1 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1674 000005F6 0FB6F0              <1>  movzx esi, al
+  1675 000005F9 0FB6FC              <1>  movzx edi, ah
+  1676 000005FC 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1677 00000601 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1678                              <1> 
+  1679 00000606 0FB6F3              <1>  movzx esi, bl
+  1680 00000609 0FB6FF              <1>  movzx edi, bh
+  1681 0000060C C1EB10              <1>  shr ebx, 16
+  1682 0000060F 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1683 00000614 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1684 00000619 0FB6F3              <1>  movzx esi, bl
+  1685 0000061C 0FB6FF              <1>  movzx edi, bh
+  1686 0000061F 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1687 00000624 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1688                              <1> 
+  1689 00000629 0FB6F1              <1>  movzx esi, cl
+  1690 0000062C 0FB6FD              <1>  movzx edi, ch
+  1691 0000062F C1E910              <1>  shr ecx, 16
+  1692 00000632 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1693 00000637 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1694 0000063C 0FB6F1              <1>  movzx esi, cl
+  1695 0000063F 0FB6FD              <1>  movzx edi, ch
+  1696 00000642 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1697 00000647 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1698                              <1> 
+  1699 0000064C 0FB6F2              <1>  movzx esi, dl
+  1700 0000064F 0FB6FE              <1>  movzx edi, dh
+  1701 00000652 C1EA10              <1>  shr edx, 16
+  1702 00000655 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1703 0000065A 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1704 0000065F 0FB6F2              <1>  movzx esi, dl
+  1705 00000662 0FB6FE              <1>  movzx edi, dh
+  1706 00000665 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1707 0000066A 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1708                              <1> 
+  1709 0000066F 4489C8              <1>  mov eax,%1d
+  1710 00000672 4489D3              <1>  mov ebx,%2d
+  1711 00000675 4489D9              <1>  mov ecx,%3d
+  1712 00000678 4489E2              <1>  mov edx,%4d
+  1713                                      ff_rnd  r9, r10, r11, r12, 4
+  1714 0000067B 458B4840            <1>  mov %1d, fk_ref(%5,0)
+  1715 0000067F 458B5044            <1>  mov %2d, fk_ref(%5,1)
+  1716 00000683 458B5848            <1>  mov %3d, fk_ref(%5,2)
+  1717 00000687 458B604C            <1>  mov %4d, fk_ref(%5,3)
+  1718                              <1> 
+  1719 0000068B 0FB6F0              <1>  movzx esi, al
+  1720 0000068E 0FB6FC              <1>  movzx edi, ah
+  1721 00000691 C1E810              <1>  shr eax, 16
+  1722 00000694 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1723 00000699 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1724 0000069E 0FB6F0              <1>  movzx esi, al
+  1725 000006A1 0FB6FC              <1>  movzx edi, ah
+  1726 000006A4 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1727 000006A9 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1728                              <1> 
+  1729 000006AE 0FB6F3              <1>  movzx esi, bl
+  1730 000006B1 0FB6FF              <1>  movzx edi, bh
+  1731 000006B4 C1EB10              <1>  shr ebx, 16
+  1732 000006B7 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1733 000006BC 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1734 000006C1 0FB6F3              <1>  movzx esi, bl
+  1735 000006C4 0FB6FF              <1>  movzx edi, bh
+  1736 000006C7 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1737 000006CC 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1738                              <1> 
+  1739 000006D1 0FB6F1              <1>  movzx esi, cl
+  1740 000006D4 0FB6FD              <1>  movzx edi, ch
+  1741 000006D7 C1E910              <1>  shr ecx, 16
+  1742 000006DA 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1743 000006DF 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1744 000006E4 0FB6F1              <1>  movzx esi, cl
+  1745 000006E7 0FB6FD              <1>  movzx edi, ch
+  1746 000006EA 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1747 000006EF 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1748                              <1> 
+  1749 000006F4 0FB6F2              <1>  movzx esi, dl
+  1750 000006F7 0FB6FE              <1>  movzx edi, dh
+  1751 000006FA C1EA10              <1>  shr edx, 16
+  1752 000006FD 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1753 00000702 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1754 00000707 0FB6F2              <1>  movzx esi, dl
+  1755 0000070A 0FB6FE              <1>  movzx edi, dh
+  1756 0000070D 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1757 00000712 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1758                              <1> 
+  1759 00000717 4489C8              <1>  mov eax,%1d
+  1760 0000071A 4489D3              <1>  mov ebx,%2d
+  1761 0000071D 4489D9              <1>  mov ecx,%3d
+  1762 00000720 4489E2              <1>  mov edx,%4d
+  1763                                      ff_rnd  r9, r10, r11, r12, 3
+  1764 00000723 458B4850            <1>  mov %1d, fk_ref(%5,0)
+  1765 00000727 458B5054            <1>  mov %2d, fk_ref(%5,1)
+  1766 0000072B 458B5858            <1>  mov %3d, fk_ref(%5,2)
+  1767 0000072F 458B605C            <1>  mov %4d, fk_ref(%5,3)
+  1768                              <1> 
+  1769 00000733 0FB6F0              <1>  movzx esi, al
+  1770 00000736 0FB6FC              <1>  movzx edi, ah
+  1771 00000739 C1E810              <1>  shr eax, 16
+  1772 0000073C 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1773 00000741 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1774 00000746 0FB6F0              <1>  movzx esi, al
+  1775 00000749 0FB6FC              <1>  movzx edi, ah
+  1776 0000074C 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1777 00000751 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1778                              <1> 
+  1779 00000756 0FB6F3              <1>  movzx esi, bl
+  1780 00000759 0FB6FF              <1>  movzx edi, bh
+  1781 0000075C C1EB10              <1>  shr ebx, 16
+  1782 0000075F 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1783 00000764 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1784 00000769 0FB6F3              <1>  movzx esi, bl
+  1785 0000076C 0FB6FF              <1>  movzx edi, bh
+  1786 0000076F 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1787 00000774 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1788                              <1> 
+  1789 00000779 0FB6F1              <1>  movzx esi, cl
+  1790 0000077C 0FB6FD              <1>  movzx edi, ch
+  1791 0000077F C1E910              <1>  shr ecx, 16
+  1792 00000782 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1793 00000787 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1794 0000078C 0FB6F1              <1>  movzx esi, cl
+  1795 0000078F 0FB6FD              <1>  movzx edi, ch
+  1796 00000792 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1797 00000797 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1798                              <1> 
+  1799 0000079C 0FB6F2              <1>  movzx esi, dl
+  1800 0000079F 0FB6FE              <1>  movzx edi, dh
+  1801 000007A2 C1EA10              <1>  shr edx, 16
+  1802 000007A5 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1803 000007AA 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1804 000007AF 0FB6F2              <1>  movzx esi, dl
+  1805 000007B2 0FB6FE              <1>  movzx edi, dh
+  1806 000007B5 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1807 000007BA 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1808                              <1> 
+  1809 000007BF 4489C8              <1>  mov eax,%1d
+  1810 000007C2 4489D3              <1>  mov ebx,%2d
+  1811 000007C5 4489D9              <1>  mov ecx,%3d
+  1812 000007C8 4489E2              <1>  mov edx,%4d
+  1813                                      ff_rnd  r9, r10, r11, r12, 2
+  1814 000007CB 458B4860            <1>  mov %1d, fk_ref(%5,0)
+  1815 000007CF 458B5064            <1>  mov %2d, fk_ref(%5,1)
+  1816 000007D3 458B5868            <1>  mov %3d, fk_ref(%5,2)
+  1817 000007D7 458B606C            <1>  mov %4d, fk_ref(%5,3)
+  1818                              <1> 
+  1819 000007DB 0FB6F0              <1>  movzx esi, al
+  1820 000007DE 0FB6FC              <1>  movzx edi, ah
+  1821 000007E1 C1E810              <1>  shr eax, 16
+  1822 000007E4 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1823 000007E9 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1824 000007EE 0FB6F0              <1>  movzx esi, al
+  1825 000007F1 0FB6FC              <1>  movzx edi, ah
+  1826 000007F4 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1827 000007F9 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1828                              <1> 
+  1829 000007FE 0FB6F3              <1>  movzx esi, bl
+  1830 00000801 0FB6FF              <1>  movzx edi, bh
+  1831 00000804 C1EB10              <1>  shr ebx, 16
+  1832 00000807 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1833 0000080C 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1834 00000811 0FB6F3              <1>  movzx esi, bl
+  1835 00000814 0FB6FF              <1>  movzx edi, bh
+  1836 00000817 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1837 0000081C 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1838                              <1> 
+  1839 00000821 0FB6F1              <1>  movzx esi, cl
+  1840 00000824 0FB6FD              <1>  movzx edi, ch
+  1841 00000827 C1E910              <1>  shr ecx, 16
+  1842 0000082A 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1843 0000082F 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1844 00000834 0FB6F1              <1>  movzx esi, cl
+  1845 00000837 0FB6FD              <1>  movzx edi, ch
+  1846 0000083A 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1847 0000083F 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1848                              <1> 
+  1849 00000844 0FB6F2              <1>  movzx esi, dl
+  1850 00000847 0FB6FE              <1>  movzx edi, dh
+  1851 0000084A C1EA10              <1>  shr edx, 16
+  1852 0000084D 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1853 00000852 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1854 00000857 0FB6F2              <1>  movzx esi, dl
+  1855 0000085A 0FB6FE              <1>  movzx edi, dh
+  1856 0000085D 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1857 00000862 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1858                              <1> 
+  1859 00000867 4489C8              <1>  mov eax,%1d
+  1860 0000086A 4489D3              <1>  mov ebx,%2d
+  1861 0000086D 4489D9              <1>  mov ecx,%3d
+  1862 00000870 4489E2              <1>  mov edx,%4d
+  1863                                      ff_rnd  r9, r10, r11, r12, 1
+  1864 00000873 458B4870            <1>  mov %1d, fk_ref(%5,0)
+  1865 00000877 458B5074            <1>  mov %2d, fk_ref(%5,1)
+  1866 0000087B 458B5878            <1>  mov %3d, fk_ref(%5,2)
+  1867 0000087F 458B607C            <1>  mov %4d, fk_ref(%5,3)
+  1868                              <1> 
+  1869 00000883 0FB6F0              <1>  movzx esi, al
+  1870 00000886 0FB6FC              <1>  movzx edi, ah
+  1871 00000889 C1E810              <1>  shr eax, 16
+  1872 0000088C 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1873 00000891 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1874 00000896 0FB6F0              <1>  movzx esi, al
+  1875 00000899 0FB6FC              <1>  movzx edi, ah
+  1876 0000089C 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1877 000008A1 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1878                              <1> 
+  1879 000008A6 0FB6F3              <1>  movzx esi, bl
+  1880 000008A9 0FB6FF              <1>  movzx edi, bh
+  1881 000008AC C1EB10              <1>  shr ebx, 16
+  1882 000008AF 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1883 000008B4 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1884 000008B9 0FB6F3              <1>  movzx esi, bl
+  1885 000008BC 0FB6FF              <1>  movzx edi, bh
+  1886 000008BF 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1887 000008C4 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1888                              <1> 
+  1889 000008C9 0FB6F1              <1>  movzx esi, cl
+  1890 000008CC 0FB6FD              <1>  movzx edi, ch
+  1891 000008CF C1E910              <1>  shr ecx, 16
+  1892 000008D2 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1893 000008D7 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1894 000008DC 0FB6F1              <1>  movzx esi, cl
+  1895 000008DF 0FB6FD              <1>  movzx edi, ch
+  1896 000008E2 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1897 000008E7 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1898                              <1> 
+  1899 000008EC 0FB6F2              <1>  movzx esi, dl
+  1900 000008EF 0FB6FE              <1>  movzx edi, dh
+  1901 000008F2 C1EA10              <1>  shr edx, 16
+  1902 000008F5 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1903 000008FA 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1904 000008FF 0FB6F2              <1>  movzx esi, dl
+  1905 00000902 0FB6FE              <1>  movzx edi, dh
+  1906 00000905 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1907 0000090A 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1908                              <1> 
+  1909 0000090F 4489C8              <1>  mov eax,%1d
+  1910 00000912 4489D3              <1>  mov ebx,%2d
+  1911 00000915 4489D9              <1>  mov ecx,%3d
+  1912 00000918 4489E2              <1>  mov edx,%4d
+  1913                                      fl_rnd  r9, r10, r11, r12, 0
+  1914 0000091B 4881C500080000      <1>  add tptr, 2048
+  1915 00000922 458B8880000000      <1>  mov %1d, fk_ref(%5,0)
+  1916 00000929 458B9084000000      <1>  mov %2d, fk_ref(%5,1)
+  1917 00000930 458B9888000000      <1>  mov %3d, fk_ref(%5,2)
+  1918 00000937 458BA08C000000      <1>  mov %4d, fk_ref(%5,3)
+  1919                              <1> 
+  1920 0000093E 0FB6F0              <1>  movzx esi, al
+  1921 00000941 0FB6FC              <1>  movzx edi, ah
+  1922 00000944 C1E810              <1>  shr eax, 16
+  1923 00000947 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  1924 0000094C 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  1925 00000951 0FB6F0              <1>  movzx esi, al
+  1926 00000954 0FB6FC              <1>  movzx edi, ah
+  1927 00000957 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  1928 0000095C 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  1929                              <1> 
+  1930 00000961 0FB6F3              <1>  movzx esi, bl
+  1931 00000964 0FB6FF              <1>  movzx edi, bh
+  1932 00000967 C1EB10              <1>  shr ebx, 16
+  1933 0000096A 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  1934 0000096F 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  1935 00000974 0FB6F3              <1>  movzx esi, bl
+  1936 00000977 0FB6FF              <1>  movzx edi, bh
+  1937 0000097A 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  1938 0000097F 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  1939                              <1> 
+  1940 00000984 0FB6F1              <1>  movzx esi, cl
+  1941 00000987 0FB6FD              <1>  movzx edi, ch
+  1942 0000098A C1E910              <1>  shr ecx, 16
+  1943 0000098D 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  1944 00000992 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  1945 00000997 0FB6F1              <1>  movzx esi, cl
+  1946 0000099A 0FB6FD              <1>  movzx edi, ch
+  1947 0000099D 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  1948 000009A2 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  1949                              <1> 
+  1950 000009A7 0FB6F2              <1>  movzx esi, dl
+  1951 000009AA 0FB6FE              <1>  movzx edi, dh
+  1952 000009AD C1EA10              <1>  shr edx, 16
+  1953 000009B0 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  1954 000009B5 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  1955 000009BA 0FB6F2              <1>  movzx esi, dl
+  1956 000009BD 0FB6FE              <1>  movzx edi, dh
+  1957 000009C0 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  1958 000009C5 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  1959                                  
+  1960 000009CA 488B1C24                    mov     rbx, [rsp]
+  1961 000009CE 44890B                      mov     [rbx], r9d
+  1962 000009D1 44895304                    mov     [rbx+4], r10d
+  1963 000009D5 44895B08                    mov     [rbx+8], r11d
+  1964 000009D9 4489630C                    mov     [rbx+12], r12d
+  1965 000009DD 4831C0                      xor     rax, rax
+  1966                                  .4:
+  1967 000009E0 488B5C2408                  mov     rbx, [rsp+1*8]
+  1968 000009E5 488B6C2410                  mov     rbp, [rsp+2*8]
+  1969 000009EA 4C8B642418                  mov     r12, [rsp+3*8]
+  1970                                  %ifdef __GNUC__
+  1971                                      add     rsp, 4*8
+  1972                                      ret
+  1973                                  %else
+  1974 000009EF 488B742420              		mov     rsi, [rsp+4*8]
+  1975 000009F4 488B7C2428              		mov     rdi, [rsp+5*8]
+  1976                                  	%ifdef _SEH_
+  1977                                  		add     rsp, 7*8
+  1978                                  		ret
+  1979                                  	endproc_frame
+  1980                                  	%else
+  1981 000009F9 4883C430                		add     rsp, 6*8
+  1982 000009FD C3                      		ret
+  1983                                  	%endif
+  1984                                  %endif
+  1985                                  
+  1986                                  %endif
+  1987                                  
+  1988                                  %ifdef DECRYPTION
+  1989                                  
+  1990                                      global  aes_decrypt
+  1991                                  %ifdef DLL_EXPORT
+  1992                                      export  aes_decrypt
+  1993                                  %endif
+  1994                                  
+  1995                                      section .data
+  1996                                      align   64
+  1997                                  dec_tab:
+  1998                                      dec_vals v8
+  1999 00001000 51F4A75051F4A7527E- <1>  db %1(0x52),%1(0x09),%1(0x6a),%1(0xd5),%1(0x30),%1(0x36),%1(0xa5),%1(0x38)
+  2000 00001009 4165537E4165091A17- <1>
+  2001 00001012 A4C31A17A46A3A275E- <1>
+  2002 0000101B 963A275ED53BAB6BCB- <1>
+  2003 00001024 3BAB6B301F9D45F11F- <1>
+  2004 0000102D 9D4536ACFA58ABACFA- <1>
+  2005 00001036 58A54BE303934BE303- <1>
+  2006 0000103F 38                  <1>
+  2007 00001040 2030FA552030FABFAD- <1>  db %1(0xbf),%1(0x40),%1(0xa3),%1(0x9e),%1(0x81),%1(0xf3),%1(0xd7),%1(0xfb)
+  2008 00001049 766DF6AD766D4088CC- <1>
+  2009 00001052 769188CC76A3F5024C- <1>
+  2010 0000105B 25F5024C9E4FE5D7FC- <1>
+  2011 00001064 4FE5D781C52ACBD7C5- <1>
+  2012 0000106D 2ACBF3263544802635- <1>
+  2013 00001076 44D7B562A38FB562A3- <1>
+  2014 0000107F FB                  <1>
+  2015 00001080 DEB15A49DEB15A7C25- <1>  db %1(0x7c),%1(0xe3),%1(0x39),%1(0x82),%1(0x9b),%1(0x2f),%1(0xff),%1(0x87)
+  2016 00001089 BA1B6725BA1BE345EA- <1>
+  2017 00001092 0E9845EA0E395DFEC0- <1>
+  2018 0000109B E15DFEC082C32F7502- <1>
+  2019 000010A4 C32F759B814CF01281- <1>
+  2020 000010AD 4CF02F8D4697A38D46- <1>
+  2021 000010B6 97FF6BD3F9C66BD3F9- <1>
+  2022 000010BF 87                  <1>
+  2023 000010C0 038F5FE7038F5F3415- <1>  db %1(0x34),%1(0x8e),%1(0x43),%1(0x44),%1(0xc4),%1(0xde),%1(0xe9),%1(0xcb)
+  2024 000010C9 929C9515929C8EBF6D- <1>
+  2025 000010D2 7AEBBF6D7A43955259- <1>
+  2026 000010DB DA95525944D4BE832D- <1>
+  2027 000010E4 D4BE83C4587421D358- <1>
+  2028 000010ED 7421DE49E0692949E0- <1>
+  2029 000010F6 69E98EC9C8448EC9C8- <1>
+  2030 000010FF CB                  <1>
+  2031 00001100 75C2896A75C28954F4- <1>  db %1(0x54),%1(0x7b),%1(0x94),%1(0x32),%1(0xa6),%1(0xc2),%1(0x23),%1(0x3d)
+  2032 00001109 8E7978F48E797B9958- <1>
+  2033 00001112 3E6B99583E9427B971- <1>
+  2034 0000111B DD27B97132BEE14FB6- <1>
+  2035 00001124 BEE14FA6F088AD17F0- <1>
+  2036 0000112D 88ADC2C920AC66C920- <1>
+  2037 00001136 AC237DCE3AB47DCE3A- <1>
+  2038 0000113F 3D                  <1>
+  2039 00001140 63DF4A1863DF4AEEE5- <1>  db %1(0xee),%1(0x4c),%1(0x95),%1(0x0b),%1(0x42),%1(0xfa),%1(0xc3),%1(0x4e)
+  2040 00001149 1A3182E51A314C9751- <1>
+  2041 00001152 33609751339562537F- <1>
+  2042 0000115B 4562537F0BB16477E0- <1>
+  2043 00001164 B1647742BB6BAE84BB- <1>
+  2044 0000116D 6BAEFAFE81A01CFE81- <1>
+  2045 00001176 A0C3F9082B94F9082B- <1>
+  2046 0000117F 4E                  <1>
+  2047 00001180 70486858704868088F- <1>  db %1(0x08),%1(0x2e),%1(0xa1),%1(0x66),%1(0x28),%1(0xd9),%1(0x24),%1(0xb2)
+  2048 00001189 45FD198F45FD2E94DE- <1>
+  2049 00001192 6C8794DE6CA1527BF8- <1>
+  2050 0000119B B7527BF866AB73D323- <1>
+  2051 000011A4 AB73D328724B02E272- <1>
+  2052 000011AD 4B02D9E31F8F57E31F- <1>
+  2053 000011B6 8F246655AB2A6655AB- <1>
+  2054 000011BF B2                  <1>
+  2055 000011C0 B2EB2807B2EB28762F- <1>  db %1(0x76),%1(0x5b),%1(0xa2),%1(0x49),%1(0x6d),%1(0x8b),%1(0xd1),%1(0x25)
+  2056 000011C9 B5C2032FB5C25B86C5- <1>
+  2057 000011D2 7B9A86C57BA2D33708- <1>
+  2058 000011DB A5D3370849302887F2- <1>
+  2059 000011E4 3028876D23BFA5B223- <1>
+  2060 000011ED BFA58B02036ABA0203- <1>
+  2061 000011F6 6AD1ED16825CED1682- <1>
+  2062 000011FF 25                  <1>
+  2063 00001200 8ACF1C2B8ACF1C72A7- <1>  db %1(0x72),%1(0xf8),%1(0xf6),%1(0x64),%1(0x86),%1(0x68),%1(0x98),%1(0x16)
+  2064 00001209 79B492A779B4F8F307- <1>
+  2065 00001212 F2F0F307F2F64E69E2- <1>
+  2066 0000121B A14E69E26465DAF4CD- <1>
+  2067 00001224 65DAF4860605BED506- <1>
+  2068 0000122D 05BE68D134621FD134- <1>
+  2069 00001236 6298C4A6FE8AC4A6FE- <1>
+  2070 0000123F 16                  <1>
+  2071 00001240 342E539D342E53D4A2- <1>  db %1(0xd4),%1(0xa4),%1(0x5c),%1(0xcc),%1(0x5d),%1(0x65),%1(0xb6),%1(0x92)
+  2072 00001249 F355A0A2F355A4058A- <1>
+  2073 00001252 E132058AE15CA4F6EB- <1>
+  2074 0000125B 75A4F6EBCC0B83EC39- <1>
+  2075 00001264 0B83EC5D4060EFAA40- <1>
+  2076 0000126D 60EF655E719F065E71- <1>
+  2077 00001276 9FB6BD6E1051BD6E10- <1>
+  2078 0000127F 92                  <1>
+  2079 00001280 3E218AF93E218A6C96- <1>  db %1(0x6c),%1(0x70),%1(0x48),%1(0x50),%1(0xfd),%1(0xed),%1(0xb9),%1(0xda)
+  2080 00001289 DD063D96DD0670DD3E- <1>
+  2081 00001292 05AEDD3E05484DE6BD- <1>
+  2082 0000129B 464DE6BD5091548DB5- <1>
+  2083 000012A4 91548DFD71C45D0571- <1>
+  2084 000012AD C45DED0406D46F0406- <1>
+  2085 000012B6 D4B9605015FF605015- <1>
+  2086 000012BF DA                  <1>
+  2087 000012C0 1998FB241998FB5ED6- <1>  db %1(0x5e),%1(0x15),%1(0x46),%1(0x57),%1(0xa7),%1(0x8d),%1(0x9d),%1(0x84)
+  2088 000012C9 BDE997D6BDE9158940- <1>
+  2089 000012D2 43CC8940434667D99E- <1>
+  2090 000012DB 7767D99E57B0E842BD- <1>
+  2091 000012E4 B0E842A707898B8807- <1>
+  2092 000012ED 898B8DE7195B38E719- <1>
+  2093 000012F6 5B9D79C8EEDB79C8EE- <1>
+  2094 000012FF 84                  <1>
+  2095 00001300 A17C0A47A17C0A907C- <1>  db %1(0x90),%1(0xd8),%1(0xab),%1(0x00),%1(0x8c),%1(0xbc),%1(0xd3),%1(0x0a)
+  2096 00001309 420FE97C420FD8F884- <1>
+  2097 00001312 1EC9F8841EAB000000- <1>
+  2098 0000131B 000000000009808683- <1>
+  2099 00001324 0980868C322BED4832- <1>
+  2100 0000132D 2BEDBC1E1170AC1E11- <1>
+  2101 00001336 70D36C5A724E6C5A72- <1>
+  2102 0000133F 0A                  <1>
+  2103 00001340 FD0EFFFBFD0EFFF70F- <1>  db %1(0xf7),%1(0xe4),%1(0x58),%1(0x05),%1(0xb8),%1(0xb3),%1(0x45),%1(0x06)
+  2104 00001349 8538560F8538E43DAE- <1>
+  2105 00001352 D51E3DAED558362D39- <1>
+  2106 0000135B 27362D39050A0FD964- <1>
+  2107 00001364 0A0FD9B8685CA62168- <1>
+  2108 0000136D 5CA6B39B5B54D19B5B- <1>
+  2109 00001376 544524362E3A24362E- <1>
+  2110 0000137F 06                  <1>
+  2111 00001380 0C0A67B10C0A67D093- <1>  db %1(0xd0),%1(0x2c),%1(0x1e),%1(0x8f),%1(0xca),%1(0x3f),%1(0x0f),%1(0x02)
+  2112 00001389 57E70F9357E72CB4EE- <1>
+  2113 00001392 96D2B4EE961E1B9B91- <1>
+  2114 0000139B 9E1B9B918F80C0C54F- <1>
+  2115 000013A4 80C0C5CA61DC20A261- <1>
+  2116 000013AD DC203F5A774B695A77- <1>
+  2117 000013B6 4B0F1C121A161C121A- <1>
+  2118 000013BF 02                  <1>
+  2119 000013C0 E293BA0AE293BAC1C0- <1>  db %1(0xc1),%1(0xaf),%1(0xbd),%1(0x03),%1(0x01),%1(0x13),%1(0x8a),%1(0x6b)
+  2120 000013C9 A02AE5C0A02AAF3C22- <1>
+  2121 000013D2 E0433C22E0BD121B17- <1>
+  2122 000013DB 1D121B17030E090D0B- <1>
+  2123 000013E4 0E090D01F28BC7ADF2- <1>
+  2124 000013ED 8BC7132DB6A8B92DB6- <1>
+  2125 000013F6 A88A141EA9C8141EA9- <1>
+  2126 000013FF 6B                  <1>
+  2127 00001400 57F1198557F1193AAF- <1>  db %1(0x3a),%1(0x91),%1(0x11),%1(0x41),%1(0x4f),%1(0x67),%1(0xdc),%1(0xea)
+  2128 00001409 75074CAF750791EE99- <1>
+  2129 00001412 DDBBEE99DD11A37F60- <1>
+  2130 0000141B FDA37F6041F701269F- <1>
+  2131 00001424 F701264F5C72F5BC5C- <1>
+  2132 0000142D 72F56744663BC54466- <1>
+  2133 00001436 3BDC5BFB7E345BFB7E- <1>
+  2134 0000143F EA                  <1>
+  2135 00001440 8B4329768B432997CB- <1>  db %1(0x97),%1(0xf2),%1(0xcf),%1(0xce),%1(0xf0),%1(0xb4),%1(0xe6),%1(0x73)
+  2136 00001449 23C6DCCB23C6F2B6ED- <1>
+  2137 00001452 FC68B6EDFCCFB8E4F1- <1>
+  2138 0000145B 63B8E4F1CED731DCCA- <1>
+  2139 00001464 D731DCF04263851042- <1>
+  2140 0000146D 6385B4139722401397- <1>
+  2141 00001476 22E684C6112084C611- <1>
+  2142 0000147F 73                  <1>
+  2143 00001480 854A247D854A2496D2- <1>  db %1(0x96),%1(0xac),%1(0x74),%1(0x22),%1(0xe7),%1(0xad),%1(0x35),%1(0x85)
+  2144 00001489 BB3DF8D2BB3DACAEF9- <1>
+  2145 00001492 3211AEF93274C729A1- <1>
+  2146 0000149B 6DC729A1221D9E2F4B- <1>
+  2147 000014A4 1D9E2FE7DCB230F3DC- <1>
+  2148 000014AD B230AD0D8652EC0D86- <1>
+  2149 000014B6 523577C1E3D077C1E3- <1>
+  2150 000014BF 85                  <1>
+  2151 000014C0 2BB3166C2BB316E2A9- <1>  db %1(0xe2),%1(0xf9),%1(0x37),%1(0xe8),%1(0x1c),%1(0x75),%1(0xdf),%1(0x6e)
+  2152 000014C9 70B999A970B9F91194- <1>
+  2153 000014D2 48FA1194483747E964- <1>
+  2154 000014DB 2247E964E8A8FC8CC4- <1>
+  2155 000014E4 A8FC8C1CA0F03F1AA0- <1>
+  2156 000014ED F03F75567D2CD8567D- <1>
+  2157 000014F6 2CDF223390EF223390- <1>
+  2158 000014FF 6E                  <1>
+  2159 00001500 87494EC787494E47D9- <1>  db %1(0x47),%1(0xf1),%1(0x1a),%1(0x71),%1(0x1d),%1(0x29),%1(0xc5),%1(0x89)
+  2160 00001509 38D1C1D938D1F18CCA- <1>
+  2161 00001512 A2FE8CCAA21A98D40B- <1>
+  2162 0000151B 3698D40B71A6F581CF- <1>
+  2163 00001524 A6F5811DA57ADE28A5- <1>
+  2164 0000152D 7ADE29DAB78E26DAB7- <1>
+  2165 00001536 8EC53FADBFA43FADBF- <1>
+  2166 0000153F 89                  <1>
+  2167 00001540 2C3A9DE42C3A9D6F50- <1>  db %1(0x6f),%1(0xb7),%1(0x62),%1(0x0e),%1(0xaa),%1(0x18),%1(0xbe),%1(0x1b)
+  2168 00001549 78920D507892B76A5F- <1>
+  2169 00001552 CC9B6A5FCC62547E46- <1>
+  2170 0000155B 62547E460EF68D13C2- <1>
+  2171 00001564 F68D13AA90D8B8E890- <1>
+  2172 0000156D D8B8182E39F75E2E39- <1>
+  2173 00001576 F7BE82C3AFF582C3AF- <1>
+  2174 0000157F 1B                  <1>
+  2175 00001580 9F5D80BE9F5D80FC69- <1>  db %1(0xfc),%1(0x56),%1(0x3e),%1(0x4b),%1(0xc6),%1(0xd2),%1(0x79),%1(0x20)
+  2176 00001589 D0937C69D093566FD5- <1>
+  2177 00001592 2DA96FD52D3ECF2512- <1>
+  2178 0000159B B3CF25124BC8AC993B- <1>
+  2179 000015A4 C8AC99C610187DA710- <1>
+  2180 000015AD 187DD2E89C636EE89C- <1>
+  2181 000015B6 6379DB3BBB7BDB3BBB- <1>
+  2182 000015BF 20                  <1>
+  2183 000015C0 CD267809CD26789A6E- <1>  db %1(0x9a),%1(0xdb),%1(0xc0),%1(0xfe),%1(0x78),%1(0xcd),%1(0x5a),%1(0xf4)
+  2184 000015C9 5918F46E5918DBEC9A- <1>
+  2185 000015D2 B701EC9AB7C0834F9A- <1>
+  2186 000015DB A8834F9AFEE6956E65- <1>
+  2187 000015E4 E6956E78AAFFE67EAA- <1>
+  2188 000015ED FFE6CD21BCCF0821BC- <1>
+  2189 000015F6 CF5AEF15E8E6EF15E8- <1>
+  2190 000015FF F4                  <1>
+  2191 00001600 BAE79BD9BAE79B1F4A- <1>  db %1(0x1f),%1(0xdd),%1(0xa8),%1(0x33),%1(0x88),%1(0x07),%1(0xc7),%1(0x31)
+  2192 00001609 6F36CE4A6F36DDEA9F- <1>
+  2193 00001612 09D4EA9F09A829B07C- <1>
+  2194 0000161B D629B07C3331A4B2AF- <1>
+  2195 00001624 31A4B2882A3F23312A- <1>
+  2196 0000162D 3F2307C6A59430C6A5- <1>
+  2197 00001636 94C735A266C035A266- <1>
+  2198 0000163F 31                  <1>
+  2199 00001640 744EBC37744EBCB1FC- <1>  db %1(0xb1),%1(0x12),%1(0x10),%1(0x59),%1(0x27),%1(0x80),%1(0xec),%1(0x5f)
+  2200 00001649 82CAA6FC82CA12E090- <1>
+  2201 00001652 D0B0E090D01033A7D8- <1>
+  2202 0000165B 1533A7D859F104984A- <1>
+  2203 00001664 F104982741ECDAF741- <1>
+  2204 0000166D ECDA807FCD500E7FCD- <1>
+  2205 00001676 50EC1791F62F1791F6- <1>
+  2206 0000167F 5F                  <1>
+  2207 00001680 764DD68D764DD66043- <1>  db %1(0x60),%1(0x51),%1(0x7f),%1(0xa9),%1(0x19),%1(0xb5),%1(0x4a),%1(0x0d)
+  2208 00001689 EFB04D43EFB051CCAA- <1>
+  2209 00001692 4D54CCAA4D7FE49604- <1>
+  2210 0000169B DFE49604A99ED1B5E3- <1>
+  2211 000016A4 9ED1B5194C6A881B4C- <1>
+  2212 000016AD 6A88B5C12C1FB8C12C- <1>
+  2213 000016B6 1F4A4665517F466551- <1>
+  2214 000016BF 0D                  <1>
+  2215 000016C0 9D5EEA049D5EEA2D01- <1>  db %1(0x2d),%1(0xe5),%1(0x7a),%1(0x9f),%1(0x93),%1(0xc9),%1(0x9c),%1(0xef)
+  2216 000016C9 8C355D018C35E5FA87- <1>
+  2217 000016D2 7473FA87747AFB0B41- <1>
+  2218 000016DB 2EFB0B419FB3671D5A- <1>
+  2219 000016E4 B3671D9392DBD25292- <1>
+  2220 000016ED DBD2C9E9105633E910- <1>
+  2221 000016F6 569C6DD647136DD647- <1>
+  2222 000016FF EF                  <1>
+  2223 00001700 9AD7618C9AD761A037- <1>  db %1(0xa0),%1(0xe0),%1(0x3b),%1(0x4d),%1(0xae),%1(0x2a),%1(0xf5),%1(0xb0)
+  2224 00001709 A10C7A37A10CE059F8- <1>
+  2225 00001712 148E59F8143BEB133C- <1>
+  2226 0000171B 89EB133C4DCEA927EE- <1>
+  2227 00001724 CEA927AEB761C935B7- <1>
+  2228 0000172D 61C92AE11CE5EDE11C- <1>
+  2229 00001736 E5F57A47B13C7A47B1- <1>
+  2230 0000173F B0                  <1>
+  2231 00001740 9CD2DF599CD2DFC855- <1>  db %1(0xc8),%1(0xeb),%1(0xbb),%1(0x3c),%1(0x83),%1(0x53),%1(0x99),%1(0x61)
+  2232 00001749 F2733F55F273EB1814- <1>
+  2233 00001752 CE791814CEBB73C737- <1>
+  2234 0000175B BF73C7373C53F7CDEA- <1>
+  2235 00001764 53F7CD835FFDAA5B5F- <1>
+  2236 0000176D FDAA53DF3D6F14DF3D- <1>
+  2237 00001776 6F997844DB867844DB- <1>
+  2238 0000177F 61                  <1>
+  2239 00001780 CAAFF381CAAFF317B9- <1>  db %1(0x17),%1(0x2b),%1(0x04),%1(0x7e),%1(0xba),%1(0x77),%1(0xd6),%1(0x26)
+  2240 00001789 68C43EB968C42B3824- <1>
+  2241 00001792 342C38243404C2A340- <1>
+  2242 0000179B 5FC2A3407E161DC372- <1>
+  2243 000017A4 161DC3BABCE2250CBC- <1>
+  2244 000017AD E22577283C498B283C- <1>
+  2245 000017B6 49D6FF0D9541FF0D95- <1>
+  2246 000017BF 26                  <1>
+  2247 000017C0 39A8017139A801E108- <1>  db %1(0xe1),%1(0x69),%1(0x14),%1(0x63),%1(0x55),%1(0x21),%1(0x0c),%1(0x7d)
+  2248 000017C9 0CB3DE080CB369D8B4- <1>
+  2249 000017D2 E49CD8B4E4146456C1- <1>
+  2250 000017DB 906456C1637BCB8461- <1>
+  2251 000017E4 7BCB8455D532B670D5- <1>
+  2252 000017ED 32B621486C5C74486C- <1>
+  2253 000017F6 5C0CD0B85742D0B857- <1>
+  2254 000017FF 7D                  <1>
+  2255                                  %ifdef LAST_ROUND_TABLES
+  2256                                      dec_vals w8
+  2257 00001800 520000005200000009- <1>  db %1(0x52),%1(0x09),%1(0x6a),%1(0xd5),%1(0x30),%1(0x36),%1(0xa5),%1(0x38)
+  2258 00001809 000000090000006A00- <1>
+  2259 00001812 00006A000000D50000- <1>
+  2260 0000181B 00D500000030000000- <1>
+  2261 00001824 300000003600000036- <1>
+  2262 0000182D 000000A5000000A500- <1>
+  2263 00001836 000038000000380000- <1>
+  2264 0000183F 00                  <1>
+  2265 00001840 BF000000BF00000040- <1>  db %1(0xbf),%1(0x40),%1(0xa3),%1(0x9e),%1(0x81),%1(0xf3),%1(0xd7),%1(0xfb)
+  2266 00001849 00000040000000A300- <1>
+  2267 00001852 0000A30000009E0000- <1>
+  2268 0000185B 009E00000081000000- <1>
+  2269 00001864 81000000F3000000F3- <1>
+  2270 0000186D 000000D7000000D700- <1>
+  2271 00001876 0000FB000000FB0000- <1>
+  2272 0000187F 00                  <1>
+  2273 00001880 7C0000007C000000E3- <1>  db %1(0x7c),%1(0xe3),%1(0x39),%1(0x82),%1(0x9b),%1(0x2f),%1(0xff),%1(0x87)
+  2274 00001889 000000E30000003900- <1>
+  2275 00001892 000039000000820000- <1>
+  2276 0000189B 00820000009B000000- <1>
+  2277 000018A4 9B0000002F0000002F- <1>
+  2278 000018AD 000000FF000000FF00- <1>
+  2279 000018B6 000087000000870000- <1>
+  2280 000018BF 00                  <1>
+  2281 000018C0 34000000340000008E- <1>  db %1(0x34),%1(0x8e),%1(0x43),%1(0x44),%1(0xc4),%1(0xde),%1(0xe9),%1(0xcb)
+  2282 000018C9 0000008E0000004300- <1>
+  2283 000018D2 000043000000440000- <1>
+  2284 000018DB 0044000000C4000000- <1>
+  2285 000018E4 C4000000DE000000DE- <1>
+  2286 000018ED 000000E9000000E900- <1>
+  2287 000018F6 0000CB000000CB0000- <1>
+  2288 000018FF 00                  <1>
+  2289 00001900 54000000540000007B- <1>  db %1(0x54),%1(0x7b),%1(0x94),%1(0x32),%1(0xa6),%1(0xc2),%1(0x23),%1(0x3d)
+  2290 00001909 0000007B0000009400- <1>
+  2291 00001912 000094000000320000- <1>
+  2292 0000191B 0032000000A6000000- <1>
+  2293 00001924 A6000000C2000000C2- <1>
+  2294 0000192D 000000230000002300- <1>
+  2295 00001936 00003D0000003D0000- <1>
+  2296 0000193F 00                  <1>
+  2297 00001940 EE000000EE0000004C- <1>  db %1(0xee),%1(0x4c),%1(0x95),%1(0x0b),%1(0x42),%1(0xfa),%1(0xc3),%1(0x4e)
+  2298 00001949 0000004C0000009500- <1>
+  2299 00001952 0000950000000B0000- <1>
+  2300 0000195B 000B00000042000000- <1>
+  2301 00001964 42000000FA000000FA- <1>
+  2302 0000196D 000000C3000000C300- <1>
+  2303 00001976 00004E0000004E0000- <1>
+  2304 0000197F 00                  <1>
+  2305 00001980 08000000080000002E- <1>  db %1(0x08),%1(0x2e),%1(0xa1),%1(0x66),%1(0x28),%1(0xd9),%1(0x24),%1(0xb2)
+  2306 00001989 0000002E000000A100- <1>
+  2307 00001992 0000A1000000660000- <1>
+  2308 0000199B 006600000028000000- <1>
+  2309 000019A4 28000000D9000000D9- <1>
+  2310 000019AD 000000240000002400- <1>
+  2311 000019B6 0000B2000000B20000- <1>
+  2312 000019BF 00                  <1>
+  2313 000019C0 76000000760000005B- <1>  db %1(0x76),%1(0x5b),%1(0xa2),%1(0x49),%1(0x6d),%1(0x8b),%1(0xd1),%1(0x25)
+  2314 000019C9 0000005B000000A200- <1>
+  2315 000019D2 0000A2000000490000- <1>
+  2316 000019DB 00490000006D000000- <1>
+  2317 000019E4 6D0000008B0000008B- <1>
+  2318 000019ED 000000D1000000D100- <1>
+  2319 000019F6 000025000000250000- <1>
+  2320 000019FF 00                  <1>
+  2321 00001A00 7200000072000000F8- <1>  db %1(0x72),%1(0xf8),%1(0xf6),%1(0x64),%1(0x86),%1(0x68),%1(0x98),%1(0x16)
+  2322 00001A09 000000F8000000F600- <1>
+  2323 00001A12 0000F6000000640000- <1>
+  2324 00001A1B 006400000086000000- <1>
+  2325 00001A24 860000006800000068- <1>
+  2326 00001A2D 000000980000009800- <1>
+  2327 00001A36 000016000000160000- <1>
+  2328 00001A3F 00                  <1>
+  2329 00001A40 D4000000D4000000A4- <1>  db %1(0xd4),%1(0xa4),%1(0x5c),%1(0xcc),%1(0x5d),%1(0x65),%1(0xb6),%1(0x92)
+  2330 00001A49 000000A40000005C00- <1>
+  2331 00001A52 00005C000000CC0000- <1>
+  2332 00001A5B 00CC0000005D000000- <1>
+  2333 00001A64 5D0000006500000065- <1>
+  2334 00001A6D 000000B6000000B600- <1>
+  2335 00001A76 000092000000920000- <1>
+  2336 00001A7F 00                  <1>
+  2337 00001A80 6C0000006C00000070- <1>  db %1(0x6c),%1(0x70),%1(0x48),%1(0x50),%1(0xfd),%1(0xed),%1(0xb9),%1(0xda)
+  2338 00001A89 000000700000004800- <1>
+  2339 00001A92 000048000000500000- <1>
+  2340 00001A9B 0050000000FD000000- <1>
+  2341 00001AA4 FD000000ED000000ED- <1>
+  2342 00001AAD 000000B9000000B900- <1>
+  2343 00001AB6 0000DA000000DA0000- <1>
+  2344 00001ABF 00                  <1>
+  2345 00001AC0 5E0000005E00000015- <1>  db %1(0x5e),%1(0x15),%1(0x46),%1(0x57),%1(0xa7),%1(0x8d),%1(0x9d),%1(0x84)
+  2346 00001AC9 000000150000004600- <1>
+  2347 00001AD2 000046000000570000- <1>
+  2348 00001ADB 0057000000A7000000- <1>
+  2349 00001AE4 A70000008D0000008D- <1>
+  2350 00001AED 0000009D0000009D00- <1>
+  2351 00001AF6 000084000000840000- <1>
+  2352 00001AFF 00                  <1>
+  2353 00001B00 9000000090000000D8- <1>  db %1(0x90),%1(0xd8),%1(0xab),%1(0x00),%1(0x8c),%1(0xbc),%1(0xd3),%1(0x0a)
+  2354 00001B09 000000D8000000AB00- <1>
+  2355 00001B12 0000AB000000000000- <1>
+  2356 00001B1B 00000000008C000000- <1>
+  2357 00001B24 8C000000BC000000BC- <1>
+  2358 00001B2D 000000D3000000D300- <1>
+  2359 00001B36 00000A0000000A0000- <1>
+  2360 00001B3F 00                  <1>
+  2361 00001B40 F7000000F7000000E4- <1>  db %1(0xf7),%1(0xe4),%1(0x58),%1(0x05),%1(0xb8),%1(0xb3),%1(0x45),%1(0x06)
+  2362 00001B49 000000E40000005800- <1>
+  2363 00001B52 000058000000050000- <1>
+  2364 00001B5B 0005000000B8000000- <1>
+  2365 00001B64 B8000000B3000000B3- <1>
+  2366 00001B6D 000000450000004500- <1>
+  2367 00001B76 000006000000060000- <1>
+  2368 00001B7F 00                  <1>
+  2369 00001B80 D0000000D00000002C- <1>  db %1(0xd0),%1(0x2c),%1(0x1e),%1(0x8f),%1(0xca),%1(0x3f),%1(0x0f),%1(0x02)
+  2370 00001B89 0000002C0000001E00- <1>
+  2371 00001B92 00001E0000008F0000- <1>
+  2372 00001B9B 008F000000CA000000- <1>
+  2373 00001BA4 CA0000003F0000003F- <1>
+  2374 00001BAD 0000000F0000000F00- <1>
+  2375 00001BB6 000002000000020000- <1>
+  2376 00001BBF 00                  <1>
+  2377 00001BC0 C1000000C1000000AF- <1>  db %1(0xc1),%1(0xaf),%1(0xbd),%1(0x03),%1(0x01),%1(0x13),%1(0x8a),%1(0x6b)
+  2378 00001BC9 000000AF000000BD00- <1>
+  2379 00001BD2 0000BD000000030000- <1>
+  2380 00001BDB 000300000001000000- <1>
+  2381 00001BE4 010000001300000013- <1>
+  2382 00001BED 0000008A0000008A00- <1>
+  2383 00001BF6 00006B0000006B0000- <1>
+  2384 00001BFF 00                  <1>
+  2385 00001C00 3A0000003A00000091- <1>  db %1(0x3a),%1(0x91),%1(0x11),%1(0x41),%1(0x4f),%1(0x67),%1(0xdc),%1(0xea)
+  2386 00001C09 000000910000001100- <1>
+  2387 00001C12 000011000000410000- <1>
+  2388 00001C1B 00410000004F000000- <1>
+  2389 00001C24 4F0000006700000067- <1>
+  2390 00001C2D 000000DC000000DC00- <1>
+  2391 00001C36 0000EA000000EA0000- <1>
+  2392 00001C3F 00                  <1>
+  2393 00001C40 9700000097000000F2- <1>  db %1(0x97),%1(0xf2),%1(0xcf),%1(0xce),%1(0xf0),%1(0xb4),%1(0xe6),%1(0x73)
+  2394 00001C49 000000F2000000CF00- <1>
+  2395 00001C52 0000CF000000CE0000- <1>
+  2396 00001C5B 00CE000000F0000000- <1>
+  2397 00001C64 F0000000B4000000B4- <1>
+  2398 00001C6D 000000E6000000E600- <1>
+  2399 00001C76 000073000000730000- <1>
+  2400 00001C7F 00                  <1>
+  2401 00001C80 9600000096000000AC- <1>  db %1(0x96),%1(0xac),%1(0x74),%1(0x22),%1(0xe7),%1(0xad),%1(0x35),%1(0x85)
+  2402 00001C89 000000AC0000007400- <1>
+  2403 00001C92 000074000000220000- <1>
+  2404 00001C9B 0022000000E7000000- <1>
+  2405 00001CA4 E7000000AD000000AD- <1>
+  2406 00001CAD 000000350000003500- <1>
+  2407 00001CB6 000085000000850000- <1>
+  2408 00001CBF 00                  <1>
+  2409 00001CC0 E2000000E2000000F9- <1>  db %1(0xe2),%1(0xf9),%1(0x37),%1(0xe8),%1(0x1c),%1(0x75),%1(0xdf),%1(0x6e)
+  2410 00001CC9 000000F90000003700- <1>
+  2411 00001CD2 000037000000E80000- <1>
+  2412 00001CDB 00E80000001C000000- <1>
+  2413 00001CE4 1C0000007500000075- <1>
+  2414 00001CED 000000DF000000DF00- <1>
+  2415 00001CF6 00006E0000006E0000- <1>
+  2416 00001CFF 00                  <1>
+  2417 00001D00 4700000047000000F1- <1>  db %1(0x47),%1(0xf1),%1(0x1a),%1(0x71),%1(0x1d),%1(0x29),%1(0xc5),%1(0x89)
+  2418 00001D09 000000F10000001A00- <1>
+  2419 00001D12 00001A000000710000- <1>
+  2420 00001D1B 00710000001D000000- <1>
+  2421 00001D24 1D0000002900000029- <1>
+  2422 00001D2D 000000C5000000C500- <1>
+  2423 00001D36 000089000000890000- <1>
+  2424 00001D3F 00                  <1>
+  2425 00001D40 6F0000006F000000B7- <1>  db %1(0x6f),%1(0xb7),%1(0x62),%1(0x0e),%1(0xaa),%1(0x18),%1(0xbe),%1(0x1b)
+  2426 00001D49 000000B70000006200- <1>
+  2427 00001D52 0000620000000E0000- <1>
+  2428 00001D5B 000E000000AA000000- <1>
+  2429 00001D64 AA0000001800000018- <1>
+  2430 00001D6D 000000BE000000BE00- <1>
+  2431 00001D76 00001B0000001B0000- <1>
+  2432 00001D7F 00                  <1>
+  2433 00001D80 FC000000FC00000056- <1>  db %1(0xfc),%1(0x56),%1(0x3e),%1(0x4b),%1(0xc6),%1(0xd2),%1(0x79),%1(0x20)
+  2434 00001D89 000000560000003E00- <1>
+  2435 00001D92 00003E0000004B0000- <1>
+  2436 00001D9B 004B000000C6000000- <1>
+  2437 00001DA4 C6000000D2000000D2- <1>
+  2438 00001DAD 000000790000007900- <1>
+  2439 00001DB6 000020000000200000- <1>
+  2440 00001DBF 00                  <1>
+  2441 00001DC0 9A0000009A000000DB- <1>  db %1(0x9a),%1(0xdb),%1(0xc0),%1(0xfe),%1(0x78),%1(0xcd),%1(0x5a),%1(0xf4)
+  2442 00001DC9 000000DB000000C000- <1>
+  2443 00001DD2 0000C0000000FE0000- <1>
+  2444 00001DDB 00FE00000078000000- <1>
+  2445 00001DE4 78000000CD000000CD- <1>
+  2446 00001DED 0000005A0000005A00- <1>
+  2447 00001DF6 0000F4000000F40000- <1>
+  2448 00001DFF 00                  <1>
+  2449 00001E00 1F0000001F000000DD- <1>  db %1(0x1f),%1(0xdd),%1(0xa8),%1(0x33),%1(0x88),%1(0x07),%1(0xc7),%1(0x31)
+  2450 00001E09 000000DD000000A800- <1>
+  2451 00001E12 0000A8000000330000- <1>
+  2452 00001E1B 003300000088000000- <1>
+  2453 00001E24 880000000700000007- <1>
+  2454 00001E2D 000000C7000000C700- <1>
+  2455 00001E36 000031000000310000- <1>
+  2456 00001E3F 00                  <1>
+  2457 00001E40 B1000000B100000012- <1>  db %1(0xb1),%1(0x12),%1(0x10),%1(0x59),%1(0x27),%1(0x80),%1(0xec),%1(0x5f)
+  2458 00001E49 000000120000001000- <1>
+  2459 00001E52 000010000000590000- <1>
+  2460 00001E5B 005900000027000000- <1>
+  2461 00001E64 270000008000000080- <1>
+  2462 00001E6D 000000EC000000EC00- <1>
+  2463 00001E76 00005F0000005F0000- <1>
+  2464 00001E7F 00                  <1>
+  2465 00001E80 600000006000000051- <1>  db %1(0x60),%1(0x51),%1(0x7f),%1(0xa9),%1(0x19),%1(0xb5),%1(0x4a),%1(0x0d)
+  2466 00001E89 000000510000007F00- <1>
+  2467 00001E92 00007F000000A90000- <1>
+  2468 00001E9B 00A900000019000000- <1>
+  2469 00001EA4 19000000B5000000B5- <1>
+  2470 00001EAD 0000004A0000004A00- <1>
+  2471 00001EB6 00000D0000000D0000- <1>
+  2472 00001EBF 00                  <1>
+  2473 00001EC0 2D0000002D000000E5- <1>  db %1(0x2d),%1(0xe5),%1(0x7a),%1(0x9f),%1(0x93),%1(0xc9),%1(0x9c),%1(0xef)
+  2474 00001EC9 000000E50000007A00- <1>
+  2475 00001ED2 00007A0000009F0000- <1>
+  2476 00001EDB 009F00000093000000- <1>
+  2477 00001EE4 93000000C9000000C9- <1>
+  2478 00001EED 0000009C0000009C00- <1>
+  2479 00001EF6 0000EF000000EF0000- <1>
+  2480 00001EFF 00                  <1>
+  2481 00001F00 A0000000A0000000E0- <1>  db %1(0xa0),%1(0xe0),%1(0x3b),%1(0x4d),%1(0xae),%1(0x2a),%1(0xf5),%1(0xb0)
+  2482 00001F09 000000E00000003B00- <1>
+  2483 00001F12 00003B0000004D0000- <1>
+  2484 00001F1B 004D000000AE000000- <1>
+  2485 00001F24 AE0000002A0000002A- <1>
+  2486 00001F2D 000000F5000000F500- <1>
+  2487 00001F36 0000B0000000B00000- <1>
+  2488 00001F3F 00                  <1>
+  2489 00001F40 C8000000C8000000EB- <1>  db %1(0xc8),%1(0xeb),%1(0xbb),%1(0x3c),%1(0x83),%1(0x53),%1(0x99),%1(0x61)
+  2490 00001F49 000000EB000000BB00- <1>
+  2491 00001F52 0000BB0000003C0000- <1>
+  2492 00001F5B 003C00000083000000- <1>
+  2493 00001F64 830000005300000053- <1>
+  2494 00001F6D 000000990000009900- <1>
+  2495 00001F76 000061000000610000- <1>
+  2496 00001F7F 00                  <1>
+  2497 00001F80 17000000170000002B- <1>  db %1(0x17),%1(0x2b),%1(0x04),%1(0x7e),%1(0xba),%1(0x77),%1(0xd6),%1(0x26)
+  2498 00001F89 0000002B0000000400- <1>
+  2499 00001F92 0000040000007E0000- <1>
+  2500 00001F9B 007E000000BA000000- <1>
+  2501 00001FA4 BA0000007700000077- <1>
+  2502 00001FAD 000000D6000000D600- <1>
+  2503 00001FB6 000026000000260000- <1>
+  2504 00001FBF 00                  <1>
+  2505 00001FC0 E1000000E100000069- <1>  db %1(0xe1),%1(0x69),%1(0x14),%1(0x63),%1(0x55),%1(0x21),%1(0x0c),%1(0x7d)
+  2506 00001FC9 000000690000001400- <1>
+  2507 00001FD2 000014000000630000- <1>
+  2508 00001FDB 006300000055000000- <1>
+  2509 00001FE4 550000002100000021- <1>
+  2510 00001FED 0000000C0000000C00- <1>
+  2511 00001FF6 00007D0000007D0000- <1>
+  2512 00001FFF 00                  <1>
+  2513                                  %endif
+  2514                                  
+  2515                                      section .text
+  2516 000009FE 90<rept>                    align   16
+  2517                                  
+  2518                                  %ifdef _SEH_
+  2519                                  proc_frame aes_decrypt
+  2520                                  	alloc_stack	7*8			; 7 to align stack to 16 bytes
+  2521                                  	save_reg	rsi,4*8
+  2522                                  	save_reg	rdi,5*8
+  2523                                  	save_reg	rbx,1*8
+  2524                                  	save_reg	rbp,2*8
+  2525                                  	save_reg	r12,3*8
+  2526                                  end_prologue
+  2527                                      mov     rdi, rcx        ; input pointer
+  2528                                      mov     [rsp+0*8], rdx  ; output pointer
+  2529                                  %else
+  2530                                  	aes_decrypt:
+  2531                                  	%ifdef __GNUC__
+  2532                                  		sub     rsp, 4*8        ; gnu/linux binary interface
+  2533                                  		mov     [rsp+0*8], rsi  ; output pointer
+  2534                                  		mov     r8, rdx         ; context
+  2535                                  	%else
+  2536 00000A00 4883EC30                		sub     rsp, 6*8        ; windows binary interface
+  2537 00000A04 4889742420              		mov     [rsp+4*8], rsi
+  2538 00000A09 48897C2428              		mov     [rsp+5*8], rdi
+  2539 00000A0E 4889CF                  		mov     rdi, rcx        ; input pointer
+  2540 00000A11 48891424                		mov     [rsp+0*8], rdx  ; output pointer
+  2541                                  	%endif
+  2542 00000A15 48895C2408              		mov     [rsp+1*8], rbx  ; input pointer in rdi
+  2543 00000A1A 48896C2410              		mov     [rsp+2*8], rbp  ; output pointer in [rsp]
+  2544 00000A1F 4C89642418              		mov     [rsp+3*8], r12  ; context in r8
+  2545                                  %endif
+  2546                                  
+  2547 00000A24 410FB6B0F0000000            movzx   esi,byte[kptr+4*KS_LENGTH]
+  2548 00000A2C 488D2D(00100000)            lea     tptr, [rel dec_tab]
+  2549 00000A33 4981E880000000              sub     kptr, rofs
+  2550                                  
+  2551 00000A3A 8B07                        mov     eax, [rdi+0*4]
+  2552 00000A3C 8B5F04                      mov     ebx, [rdi+1*4]
+  2553 00000A3F 8B4F08                      mov     ecx, [rdi+2*4]
+  2554 00000A42 8B570C                      mov     edx, [rdi+3*4]
+  2555                                  
+  2556                                  %ifdef      AES_REV_DKS
+  2557 00000A45 4C89C7                      mov     rdi, kptr
+  2558 00000A48 4D8D0430                    lea     kptr,[kptr+rsi]
+  2559                                  %else
+  2560                                      lea     rdi,[kptr+rsi]
+  2561                                  %endif
+  2562                                  
+  2563 00000A4C 338780000000                xor     eax, [rdi+rofs]
+  2564 00000A52 339F84000000                xor     ebx, [rdi+rofs+4]
+  2565 00000A58 338F88000000                xor     ecx, [rdi+rofs+8]
+  2566 00000A5E 33978C000000                xor     edx, [rdi+rofs+12]
+  2567                                  
+  2568 00000A64 81FEA0000000                cmp     esi, 10*16
+  2569 00000A6A 0F84C3020000                je      .3
+  2570 00000A70 81FEC0000000                cmp     esi, 12*16
+  2571 00000A76 0F8467010000                je      .2
+  2572 00000A7C 81FEE0000000                cmp     esi, 14*16
+  2573 00000A82 740F                        je      .1
+  2574 00000A84 48B8FFFFFFFFFFFFFF-         mov     rax, -1
+  2575 00000A8D FF                 
+  2576 00000A8E E94C090000                  jmp     .4
+  2577                                  
+  2578                                  .1: ii_rnd  r9, r10, r11, r12, 13
+  2579                              <1> .1: 
+  2580 00000A93 458B48B0            <1>  mov %1d, ik_ref(%5,0)
+  2581 00000A97 458B50B4            <1>  mov %2d, ik_ref(%5,1)
+  2582 00000A9B 458B58B8            <1>  mov %3d, ik_ref(%5,2)
+  2583 00000A9F 458B60BC            <1>  mov %4d, ik_ref(%5,3)
+  2584                              <1> 
+  2585 00000AA3 0FB6F0              <1>  movzx esi, al
+  2586 00000AA6 0FB6FC              <1>  movzx edi, ah
+  2587 00000AA9 C1E810              <1>  shr eax, 16
+  2588 00000AAC 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  2589 00000AB1 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  2590 00000AB6 0FB6F0              <1>  movzx esi, al
+  2591 00000AB9 0FB6FC              <1>  movzx edi, ah
+  2592 00000ABC 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  2593 00000AC1 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  2594                              <1> 
+  2595 00000AC6 0FB6F3              <1>  movzx esi, bl
+  2596 00000AC9 0FB6FF              <1>  movzx edi, bh
+  2597 00000ACC C1EB10              <1>  shr ebx, 16
+  2598 00000ACF 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  2599 00000AD4 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  2600 00000AD9 0FB6F3              <1>  movzx esi, bl
+  2601 00000ADC 0FB6FF              <1>  movzx edi, bh
+  2602 00000ADF 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  2603 00000AE4 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  2604                              <1> 
+  2605 00000AE9 0FB6F1              <1>  movzx esi, cl
+  2606 00000AEC 0FB6FD              <1>  movzx edi, ch
+  2607 00000AEF C1E910              <1>  shr ecx, 16
+  2608 00000AF2 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  2609 00000AF7 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  2610 00000AFC 0FB6F1              <1>  movzx esi, cl
+  2611 00000AFF 0FB6FD              <1>  movzx edi, ch
+  2612 00000B02 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  2613 00000B07 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  2614                              <1> 
+  2615 00000B0C 0FB6F2              <1>  movzx esi, dl
+  2616 00000B0F 0FB6FE              <1>  movzx edi, dh
+  2617 00000B12 C1EA10              <1>  shr edx, 16
+  2618 00000B15 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  2619 00000B1A 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  2620 00000B1F 0FB6F2              <1>  movzx esi, dl
+  2621 00000B22 0FB6FE              <1>  movzx edi, dh
+  2622 00000B25 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  2623 00000B2A 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  2624                              <1> 
+  2625 00000B2F 4489C8              <1>  mov eax,%1d
+  2626 00000B32 4489D3              <1>  mov ebx,%2d
+  2627 00000B35 4489D9              <1>  mov ecx,%3d
+  2628 00000B38 4489E2              <1>  mov edx,%4d
+  2629                                      ii_rnd  r9, r10, r11, r12, 12
+  2630 00000B3B 458B48C0            <1>  mov %1d, ik_ref(%5,0)
+  2631 00000B3F 458B50C4            <1>  mov %2d, ik_ref(%5,1)
+  2632 00000B43 458B58C8            <1>  mov %3d, ik_ref(%5,2)
+  2633 00000B47 458B60CC            <1>  mov %4d, ik_ref(%5,3)
+  2634                              <1> 
+  2635 00000B4B 0FB6F0              <1>  movzx esi, al
+  2636 00000B4E 0FB6FC              <1>  movzx edi, ah
+  2637 00000B51 C1E810              <1>  shr eax, 16
+  2638 00000B54 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  2639 00000B59 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  2640 00000B5E 0FB6F0              <1>  movzx esi, al
+  2641 00000B61 0FB6FC              <1>  movzx edi, ah
+  2642 00000B64 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  2643 00000B69 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  2644                              <1> 
+  2645 00000B6E 0FB6F3              <1>  movzx esi, bl
+  2646 00000B71 0FB6FF              <1>  movzx edi, bh
+  2647 00000B74 C1EB10              <1>  shr ebx, 16
+  2648 00000B77 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  2649 00000B7C 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  2650 00000B81 0FB6F3              <1>  movzx esi, bl
+  2651 00000B84 0FB6FF              <1>  movzx edi, bh
+  2652 00000B87 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  2653 00000B8C 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  2654                              <1> 
+  2655 00000B91 0FB6F1              <1>  movzx esi, cl
+  2656 00000B94 0FB6FD              <1>  movzx edi, ch
+  2657 00000B97 C1E910              <1>  shr ecx, 16
+  2658 00000B9A 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  2659 00000B9F 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  2660 00000BA4 0FB6F1              <1>  movzx esi, cl
+  2661 00000BA7 0FB6FD              <1>  movzx edi, ch
+  2662 00000BAA 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  2663 00000BAF 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  2664                              <1> 
+  2665 00000BB4 0FB6F2              <1>  movzx esi, dl
+  2666 00000BB7 0FB6FE              <1>  movzx edi, dh
+  2667 00000BBA C1EA10              <1>  shr edx, 16
+  2668 00000BBD 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  2669 00000BC2 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  2670 00000BC7 0FB6F2              <1>  movzx esi, dl
+  2671 00000BCA 0FB6FE              <1>  movzx edi, dh
+  2672 00000BCD 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  2673 00000BD2 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  2674                              <1> 
+  2675 00000BD7 4489C8              <1>  mov eax,%1d
+  2676 00000BDA 4489D3              <1>  mov ebx,%2d
+  2677 00000BDD 4489D9              <1>  mov ecx,%3d
+  2678 00000BE0 4489E2              <1>  mov edx,%4d
+  2679                                  .2: ii_rnd  r9, r10, r11, r12, 11
+  2680                              <1> .2: 
+  2681 00000BE3 458B48D0            <1>  mov %1d, ik_ref(%5,0)
+  2682 00000BE7 458B50D4            <1>  mov %2d, ik_ref(%5,1)
+  2683 00000BEB 458B58D8            <1>  mov %3d, ik_ref(%5,2)
+  2684 00000BEF 458B60DC            <1>  mov %4d, ik_ref(%5,3)
+  2685                              <1> 
+  2686 00000BF3 0FB6F0              <1>  movzx esi, al
+  2687 00000BF6 0FB6FC              <1>  movzx edi, ah
+  2688 00000BF9 C1E810              <1>  shr eax, 16
+  2689 00000BFC 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  2690 00000C01 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  2691 00000C06 0FB6F0              <1>  movzx esi, al
+  2692 00000C09 0FB6FC              <1>  movzx edi, ah
+  2693 00000C0C 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  2694 00000C11 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  2695                              <1> 
+  2696 00000C16 0FB6F3              <1>  movzx esi, bl
+  2697 00000C19 0FB6FF              <1>  movzx edi, bh
+  2698 00000C1C C1EB10              <1>  shr ebx, 16
+  2699 00000C1F 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  2700 00000C24 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  2701 00000C29 0FB6F3              <1>  movzx esi, bl
+  2702 00000C2C 0FB6FF              <1>  movzx edi, bh
+  2703 00000C2F 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  2704 00000C34 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  2705                              <1> 
+  2706 00000C39 0FB6F1              <1>  movzx esi, cl
+  2707 00000C3C 0FB6FD              <1>  movzx edi, ch
+  2708 00000C3F C1E910              <1>  shr ecx, 16
+  2709 00000C42 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  2710 00000C47 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  2711 00000C4C 0FB6F1              <1>  movzx esi, cl
+  2712 00000C4F 0FB6FD              <1>  movzx edi, ch
+  2713 00000C52 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  2714 00000C57 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  2715                              <1> 
+  2716 00000C5C 0FB6F2              <1>  movzx esi, dl
+  2717 00000C5F 0FB6FE              <1>  movzx edi, dh
+  2718 00000C62 C1EA10              <1>  shr edx, 16
+  2719 00000C65 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  2720 00000C6A 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  2721 00000C6F 0FB6F2              <1>  movzx esi, dl
+  2722 00000C72 0FB6FE              <1>  movzx edi, dh
+  2723 00000C75 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  2724 00000C7A 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  2725                              <1> 
+  2726 00000C7F 4489C8              <1>  mov eax,%1d
+  2727 00000C82 4489D3              <1>  mov ebx,%2d
+  2728 00000C85 4489D9              <1>  mov ecx,%3d
+  2729 00000C88 4489E2              <1>  mov edx,%4d
+  2730                                      ii_rnd  r9, r10, r11, r12, 10
+  2731 00000C8B 458B48E0            <1>  mov %1d, ik_ref(%5,0)
+  2732 00000C8F 458B50E4            <1>  mov %2d, ik_ref(%5,1)
+  2733 00000C93 458B58E8            <1>  mov %3d, ik_ref(%5,2)
+  2734 00000C97 458B60EC            <1>  mov %4d, ik_ref(%5,3)
+  2735                              <1> 
+  2736 00000C9B 0FB6F0              <1>  movzx esi, al
+  2737 00000C9E 0FB6FC              <1>  movzx edi, ah
+  2738 00000CA1 C1E810              <1>  shr eax, 16
+  2739 00000CA4 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  2740 00000CA9 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  2741 00000CAE 0FB6F0              <1>  movzx esi, al
+  2742 00000CB1 0FB6FC              <1>  movzx edi, ah
+  2743 00000CB4 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  2744 00000CB9 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  2745                              <1> 
+  2746 00000CBE 0FB6F3              <1>  movzx esi, bl
+  2747 00000CC1 0FB6FF              <1>  movzx edi, bh
+  2748 00000CC4 C1EB10              <1>  shr ebx, 16
+  2749 00000CC7 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  2750 00000CCC 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  2751 00000CD1 0FB6F3              <1>  movzx esi, bl
+  2752 00000CD4 0FB6FF              <1>  movzx edi, bh
+  2753 00000CD7 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  2754 00000CDC 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  2755                              <1> 
+  2756 00000CE1 0FB6F1              <1>  movzx esi, cl
+  2757 00000CE4 0FB6FD              <1>  movzx edi, ch
+  2758 00000CE7 C1E910              <1>  shr ecx, 16
+  2759 00000CEA 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  2760 00000CEF 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  2761 00000CF4 0FB6F1              <1>  movzx esi, cl
+  2762 00000CF7 0FB6FD              <1>  movzx edi, ch
+  2763 00000CFA 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  2764 00000CFF 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  2765                              <1> 
+  2766 00000D04 0FB6F2              <1>  movzx esi, dl
+  2767 00000D07 0FB6FE              <1>  movzx edi, dh
+  2768 00000D0A C1EA10              <1>  shr edx, 16
+  2769 00000D0D 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  2770 00000D12 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  2771 00000D17 0FB6F2              <1>  movzx esi, dl
+  2772 00000D1A 0FB6FE              <1>  movzx edi, dh
+  2773 00000D1D 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  2774 00000D22 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  2775                              <1> 
+  2776 00000D27 4489C8              <1>  mov eax,%1d
+  2777 00000D2A 4489D3              <1>  mov ebx,%2d
+  2778 00000D2D 4489D9              <1>  mov ecx,%3d
+  2779 00000D30 4489E2              <1>  mov edx,%4d
+  2780                                  .3: ii_rnd  r9, r10, r11, r12, 9
+  2781                              <1> .3: 
+  2782 00000D33 458B48F0            <1>  mov %1d, ik_ref(%5,0)
+  2783 00000D37 458B50F4            <1>  mov %2d, ik_ref(%5,1)
+  2784 00000D3B 458B58F8            <1>  mov %3d, ik_ref(%5,2)
+  2785 00000D3F 458B60FC            <1>  mov %4d, ik_ref(%5,3)
+  2786                              <1> 
+  2787 00000D43 0FB6F0              <1>  movzx esi, al
+  2788 00000D46 0FB6FC              <1>  movzx edi, ah
+  2789 00000D49 C1E810              <1>  shr eax, 16
+  2790 00000D4C 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  2791 00000D51 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  2792 00000D56 0FB6F0              <1>  movzx esi, al
+  2793 00000D59 0FB6FC              <1>  movzx edi, ah
+  2794 00000D5C 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  2795 00000D61 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  2796                              <1> 
+  2797 00000D66 0FB6F3              <1>  movzx esi, bl
+  2798 00000D69 0FB6FF              <1>  movzx edi, bh
+  2799 00000D6C C1EB10              <1>  shr ebx, 16
+  2800 00000D6F 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  2801 00000D74 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  2802 00000D79 0FB6F3              <1>  movzx esi, bl
+  2803 00000D7C 0FB6FF              <1>  movzx edi, bh
+  2804 00000D7F 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  2805 00000D84 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  2806                              <1> 
+  2807 00000D89 0FB6F1              <1>  movzx esi, cl
+  2808 00000D8C 0FB6FD              <1>  movzx edi, ch
+  2809 00000D8F C1E910              <1>  shr ecx, 16
+  2810 00000D92 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  2811 00000D97 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  2812 00000D9C 0FB6F1              <1>  movzx esi, cl
+  2813 00000D9F 0FB6FD              <1>  movzx edi, ch
+  2814 00000DA2 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  2815 00000DA7 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  2816                              <1> 
+  2817 00000DAC 0FB6F2              <1>  movzx esi, dl
+  2818 00000DAF 0FB6FE              <1>  movzx edi, dh
+  2819 00000DB2 C1EA10              <1>  shr edx, 16
+  2820 00000DB5 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  2821 00000DBA 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  2822 00000DBF 0FB6F2              <1>  movzx esi, dl
+  2823 00000DC2 0FB6FE              <1>  movzx edi, dh
+  2824 00000DC5 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  2825 00000DCA 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  2826                              <1> 
+  2827 00000DCF 4489C8              <1>  mov eax,%1d
+  2828 00000DD2 4489D3              <1>  mov ebx,%2d
+  2829 00000DD5 4489D9              <1>  mov ecx,%3d
+  2830 00000DD8 4489E2              <1>  mov edx,%4d
+  2831                                      ii_rnd  r9, r10, r11, r12, 8
+  2832 00000DDB 458B08              <1>  mov %1d, ik_ref(%5,0)
+  2833 00000DDE 458B5004            <1>  mov %2d, ik_ref(%5,1)
+  2834 00000DE2 458B5808            <1>  mov %3d, ik_ref(%5,2)
+  2835 00000DE6 458B600C            <1>  mov %4d, ik_ref(%5,3)
+  2836                              <1> 
+  2837 00000DEA 0FB6F0              <1>  movzx esi, al
+  2838 00000DED 0FB6FC              <1>  movzx edi, ah
+  2839 00000DF0 C1E810              <1>  shr eax, 16
+  2840 00000DF3 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  2841 00000DF8 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  2842 00000DFD 0FB6F0              <1>  movzx esi, al
+  2843 00000E00 0FB6FC              <1>  movzx edi, ah
+  2844 00000E03 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  2845 00000E08 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  2846                              <1> 
+  2847 00000E0D 0FB6F3              <1>  movzx esi, bl
+  2848 00000E10 0FB6FF              <1>  movzx edi, bh
+  2849 00000E13 C1EB10              <1>  shr ebx, 16
+  2850 00000E16 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  2851 00000E1B 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  2852 00000E20 0FB6F3              <1>  movzx esi, bl
+  2853 00000E23 0FB6FF              <1>  movzx edi, bh
+  2854 00000E26 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  2855 00000E2B 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  2856                              <1> 
+  2857 00000E30 0FB6F1              <1>  movzx esi, cl
+  2858 00000E33 0FB6FD              <1>  movzx edi, ch
+  2859 00000E36 C1E910              <1>  shr ecx, 16
+  2860 00000E39 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  2861 00000E3E 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  2862 00000E43 0FB6F1              <1>  movzx esi, cl
+  2863 00000E46 0FB6FD              <1>  movzx edi, ch
+  2864 00000E49 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  2865 00000E4E 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  2866                              <1> 
+  2867 00000E53 0FB6F2              <1>  movzx esi, dl
+  2868 00000E56 0FB6FE              <1>  movzx edi, dh
+  2869 00000E59 C1EA10              <1>  shr edx, 16
+  2870 00000E5C 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  2871 00000E61 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  2872 00000E66 0FB6F2              <1>  movzx esi, dl
+  2873 00000E69 0FB6FE              <1>  movzx edi, dh
+  2874 00000E6C 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  2875 00000E71 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  2876                              <1> 
+  2877 00000E76 4489C8              <1>  mov eax,%1d
+  2878 00000E79 4489D3              <1>  mov ebx,%2d
+  2879 00000E7C 4489D9              <1>  mov ecx,%3d
+  2880 00000E7F 4489E2              <1>  mov edx,%4d
+  2881                                      ii_rnd  r9, r10, r11, r12, 7
+  2882 00000E82 458B4810            <1>  mov %1d, ik_ref(%5,0)
+  2883 00000E86 458B5014            <1>  mov %2d, ik_ref(%5,1)
+  2884 00000E8A 458B5818            <1>  mov %3d, ik_ref(%5,2)
+  2885 00000E8E 458B601C            <1>  mov %4d, ik_ref(%5,3)
+  2886                              <1> 
+  2887 00000E92 0FB6F0              <1>  movzx esi, al
+  2888 00000E95 0FB6FC              <1>  movzx edi, ah
+  2889 00000E98 C1E810              <1>  shr eax, 16
+  2890 00000E9B 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  2891 00000EA0 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  2892 00000EA5 0FB6F0              <1>  movzx esi, al
+  2893 00000EA8 0FB6FC              <1>  movzx edi, ah
+  2894 00000EAB 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  2895 00000EB0 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  2896                              <1> 
+  2897 00000EB5 0FB6F3              <1>  movzx esi, bl
+  2898 00000EB8 0FB6FF              <1>  movzx edi, bh
+  2899 00000EBB C1EB10              <1>  shr ebx, 16
+  2900 00000EBE 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  2901 00000EC3 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  2902 00000EC8 0FB6F3              <1>  movzx esi, bl
+  2903 00000ECB 0FB6FF              <1>  movzx edi, bh
+  2904 00000ECE 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  2905 00000ED3 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  2906                              <1> 
+  2907 00000ED8 0FB6F1              <1>  movzx esi, cl
+  2908 00000EDB 0FB6FD              <1>  movzx edi, ch
+  2909 00000EDE C1E910              <1>  shr ecx, 16
+  2910 00000EE1 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  2911 00000EE6 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  2912 00000EEB 0FB6F1              <1>  movzx esi, cl
+  2913 00000EEE 0FB6FD              <1>  movzx edi, ch
+  2914 00000EF1 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  2915 00000EF6 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  2916                              <1> 
+  2917 00000EFB 0FB6F2              <1>  movzx esi, dl
+  2918 00000EFE 0FB6FE              <1>  movzx edi, dh
+  2919 00000F01 C1EA10              <1>  shr edx, 16
+  2920 00000F04 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  2921 00000F09 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  2922 00000F0E 0FB6F2              <1>  movzx esi, dl
+  2923 00000F11 0FB6FE              <1>  movzx edi, dh
+  2924 00000F14 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  2925 00000F19 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  2926                              <1> 
+  2927 00000F1E 4489C8              <1>  mov eax,%1d
+  2928 00000F21 4489D3              <1>  mov ebx,%2d
+  2929 00000F24 4489D9              <1>  mov ecx,%3d
+  2930 00000F27 4489E2              <1>  mov edx,%4d
+  2931                                      ii_rnd  r9, r10, r11, r12, 6
+  2932 00000F2A 458B4820            <1>  mov %1d, ik_ref(%5,0)
+  2933 00000F2E 458B5024            <1>  mov %2d, ik_ref(%5,1)
+  2934 00000F32 458B5828            <1>  mov %3d, ik_ref(%5,2)
+  2935 00000F36 458B602C            <1>  mov %4d, ik_ref(%5,3)
+  2936                              <1> 
+  2937 00000F3A 0FB6F0              <1>  movzx esi, al
+  2938 00000F3D 0FB6FC              <1>  movzx edi, ah
+  2939 00000F40 C1E810              <1>  shr eax, 16
+  2940 00000F43 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  2941 00000F48 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  2942 00000F4D 0FB6F0              <1>  movzx esi, al
+  2943 00000F50 0FB6FC              <1>  movzx edi, ah
+  2944 00000F53 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  2945 00000F58 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  2946                              <1> 
+  2947 00000F5D 0FB6F3              <1>  movzx esi, bl
+  2948 00000F60 0FB6FF              <1>  movzx edi, bh
+  2949 00000F63 C1EB10              <1>  shr ebx, 16
+  2950 00000F66 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  2951 00000F6B 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  2952 00000F70 0FB6F3              <1>  movzx esi, bl
+  2953 00000F73 0FB6FF              <1>  movzx edi, bh
+  2954 00000F76 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  2955 00000F7B 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  2956                              <1> 
+  2957 00000F80 0FB6F1              <1>  movzx esi, cl
+  2958 00000F83 0FB6FD              <1>  movzx edi, ch
+  2959 00000F86 C1E910              <1>  shr ecx, 16
+  2960 00000F89 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  2961 00000F8E 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  2962 00000F93 0FB6F1              <1>  movzx esi, cl
+  2963 00000F96 0FB6FD              <1>  movzx edi, ch
+  2964 00000F99 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  2965 00000F9E 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  2966                              <1> 
+  2967 00000FA3 0FB6F2              <1>  movzx esi, dl
+  2968 00000FA6 0FB6FE              <1>  movzx edi, dh
+  2969 00000FA9 C1EA10              <1>  shr edx, 16
+  2970 00000FAC 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  2971 00000FB1 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  2972 00000FB6 0FB6F2              <1>  movzx esi, dl
+  2973 00000FB9 0FB6FE              <1>  movzx edi, dh
+  2974 00000FBC 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  2975 00000FC1 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  2976                              <1> 
+  2977 00000FC6 4489C8              <1>  mov eax,%1d
+  2978 00000FC9 4489D3              <1>  mov ebx,%2d
+  2979 00000FCC 4489D9              <1>  mov ecx,%3d
+  2980 00000FCF 4489E2              <1>  mov edx,%4d
+  2981                                      ii_rnd  r9, r10, r11, r12, 5
+  2982 00000FD2 458B4830            <1>  mov %1d, ik_ref(%5,0)
+  2983 00000FD6 458B5034            <1>  mov %2d, ik_ref(%5,1)
+  2984 00000FDA 458B5838            <1>  mov %3d, ik_ref(%5,2)
+  2985 00000FDE 458B603C            <1>  mov %4d, ik_ref(%5,3)
+  2986                              <1> 
+  2987 00000FE2 0FB6F0              <1>  movzx esi, al
+  2988 00000FE5 0FB6FC              <1>  movzx edi, ah
+  2989 00000FE8 C1E810              <1>  shr eax, 16
+  2990 00000FEB 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  2991 00000FF0 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  2992 00000FF5 0FB6F0              <1>  movzx esi, al
+  2993 00000FF8 0FB6FC              <1>  movzx edi, ah
+  2994 00000FFB 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  2995 00001000 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  2996                              <1> 
+  2997 00001005 0FB6F3              <1>  movzx esi, bl
+  2998 00001008 0FB6FF              <1>  movzx edi, bh
+  2999 0000100B C1EB10              <1>  shr ebx, 16
+  3000 0000100E 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  3001 00001013 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  3002 00001018 0FB6F3              <1>  movzx esi, bl
+  3003 0000101B 0FB6FF              <1>  movzx edi, bh
+  3004 0000101E 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  3005 00001023 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  3006                              <1> 
+  3007 00001028 0FB6F1              <1>  movzx esi, cl
+  3008 0000102B 0FB6FD              <1>  movzx edi, ch
+  3009 0000102E C1E910              <1>  shr ecx, 16
+  3010 00001031 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  3011 00001036 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  3012 0000103B 0FB6F1              <1>  movzx esi, cl
+  3013 0000103E 0FB6FD              <1>  movzx edi, ch
+  3014 00001041 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  3015 00001046 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  3016                              <1> 
+  3017 0000104B 0FB6F2              <1>  movzx esi, dl
+  3018 0000104E 0FB6FE              <1>  movzx edi, dh
+  3019 00001051 C1EA10              <1>  shr edx, 16
+  3020 00001054 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  3021 00001059 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  3022 0000105E 0FB6F2              <1>  movzx esi, dl
+  3023 00001061 0FB6FE              <1>  movzx edi, dh
+  3024 00001064 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  3025 00001069 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  3026                              <1> 
+  3027 0000106E 4489C8              <1>  mov eax,%1d
+  3028 00001071 4489D3              <1>  mov ebx,%2d
+  3029 00001074 4489D9              <1>  mov ecx,%3d
+  3030 00001077 4489E2              <1>  mov edx,%4d
+  3031                                      ii_rnd  r9, r10, r11, r12, 4
+  3032 0000107A 458B4840            <1>  mov %1d, ik_ref(%5,0)
+  3033 0000107E 458B5044            <1>  mov %2d, ik_ref(%5,1)
+  3034 00001082 458B5848            <1>  mov %3d, ik_ref(%5,2)
+  3035 00001086 458B604C            <1>  mov %4d, ik_ref(%5,3)
+  3036                              <1> 
+  3037 0000108A 0FB6F0              <1>  movzx esi, al
+  3038 0000108D 0FB6FC              <1>  movzx edi, ah
+  3039 00001090 C1E810              <1>  shr eax, 16
+  3040 00001093 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  3041 00001098 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  3042 0000109D 0FB6F0              <1>  movzx esi, al
+  3043 000010A0 0FB6FC              <1>  movzx edi, ah
+  3044 000010A3 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  3045 000010A8 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  3046                              <1> 
+  3047 000010AD 0FB6F3              <1>  movzx esi, bl
+  3048 000010B0 0FB6FF              <1>  movzx edi, bh
+  3049 000010B3 C1EB10              <1>  shr ebx, 16
+  3050 000010B6 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  3051 000010BB 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  3052 000010C0 0FB6F3              <1>  movzx esi, bl
+  3053 000010C3 0FB6FF              <1>  movzx edi, bh
+  3054 000010C6 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  3055 000010CB 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  3056                              <1> 
+  3057 000010D0 0FB6F1              <1>  movzx esi, cl
+  3058 000010D3 0FB6FD              <1>  movzx edi, ch
+  3059 000010D6 C1E910              <1>  shr ecx, 16
+  3060 000010D9 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  3061 000010DE 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  3062 000010E3 0FB6F1              <1>  movzx esi, cl
+  3063 000010E6 0FB6FD              <1>  movzx edi, ch
+  3064 000010E9 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  3065 000010EE 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  3066                              <1> 
+  3067 000010F3 0FB6F2              <1>  movzx esi, dl
+  3068 000010F6 0FB6FE              <1>  movzx edi, dh
+  3069 000010F9 C1EA10              <1>  shr edx, 16
+  3070 000010FC 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  3071 00001101 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  3072 00001106 0FB6F2              <1>  movzx esi, dl
+  3073 00001109 0FB6FE              <1>  movzx edi, dh
+  3074 0000110C 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  3075 00001111 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  3076                              <1> 
+  3077 00001116 4489C8              <1>  mov eax,%1d
+  3078 00001119 4489D3              <1>  mov ebx,%2d
+  3079 0000111C 4489D9              <1>  mov ecx,%3d
+  3080 0000111F 4489E2              <1>  mov edx,%4d
+  3081                                      ii_rnd  r9, r10, r11, r12, 3
+  3082 00001122 458B4850            <1>  mov %1d, ik_ref(%5,0)
+  3083 00001126 458B5054            <1>  mov %2d, ik_ref(%5,1)
+  3084 0000112A 458B5858            <1>  mov %3d, ik_ref(%5,2)
+  3085 0000112E 458B605C            <1>  mov %4d, ik_ref(%5,3)
+  3086                              <1> 
+  3087 00001132 0FB6F0              <1>  movzx esi, al
+  3088 00001135 0FB6FC              <1>  movzx edi, ah
+  3089 00001138 C1E810              <1>  shr eax, 16
+  3090 0000113B 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  3091 00001140 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  3092 00001145 0FB6F0              <1>  movzx esi, al
+  3093 00001148 0FB6FC              <1>  movzx edi, ah
+  3094 0000114B 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  3095 00001150 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  3096                              <1> 
+  3097 00001155 0FB6F3              <1>  movzx esi, bl
+  3098 00001158 0FB6FF              <1>  movzx edi, bh
+  3099 0000115B C1EB10              <1>  shr ebx, 16
+  3100 0000115E 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  3101 00001163 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  3102 00001168 0FB6F3              <1>  movzx esi, bl
+  3103 0000116B 0FB6FF              <1>  movzx edi, bh
+  3104 0000116E 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  3105 00001173 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  3106                              <1> 
+  3107 00001178 0FB6F1              <1>  movzx esi, cl
+  3108 0000117B 0FB6FD              <1>  movzx edi, ch
+  3109 0000117E C1E910              <1>  shr ecx, 16
+  3110 00001181 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  3111 00001186 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  3112 0000118B 0FB6F1              <1>  movzx esi, cl
+  3113 0000118E 0FB6FD              <1>  movzx edi, ch
+  3114 00001191 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  3115 00001196 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  3116                              <1> 
+  3117 0000119B 0FB6F2              <1>  movzx esi, dl
+  3118 0000119E 0FB6FE              <1>  movzx edi, dh
+  3119 000011A1 C1EA10              <1>  shr edx, 16
+  3120 000011A4 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  3121 000011A9 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  3122 000011AE 0FB6F2              <1>  movzx esi, dl
+  3123 000011B1 0FB6FE              <1>  movzx edi, dh
+  3124 000011B4 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  3125 000011B9 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  3126                              <1> 
+  3127 000011BE 4489C8              <1>  mov eax,%1d
+  3128 000011C1 4489D3              <1>  mov ebx,%2d
+  3129 000011C4 4489D9              <1>  mov ecx,%3d
+  3130 000011C7 4489E2              <1>  mov edx,%4d
+  3131                                      ii_rnd  r9, r10, r11, r12, 2
+  3132 000011CA 458B4860            <1>  mov %1d, ik_ref(%5,0)
+  3133 000011CE 458B5064            <1>  mov %2d, ik_ref(%5,1)
+  3134 000011D2 458B5868            <1>  mov %3d, ik_ref(%5,2)
+  3135 000011D6 458B606C            <1>  mov %4d, ik_ref(%5,3)
+  3136                              <1> 
+  3137 000011DA 0FB6F0              <1>  movzx esi, al
+  3138 000011DD 0FB6FC              <1>  movzx edi, ah
+  3139 000011E0 C1E810              <1>  shr eax, 16
+  3140 000011E3 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  3141 000011E8 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  3142 000011ED 0FB6F0              <1>  movzx esi, al
+  3143 000011F0 0FB6FC              <1>  movzx edi, ah
+  3144 000011F3 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  3145 000011F8 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  3146                              <1> 
+  3147 000011FD 0FB6F3              <1>  movzx esi, bl
+  3148 00001200 0FB6FF              <1>  movzx edi, bh
+  3149 00001203 C1EB10              <1>  shr ebx, 16
+  3150 00001206 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  3151 0000120B 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  3152 00001210 0FB6F3              <1>  movzx esi, bl
+  3153 00001213 0FB6FF              <1>  movzx edi, bh
+  3154 00001216 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  3155 0000121B 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  3156                              <1> 
+  3157 00001220 0FB6F1              <1>  movzx esi, cl
+  3158 00001223 0FB6FD              <1>  movzx edi, ch
+  3159 00001226 C1E910              <1>  shr ecx, 16
+  3160 00001229 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  3161 0000122E 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  3162 00001233 0FB6F1              <1>  movzx esi, cl
+  3163 00001236 0FB6FD              <1>  movzx edi, ch
+  3164 00001239 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  3165 0000123E 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  3166                              <1> 
+  3167 00001243 0FB6F2              <1>  movzx esi, dl
+  3168 00001246 0FB6FE              <1>  movzx edi, dh
+  3169 00001249 C1EA10              <1>  shr edx, 16
+  3170 0000124C 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  3171 00001251 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  3172 00001256 0FB6F2              <1>  movzx esi, dl
+  3173 00001259 0FB6FE              <1>  movzx edi, dh
+  3174 0000125C 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  3175 00001261 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  3176                              <1> 
+  3177 00001266 4489C8              <1>  mov eax,%1d
+  3178 00001269 4489D3              <1>  mov ebx,%2d
+  3179 0000126C 4489D9              <1>  mov ecx,%3d
+  3180 0000126F 4489E2              <1>  mov edx,%4d
+  3181                                      ii_rnd  r9, r10, r11, r12, 1
+  3182 00001272 458B4870            <1>  mov %1d, ik_ref(%5,0)
+  3183 00001276 458B5074            <1>  mov %2d, ik_ref(%5,1)
+  3184 0000127A 458B5878            <1>  mov %3d, ik_ref(%5,2)
+  3185 0000127E 458B607C            <1>  mov %4d, ik_ref(%5,3)
+  3186                              <1> 
+  3187 00001282 0FB6F0              <1>  movzx esi, al
+  3188 00001285 0FB6FC              <1>  movzx edi, ah
+  3189 00001288 C1E810              <1>  shr eax, 16
+  3190 0000128B 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  3191 00001290 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  3192 00001295 0FB6F0              <1>  movzx esi, al
+  3193 00001298 0FB6FC              <1>  movzx edi, ah
+  3194 0000129B 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  3195 000012A0 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  3196                              <1> 
+  3197 000012A5 0FB6F3              <1>  movzx esi, bl
+  3198 000012A8 0FB6FF              <1>  movzx edi, bh
+  3199 000012AB C1EB10              <1>  shr ebx, 16
+  3200 000012AE 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  3201 000012B3 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  3202 000012B8 0FB6F3              <1>  movzx esi, bl
+  3203 000012BB 0FB6FF              <1>  movzx edi, bh
+  3204 000012BE 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  3205 000012C3 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  3206                              <1> 
+  3207 000012C8 0FB6F1              <1>  movzx esi, cl
+  3208 000012CB 0FB6FD              <1>  movzx edi, ch
+  3209 000012CE C1E910              <1>  shr ecx, 16
+  3210 000012D1 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  3211 000012D6 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  3212 000012DB 0FB6F1              <1>  movzx esi, cl
+  3213 000012DE 0FB6FD              <1>  movzx edi, ch
+  3214 000012E1 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  3215 000012E6 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  3216                              <1> 
+  3217 000012EB 0FB6F2              <1>  movzx esi, dl
+  3218 000012EE 0FB6FE              <1>  movzx edi, dh
+  3219 000012F1 C1EA10              <1>  shr edx, 16
+  3220 000012F4 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  3221 000012F9 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  3222 000012FE 0FB6F2              <1>  movzx esi, dl
+  3223 00001301 0FB6FE              <1>  movzx edi, dh
+  3224 00001304 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  3225 00001309 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  3226                              <1> 
+  3227 0000130E 4489C8              <1>  mov eax,%1d
+  3228 00001311 4489D3              <1>  mov ebx,%2d
+  3229 00001314 4489D9              <1>  mov ecx,%3d
+  3230 00001317 4489E2              <1>  mov edx,%4d
+  3231                                      il_rnd  r9, r10, r11, r12, 0
+  3232 0000131A 4881C500080000      <1>  add tptr, 2048
+  3233 00001321 458B8880000000      <1>  mov %1d, ik_ref(%5,0)
+  3234 00001328 458B9084000000      <1>  mov %2d, ik_ref(%5,1)
+  3235 0000132F 458B9888000000      <1>  mov %3d, ik_ref(%5,2)
+  3236 00001336 458BA08C000000      <1>  mov %4d, ik_ref(%5,3)
+  3237                              <1> 
+  3238 0000133D 0FB6F0              <1>  movzx esi, al
+  3239 00001340 0FB6FC              <1>  movzx edi, ah
+  3240 00001343 C1E810              <1>  shr eax, 16
+  3241 00001346 44334CF500          <1>  xor %1d, t_ref(0,rsi)
+  3242 0000134B 443354FD03          <1>  xor %2d, t_ref(1,rdi)
+  3243 00001350 0FB6F0              <1>  movzx esi, al
+  3244 00001353 0FB6FC              <1>  movzx edi, ah
+  3245 00001356 44335CF502          <1>  xor %3d, t_ref(2,rsi)
+  3246 0000135B 443364FD01          <1>  xor %4d, t_ref(3,rdi)
+  3247                              <1> 
+  3248 00001360 0FB6F3              <1>  movzx esi, bl
+  3249 00001363 0FB6FF              <1>  movzx edi, bh
+  3250 00001366 C1EB10              <1>  shr ebx, 16
+  3251 00001369 443354F500          <1>  xor %2d, t_ref(0,rsi)
+  3252 0000136E 44335CFD03          <1>  xor %3d, t_ref(1,rdi)
+  3253 00001373 0FB6F3              <1>  movzx esi, bl
+  3254 00001376 0FB6FF              <1>  movzx edi, bh
+  3255 00001379 443364F502          <1>  xor %4d, t_ref(2,rsi)
+  3256 0000137E 44334CFD01          <1>  xor %1d, t_ref(3,rdi)
+  3257                              <1> 
+  3258 00001383 0FB6F1              <1>  movzx esi, cl
+  3259 00001386 0FB6FD              <1>  movzx edi, ch
+  3260 00001389 C1E910              <1>  shr ecx, 16
+  3261 0000138C 44335CF500          <1>  xor %3d, t_ref(0,rsi)
+  3262 00001391 443364FD03          <1>  xor %4d, t_ref(1,rdi)
+  3263 00001396 0FB6F1              <1>  movzx esi, cl
+  3264 00001399 0FB6FD              <1>  movzx edi, ch
+  3265 0000139C 44334CF502          <1>  xor %1d, t_ref(2,rsi)
+  3266 000013A1 443354FD01          <1>  xor %2d, t_ref(3,rdi)
+  3267                              <1> 
+  3268 000013A6 0FB6F2              <1>  movzx esi, dl
+  3269 000013A9 0FB6FE              <1>  movzx edi, dh
+  3270 000013AC C1EA10              <1>  shr edx, 16
+  3271 000013AF 443364F500          <1>  xor %4d, t_ref(0,rsi)
+  3272 000013B4 44334CFD03          <1>  xor %1d, t_ref(1,rdi)
+  3273 000013B9 0FB6F2              <1>  movzx esi, dl
+  3274 000013BC 0FB6FE              <1>  movzx edi, dh
+  3275 000013BF 443354F502          <1>  xor %2d, t_ref(2,rsi)
+  3276 000013C4 44335CFD01          <1>  xor %3d, t_ref(3,rdi)
+  3277                                  
+  3278 000013C9 488B1C24                    mov     rbx, [rsp]
+  3279 000013CD 44890B                      mov     [rbx], r9d
+  3280 000013D0 44895304                    mov     [rbx+4], r10d
+  3281 000013D4 44895B08                    mov     [rbx+8], r11d
+  3282 000013D8 4489630C                    mov     [rbx+12], r12d
+  3283 000013DC 4831C0                      xor     rax, rax
+  3284 000013DF 488B5C2408              .4: mov     rbx, [rsp+1*8]
+  3285 000013E4 488B6C2410                  mov     rbp, [rsp+2*8]
+  3286 000013E9 4C8B642418                  mov     r12, [rsp+3*8]
+  3287                                  %ifdef __GNUC__
+  3288                                      add     rsp, 4*8
+  3289                                      ret
+  3290                                  %else
+  3291 000013EE 488B742420              		mov     rsi, [rsp+4*8]
+  3292 000013F3 488B7C2428              		mov     rdi, [rsp+5*8]
+  3293                                  	%ifdef _SEH_
+  3294                                  		add     rsp, 7*8
+  3295                                  		ret
+  3296                                  	endproc_frame
+  3297                                  	%else
+  3298 000013F8 4883C430                		add     rsp, 6*8
+  3299 000013FC C3                      		ret
+  3300                                  	%endif
+  3301                                  %endif
+  3302                                  
+  3303                                  %endif

@@ -1,0 +1,129 @@
+;	Static Name Aliases
+;
+	TITLE   ..\..\..\common\endian.c
+	.MODEL  SMALL
+	.386p
+	.387
+_TEXT	SEGMENT  WORD USE16 PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD USE16 PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD USE16 PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD USE16 PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	__aNlshl:NEAR
+EXTRN	__aNulshr:NEAR
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+	PUBLIC	_MirrorBytes16
+_MirrorBytes16	PROC NEAR	;  COMDAT
+;|*** /*
+;|***  Legal Notice: Some portions of the source code contained in this file were
+;|***  derived from the source code of Encryption for the Masses 2.02a, which is
+;|***  Copyright (c) 1998-2000 Paul Le Roux and which is governed by the 'License
+;|***  Agreement for Encryption for the Masses'. Modifications and additions to
+;|***  the original source code (contained in this file) and all other portions
+;|***  of this file are Copyright (c) 2003-2009 TrueCrypt Developers Association
+;|***  and are governed by the TrueCrypt License 3.0 the full text of which is
+;|***  contained in the file License.txt included in TrueCrypt binary and source
+;|***  code distribution packages. */
+;|*** 
+;|*** #include "Endian.h"
+;|*** 
+;|*** 
+;|*** unsigned __int16 MirrorBytes16 (unsigned __int16 x)
+;|*** {
+; Line 16
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	x = 4
+	*** 000003	8b 56 04 		mov	dx,WORD PTR [bp+4]	;x
+;|*** 	return (x << 8) | (x >> 8);
+; Line 17
+	*** 000006	8b c2 			mov	ax,dx
+	*** 000008	8b ca 			mov	cx,dx
+	*** 00000a	8a e0 			mov	ah,al
+	*** 00000c	8a c5 			mov	al,ch
+;|*** }
+; Line 18
+	*** 00000e	c9 			leave	
+	*** 00000f	c3 			ret	
+
+_MirrorBytes16	ENDP
+	PUBLIC	_MirrorBytes32
+_MirrorBytes32	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** unsigned __int32 MirrorBytes32 (unsigned __int32 x)
+;|*** {
+; Line 22
+	*** 000000	c8 08 00 00 		enter	8,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	x = 4
+;	n = -4
+;|*** 	unsigned __int32 n = (unsigned __int8) x;
+;|*** 	n <<= 8; n |= (unsigned __int8) (x >> 8);
+;|*** 	n <<= 8; n |= (unsigned __int8) (x >> 16);
+;|*** 	return (n << 8) | (unsigned __int8) (x >> 24);
+; Line 26
+	*** 000006	8a 46 06 		mov	al,BYTE PTR [bp+6]
+	*** 000009	2a e4 			sub	ah,ah
+	*** 00000b	8a 4e 04 		mov	cl,BYTE PTR [bp+4]	;x
+	*** 00000e	2a ed 			sub	ch,ch
+	*** 000010	2b db 			sub	bx,bx
+	*** 000012	8b d1 			mov	dx,cx
+	*** 000014	b1 08 			mov	cl,8
+	*** 000016	e8 00 00 		call	__aNlshl
+	*** 000019	8b c8 			mov	cx,ax
+	*** 00001b	8b da 			mov	bx,dx
+	*** 00001d	8b 56 06 		mov	dx,WORD PTR [bp+6]
+	*** 000020	8b f0 			mov	si,ax
+	*** 000022	b1 08 			mov	cl,8
+	*** 000024	8b c2 			mov	ax,dx
+	*** 000026	c1 e8 08 		shr	ax,8
+	*** 000029	2a e4 			sub	ah,ah
+	*** 00002b	2b d2 			sub	dx,dx
+	*** 00002d	8b ca 			mov	cx,dx
+	*** 00002f	b1 08 			mov	cl,8
+	*** 000031	89 46 fc 		mov	WORD PTR [bp-4],ax	;n
+	*** 000034	89 56 fe 		mov	WORD PTR [bp-2],dx
+	*** 000037	8b 46 04 		mov	ax,WORD PTR [bp+4]	;x
+	*** 00003a	8b 56 06 		mov	dx,WORD PTR [bp+6]
+	*** 00003d	8b fb 			mov	di,bx
+	*** 00003f	e8 00 00 		call	__aNulshr
+	*** 000042	2a e4 			sub	ah,ah
+	*** 000044	89 46 fa 		mov	WORD PTR [bp-6],ax
+	*** 000047	8b c6 			mov	ax,si
+	*** 000049	8b d7 			mov	dx,di
+	*** 00004b	0b 56 fa 		or	dx,WORD PTR [bp-6]
+	*** 00004e	0b 46 fc 		or	ax,WORD PTR [bp-4]	;n
+	*** 000051	0b 56 fe 		or	dx,WORD PTR [bp-2]
+;|*** }
+; Line 27
+	*** 000054	5e 			pop	si
+	*** 000055	5f 			pop	di
+	*** 000056	c9 			leave	
+	*** 000057	c3 			ret	
+
+_MirrorBytes32	ENDP
+_TEXT	ENDS
+END
+;|*** 
+;|*** #ifndef TC_NO_COMPILER_INT64
+;|*** uint64 MirrorBytes64 (uint64 x)
+;|*** {
+;|*** 	uint64 n = (unsigned __int8) x;
+;|*** 	n <<= 8; n |= (unsigned __int8) (x >> 8);
+;|*** 	n <<= 8; n |= (unsigned __int8) (x >> 16);
+;|*** 	n <<= 8; n |= (unsigned __int8) (x >> 24);
+;|*** 	n <<= 8; n |= (unsigned __int8) (x >> 32);
+;|*** 	n <<= 8; n |= (unsigned __int8) (x >> 40);
+;|*** 	n <<= 8; n |= (unsigned __int8) (x >> 48);
+;|*** 	return (n << 8) | (unsigned __int8) (x >> 56);
+;|*** }
+;|*** #endif
+;|*** 
