@@ -1,0 +1,5 @@
+BUILD: Computing Include file dependencies:
+BUILD: Examining c:\home\public\desktop\projects\ciphershed.build\src\common directory for files to compile.
+1>Compiling c:\home\public\desktop\projects\ciphershed.build\src\common *************
+1>'nmake.exe /nologo BUILDMSG=Stop. /S /C -i BUILD_PASS=PASS1 NOLINK=1 NOPASS0=1 MAKEDIR_RELATIVE_TO_BASEDIR='
+1>BUILDMSG: _NT_TARGET_VERSION SET TO WS03
