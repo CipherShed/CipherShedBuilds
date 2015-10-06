@@ -1,0 +1,694 @@
+  Microsoft.VisualStudio.TestTools.Resources.FrameworkMessages.resources - Embedded, ContainedInManifestFile, 
+Assembly Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=SHA1, flags=None
+Assembly System.Configuration, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: 
+	hash=SHA1, flags=None
+Assembly System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=SHA1, flags=None
+Assembly System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=SHA1, flags=None
+Assembly System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: 
+	hash=SHA1, flags=None
+Assembly System.Web.Services, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a: 
+	hash=SHA1, flags=None
+Class Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestAssertException: AutoLayout, AnsiClass, Class, Public, Abstract, Serializable, BeforeFieldInit
+  :System.Exception
+    Void .ctor(Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage): PrivateScope, Assembly, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage, System.Exception): PrivateScope, Assembly, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String Message 'get ' : 
+  Methods:
+    get_Message(): PrivateScope, Public, Virtual, HideBySig, SpecialName
+    GetObjectData(SerializationInfo, StreamingContext): PrivateScope, Public, Virtual, HideBySig, HasSecurity
+Class Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException: AutoLayout, AnsiClass, Class, Public, Serializable, BeforeFieldInit
+  :Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestAssertException
+    Void .ctor(Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage): PrivateScope, Assembly, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage, System.Exception): PrivateScope, Assembly, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String, System.Exception): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.AssertInconclusiveException: AutoLayout, AnsiClass, Class, Public, Serializable, BeforeFieldInit
+  :Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestAssertException
+    Void .ctor(Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage): PrivateScope, Assembly, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage, System.Exception): PrivateScope, Assembly, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String, System.Exception): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.InternalTestFailureException: AutoLayout, AnsiClass, Class, Public, Serializable, BeforeFieldInit
+  :Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestAssertException
+    Void .ctor(Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage): PrivateScope, Assembly, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage, System.Exception): PrivateScope, Assembly, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String, System.Exception): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.Assert: AutoLayout, AnsiClass, Class, Public, Abstract, Sealed, BeforeFieldInit
+  Methods:
+    IsTrue(Boolean): PrivateScope, Public, Static, HideBySig
+    IsTrue(Boolean, String): PrivateScope, Public, Static, HideBySig
+    IsTrue(Boolean, String, Object[]): PrivateScope, Public, Static, HideBySig
+    IsFalse(Boolean): PrivateScope, Public, Static, HideBySig
+    IsFalse(Boolean, String): PrivateScope, Public, Static, HideBySig
+    IsFalse(Boolean, String, Object[]): PrivateScope, Public, Static, HideBySig
+    IsNull(Object): PrivateScope, Public, Static, HideBySig
+    IsNull(Object, String): PrivateScope, Public, Static, HideBySig
+    IsNull(Object, String, Object[]): PrivateScope, Public, Static, HideBySig
+    IsNotNull(Object): PrivateScope, Public, Static, HideBySig
+    IsNotNull(Object, String): PrivateScope, Public, Static, HideBySig
+    IsNotNull(Object, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreSame(Object, Object): PrivateScope, Public, Static, HideBySig
+    AreSame(Object, Object, String): PrivateScope, Public, Static, HideBySig
+    AreSame(Object, Object, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreNotSame(Object, Object): PrivateScope, Public, Static, HideBySig
+    AreNotSame(Object, Object, String): PrivateScope, Public, Static, HideBySig
+    AreNotSame(Object, Object, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreEqual(T, T): PrivateScope, Public, Static, HideBySig
+    AreEqual(T, T, String): PrivateScope, Public, Static, HideBySig
+    AreEqual(T, T, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(T, T): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(T, T, String): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(T, T, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreEqual(Object, Object): PrivateScope, Public, Static, HideBySig
+    AreEqual(Object, Object, String): PrivateScope, Public, Static, HideBySig
+    AreEqual(Object, Object, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(Object, Object): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(Object, Object, String): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(Object, Object, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreEqual(Single, Single, Single): PrivateScope, Public, Static, HideBySig
+    AreEqual(Single, Single, Single, String): PrivateScope, Public, Static, HideBySig
+    AreEqual(Single, Single, Single, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(Single, Single, Single): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(Single, Single, Single, String): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(Single, Single, Single, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreEqual(Double, Double, Double): PrivateScope, Public, Static, HideBySig
+    AreEqual(Double, Double, Double, String): PrivateScope, Public, Static, HideBySig
+    AreEqual(Double, Double, Double, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(Double, Double, Double): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(Double, Double, Double, String): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(Double, Double, Double, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreEqual(String, String, Boolean): PrivateScope, Public, Static, HideBySig
+    AreEqual(String, String, Boolean, String): PrivateScope, Public, Static, HideBySig
+    AreEqual(String, String, Boolean, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreEqual(String, String, Boolean, CultureInfo): PrivateScope, Public, Static, HideBySig
+    AreEqual(String, String, Boolean, CultureInfo, String): PrivateScope, Public, Static, HideBySig
+    AreEqual(String, String, Boolean, CultureInfo, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(String, String, Boolean): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(String, String, Boolean, String): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(String, String, Boolean, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(String, String, Boolean, CultureInfo): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(String, String, Boolean, CultureInfo, String): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(String, String, Boolean, CultureInfo, String, Object[]): PrivateScope, Public, Static, HideBySig
+    IsInstanceOfType(Object, Type): PrivateScope, Public, Static, HideBySig
+    IsInstanceOfType(Object, Type, String): PrivateScope, Public, Static, HideBySig
+    IsInstanceOfType(Object, Type, String, Object[]): PrivateScope, Public, Static, HideBySig
+    IsNotInstanceOfType(Object, Type): PrivateScope, Public, Static, HideBySig
+    IsNotInstanceOfType(Object, Type, String): PrivateScope, Public, Static, HideBySig
+    IsNotInstanceOfType(Object, Type, String, Object[]): PrivateScope, Public, Static, HideBySig
+    Fail(): PrivateScope, Public, Static, HideBySig
+    Fail(String): PrivateScope, Public, Static, HideBySig
+    Fail(String, Object[]): PrivateScope, Public, Static, HideBySig
+    Inconclusive(): PrivateScope, Public, Static, HideBySig
+    Inconclusive(String): PrivateScope, Public, Static, HideBySig
+    Inconclusive(String, Object[]): PrivateScope, Public, Static, HideBySig
+    Equals(Object, Object): PrivateScope, Public, Static, HideBySig
+    HandleFail(String, String, Object[]): PrivateScope, Assembly, Static, HideBySig
+    CheckParameterNotNull(Object, String, String, String, Object[]): PrivateScope, Assembly, Static, HideBySig
+    ReplaceNulls(Object): PrivateScope, Assembly, Static, HideBySig
+    ReplaceNullChars(String): PrivateScope, Public, Static, HideBySig
+Class Microsoft.VisualStudio.TestTools.UnitTesting.Helper: AutoLayout, AnsiClass, Class, Abstract, Sealed, BeforeFieldInit
+  Methods:
+    CheckParameterNotNull(Object, String, String): PrivateScope, Assembly, Static, HideBySig
+    CheckParameterNotNullOrEmpty(String, String, String): PrivateScope, Assembly, Static, HideBySig
+    ThrowInnerException(TargetInvocationException): PrivateScope, Assembly, Static, HideBySig
+Class Microsoft.VisualStudio.TestTools.UnitTesting.StringAssert: AutoLayout, AnsiClass, Class, Public, Abstract, Sealed, BeforeFieldInit
+  Methods:
+    Contains(String, String): PrivateScope, Public, Static, HideBySig
+    Contains(String, String, String): PrivateScope, Public, Static, HideBySig
+    Contains(String, String, String, Object[]): PrivateScope, Public, Static, HideBySig
+    StartsWith(String, String): PrivateScope, Public, Static, HideBySig
+    StartsWith(String, String, String): PrivateScope, Public, Static, HideBySig
+    StartsWith(String, String, String, Object[]): PrivateScope, Public, Static, HideBySig
+    EndsWith(String, String): PrivateScope, Public, Static, HideBySig
+    EndsWith(String, String, String): PrivateScope, Public, Static, HideBySig
+    EndsWith(String, String, String, Object[]): PrivateScope, Public, Static, HideBySig
+    Matches(String, Regex): PrivateScope, Public, Static, HideBySig
+    Matches(String, Regex, String): PrivateScope, Public, Static, HideBySig
+    Matches(String, Regex, String, Object[]): PrivateScope, Public, Static, HideBySig
+    DoesNotMatch(String, Regex): PrivateScope, Public, Static, HideBySig
+    DoesNotMatch(String, Regex, String): PrivateScope, Public, Static, HideBySig
+    DoesNotMatch(String, Regex, String, Object[]): PrivateScope, Public, Static, HideBySig
+Class Microsoft.VisualStudio.TestTools.UnitTesting.CollectionAssert: AutoLayout, AnsiClass, Class, Public, Abstract, Sealed, BeforeFieldInit
+  Methods:
+    Contains(ICollection, Object): PrivateScope, Public, Static, HideBySig
+    Contains(ICollection, Object, String): PrivateScope, Public, Static, HideBySig
+    Contains(ICollection, Object, String, Object[]): PrivateScope, Public, Static, HideBySig
+    DoesNotContain(ICollection, Object): PrivateScope, Public, Static, HideBySig
+    DoesNotContain(ICollection, Object, String): PrivateScope, Public, Static, HideBySig
+    DoesNotContain(ICollection, Object, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AllItemsAreNotNull(ICollection): PrivateScope, Public, Static, HideBySig
+    AllItemsAreNotNull(ICollection, String): PrivateScope, Public, Static, HideBySig
+    AllItemsAreNotNull(ICollection, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AllItemsAreUnique(ICollection): PrivateScope, Public, Static, HideBySig
+    AllItemsAreUnique(ICollection, String): PrivateScope, Public, Static, HideBySig
+    AllItemsAreUnique(ICollection, String, Object[]): PrivateScope, Public, Static, HideBySig
+    IsSubsetOf(ICollection, ICollection): PrivateScope, Public, Static, HideBySig
+    IsSubsetOf(ICollection, ICollection, String): PrivateScope, Public, Static, HideBySig
+    IsSubsetOf(ICollection, ICollection, String, Object[]): PrivateScope, Public, Static, HideBySig
+    IsNotSubsetOf(ICollection, ICollection): PrivateScope, Public, Static, HideBySig
+    IsNotSubsetOf(ICollection, ICollection, String): PrivateScope, Public, Static, HideBySig
+    IsNotSubsetOf(ICollection, ICollection, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreEquivalent(ICollection, ICollection): PrivateScope, Public, Static, HideBySig
+    AreEquivalent(ICollection, ICollection, String): PrivateScope, Public, Static, HideBySig
+    AreEquivalent(ICollection, ICollection, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreNotEquivalent(ICollection, ICollection): PrivateScope, Public, Static, HideBySig
+    AreNotEquivalent(ICollection, ICollection, String): PrivateScope, Public, Static, HideBySig
+    AreNotEquivalent(ICollection, ICollection, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AllItemsAreInstancesOfType(ICollection, Type): PrivateScope, Public, Static, HideBySig
+    AllItemsAreInstancesOfType(ICollection, Type, String): PrivateScope, Public, Static, HideBySig
+    AllItemsAreInstancesOfType(ICollection, Type, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreEqual(ICollection, ICollection): PrivateScope, Public, Static, HideBySig
+    AreEqual(ICollection, ICollection, String): PrivateScope, Public, Static, HideBySig
+    AreEqual(ICollection, ICollection, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(ICollection, ICollection): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(ICollection, ICollection, String): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(ICollection, ICollection, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreEqual(ICollection, ICollection, IComparer): PrivateScope, Public, Static, HideBySig
+    AreEqual(ICollection, ICollection, IComparer, String): PrivateScope, Public, Static, HideBySig
+    AreEqual(ICollection, ICollection, IComparer, String, Object[]): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(ICollection, ICollection, IComparer): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(ICollection, ICollection, IComparer, String): PrivateScope, Public, Static, HideBySig
+    AreNotEqual(ICollection, ICollection, IComparer, String, Object[]): PrivateScope, Public, Static, HideBySig
+    IsSubsetOfHelper(ICollection, ICollection): PrivateScope, Assembly, Static, HideBySig
+Class Microsoft.VisualStudio.TestTools.UnitTesting.Web.UrlToTestAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String UrlToTest 'get ' : 
+  Methods:
+    get_UrlToTest(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.Web.AspNetDevelopmentServerAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.String, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String, System.String, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String Name 'get ' : 
+    System.String PathToWebApp 'get ' : 
+    System.String WebAppRoot 'get ' : 
+  Methods:
+    get_Name(): PrivateScope, Public, HideBySig, SpecialName
+    get_PathToWebApp(): PrivateScope, Public, HideBySig, SpecialName
+    get_WebAppRoot(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.Web.AspNetDevelopmentServerHostAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String PathToWebApp 'get ' : 
+    System.String WebAppRoot 'get ' : 
+  Methods:
+    get_PathToWebApp(): PrivateScope, Public, HideBySig, SpecialName
+    get_WebAppRoot(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.Web.CredentialAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.String, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String, System.String, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String UserName 'get ' : 
+    System.String Password 'get ' : 
+    System.String Domain 'get ' : 
+  Methods:
+    get_UserName(): PrivateScope, Public, HideBySig, SpecialName
+    get_Password(): PrivateScope, Public, HideBySig, SpecialName
+    get_Domain(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.PrivateType: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.String, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.Type): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.Type ReferencedType 'get ' : 
+  Methods:
+    get_ReferencedType(): PrivateScope, Public, HideBySig, SpecialName
+    InvokeStatic(String, Object[]): PrivateScope, Public, HideBySig
+    InvokeStatic(String, Type[], Object[]): PrivateScope, Public, HideBySig
+    InvokeStatic(String, Type[], Object[], Type[]): PrivateScope, Public, HideBySig
+    InvokeStatic(String, Object[], CultureInfo): PrivateScope, Public, HideBySig
+    InvokeStatic(String, Type[], Object[], CultureInfo): PrivateScope, Public, HideBySig
+    InvokeStatic(String, BindingFlags, Object[]): PrivateScope, Public, HideBySig
+    InvokeStatic(String, BindingFlags, Type[], Object[]): PrivateScope, Public, HideBySig
+    InvokeStatic(String, BindingFlags, Object[], CultureInfo): PrivateScope, Public, HideBySig
+    InvokeStatic(String, BindingFlags, Type[], Object[], CultureInfo): PrivateScope, Public, HideBySig
+    InvokeStatic(String, BindingFlags, Type[], Object[], CultureInfo, Type[]): PrivateScope, Public, HideBySig
+    GetStaticArrayElement(String, Int32[]): PrivateScope, Public, HideBySig
+    SetStaticArrayElement(String, Object, Int32[]): PrivateScope, Public, HideBySig
+    GetStaticArrayElement(String, BindingFlags, Int32[]): PrivateScope, Public, HideBySig
+    SetStaticArrayElement(String, BindingFlags, Object, Int32[]): PrivateScope, Public, HideBySig
+    GetStaticField(String): PrivateScope, Public, HideBySig
+    SetStaticField(String, Object): PrivateScope, Public, HideBySig
+    GetStaticField(String, BindingFlags): PrivateScope, Public, HideBySig
+    SetStaticField(String, BindingFlags, Object): PrivateScope, Public, HideBySig
+    GetStaticFieldOrProperty(String): PrivateScope, Public, HideBySig
+    SetStaticFieldOrProperty(String, Object): PrivateScope, Public, HideBySig
+    GetStaticFieldOrProperty(String, BindingFlags): PrivateScope, Public, HideBySig
+    SetStaticFieldOrProperty(String, BindingFlags, Object): PrivateScope, Public, HideBySig
+    GetStaticProperty(String, Object[]): PrivateScope, Public, HideBySig
+    SetStaticProperty(String, Object, Object[]): PrivateScope, Public, HideBySig
+    SetStaticProperty(String, Object, Type[], Object[]): PrivateScope, Public, HideBySig
+    GetStaticProperty(String, BindingFlags, Object[]): PrivateScope, Public, HideBySig
+    GetStaticProperty(String, BindingFlags, Type[], Object[]): PrivateScope, Public, HideBySig
+    SetStaticProperty(String, BindingFlags, Object, Object[]): PrivateScope, Public, HideBySig
+    SetStaticProperty(String, BindingFlags, Object, Type[], Object[]): PrivateScope, Public, HideBySig
+Class Microsoft.VisualStudio.TestTools.UnitTesting.PrivateObject: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.Object, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String, System.String, System.Object[]): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String, System.String, System.Type[], System.Object[]): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.Type, System.Object[]): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.Type, System.Type[], System.Object[]): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.Object): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.Object, Microsoft.VisualStudio.TestTools.UnitTesting.PrivateType): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.Object Target 'get set' : 
+    System.Type RealType 'get ' : 
+  Methods:
+    GetHashCode(): PrivateScope, Public, Virtual, HideBySig
+    Equals(Object): PrivateScope, Public, Virtual, HideBySig
+    get_Target(): PrivateScope, Public, HideBySig, SpecialName
+    set_Target(Object): PrivateScope, Public, HideBySig, SpecialName
+    get_RealType(): PrivateScope, Public, HideBySig, SpecialName
+    Invoke(String, Object[]): PrivateScope, Public, HideBySig
+    Invoke(String, Type[], Object[]): PrivateScope, Public, HideBySig
+    Invoke(String, Type[], Object[], Type[]): PrivateScope, Public, HideBySig
+    Invoke(String, Object[], CultureInfo): PrivateScope, Public, HideBySig
+    Invoke(String, Type[], Object[], CultureInfo): PrivateScope, Public, HideBySig
+    Invoke(String, BindingFlags, Object[]): PrivateScope, Public, HideBySig
+    Invoke(String, BindingFlags, Type[], Object[]): PrivateScope, Public, HideBySig
+    Invoke(String, BindingFlags, Object[], CultureInfo): PrivateScope, Public, HideBySig
+    Invoke(String, BindingFlags, Type[], Object[], CultureInfo): PrivateScope, Public, HideBySig
+    Invoke(String, BindingFlags, Type[], Object[], CultureInfo, Type[]): PrivateScope, Public, HideBySig
+    GetArrayElement(String, Int32[]): PrivateScope, Public, HideBySig
+    SetArrayElement(String, Object, Int32[]): PrivateScope, Public, HideBySig
+    GetArrayElement(String, BindingFlags, Int32[]): PrivateScope, Public, HideBySig
+    SetArrayElement(String, BindingFlags, Object, Int32[]): PrivateScope, Public, HideBySig
+    GetField(String): PrivateScope, Public, HideBySig
+    SetField(String, Object): PrivateScope, Public, HideBySig
+    GetField(String, BindingFlags): PrivateScope, Public, HideBySig
+    SetField(String, BindingFlags, Object): PrivateScope, Public, HideBySig
+    GetFieldOrProperty(String): PrivateScope, Public, HideBySig
+    SetFieldOrProperty(String, Object): PrivateScope, Public, HideBySig
+    GetFieldOrProperty(String, BindingFlags): PrivateScope, Public, HideBySig
+    SetFieldOrProperty(String, BindingFlags, Object): PrivateScope, Public, HideBySig
+    GetProperty(String, Object[]): PrivateScope, Public, HideBySig
+    GetProperty(String, Type[], Object[]): PrivateScope, Public, HideBySig
+    SetProperty(String, Object, Object[]): PrivateScope, Public, HideBySig
+    SetProperty(String, Type[], Object, Object[]): PrivateScope, Public, HideBySig
+    GetProperty(String, BindingFlags, Object[]): PrivateScope, Public, HideBySig
+    GetProperty(String, BindingFlags, Type[], Object[]): PrivateScope, Public, HideBySig
+    SetProperty(String, BindingFlags, Object, Object[]): PrivateScope, Public, HideBySig
+    SetProperty(String, BindingFlags, Object, Type[], Object[]): PrivateScope, Public, HideBySig
+Class Microsoft.VisualStudio.TestTools.UnitTesting.BaseShadow: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  Fields:
+    System.String AttachShadowName : Public, Static
+  Properties:
+    System.Object Target 'get ' : 
+  Methods:
+    get_Target(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    ToString(): PrivateScope, Public, Virtual, HideBySig
+    Equals(Object): PrivateScope, Public, Virtual, HideBySig
+    GetHashCode(): PrivateScope, Public, Virtual, HideBySig
+    MakeArrayType(Type, Int32): PrivateScope, Public, Static, HideBySig
+    MakeByRefType(Type): PrivateScope, Public, Static, HideBySig
+    MakePointerType(Type): PrivateScope, Public, Static, HideBySig
+Class Microsoft.VisualStudio.TestTools.UnitTesting.ShadowingAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String FullNameOfSource 'get ' : 
+  Methods:
+    get_FullNameOfSource(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.TestContext: AutoLayout, AnsiClass, Class, Public, Abstract, BeforeFieldInit
+  Fields:
+    System.String AspNetDevelopmentServerPrefix = AspNetDevelopmentServer. : Public, Static, Literal, HasDefault
+  Properties:
+    System.Collections.IDictionary Properties 'get ' : 
+    System.Data.DataRow DataRow 'get ' : 
+    System.Data.Common.DbConnection DataConnection 'get ' : 
+    System.String TestLogsDir 'get ' : 
+    System.String TestDir 'get ' : 
+    System.String TestDeploymentDir 'get ' : 
+    System.String TestName 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestOutcome CurrentTestOutcome 'get ' : 
+    System.Web.UI.Page RequestedPage 'get ' : 
+  Methods:
+    WriteLine(String, Object[]): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    AddResultFile(String): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    BeginTimer(String): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    EndTimer(String): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+    get_Properties(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_DataRow(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_DataConnection(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract, SpecialName
+    get_TestLogsDir(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_TestDir(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_TestDeploymentDir(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_TestName(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_CurrentTestOutcome(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_RequestedPage(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, SpecialName
+Struct Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestOutcome: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestOutcome Failed = 0 : Public, Static, Literal, HasDefault
+    Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestOutcome Inconclusive = 1 : Public, Static, Literal, HasDefault
+    Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestOutcome Passed = 2 : Public, Static, Literal, HasDefault
+    Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestOutcome InProgress = 3 : Public, Static, Literal, HasDefault
+    Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestOutcome Error = 4 : Public, Static, Literal, HasDefault
+    Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestOutcome Timeout = 5 : Public, Static, Literal, HasDefault
+    Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestOutcome Aborted = 6 : Public, Static, Literal, HasDefault
+    Microsoft.VisualStudio.TestTools.UnitTesting.UnitTestOutcome Unknown = 7 : Public, Static, Literal, HasDefault
+Class Microsoft.VisualStudio.TestTools.Resources.FrameworkMessages: AutoLayout, AnsiClass, Class, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    System.Resources.ResourceManager ResourceManager : Assembly, Static, InitOnly
+  Properties:
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage AccessStringInvalidSyntax 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage BothCollectionsSameElements 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage Equal_1_2 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage Equal_1_n 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage Equal_2_1 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage Equal_2_n 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage Equal_ch_n 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage Equal_d_n 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage EqualsTesterInvalidArgs 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage HashTesterHashMatch_Eq1_Eq2 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage HashTesterHashNotMatch_Eq1 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage HashTesterHashNotMatch_Eq2 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage HashTesterTypeMisMatch_1_2 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage HashTesterTypeMisMatch_1_3 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage InternalObjectNotValid 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage DoNotUseAssertEquals 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage PrivateAccessorConstructorNotFound 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage NotEqual_1_ch 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage NotEqual_1_d 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage NotEqual_2_d 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage NotEqual_ch_1 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage NotEqual_ch_d 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage NotEqual_d_1 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage NotEqual_d_2 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage NotEqual_d_ch 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage NumberOfElementsDiff 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage Common_NullInMessages 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage Common_ObjectString 'get ' : 
+  Methods:
+    get_AccessStringInvalidSyntax(): PrivateScope, Public, Static, HideBySig, SpecialName
+    ActualHasMismatchedElements(Object, Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    AllItemsAreUniqueFailMsg(Object, Object): PrivateScope, Public, Static, HideBySig
+    AreEqualFailMsg(Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    AreEqualDeltaFailMsg(Object, Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    AreEqualCaseFailMsg(Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    AreEqualDifferentTypesFailMsg(Object, Object, Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    AreNotEqualFailMsg(Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    AreNotEqualDeltaFailMsg(Object, Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    AreSameGivenValues(Object): PrivateScope, Public, Static, HideBySig
+    BothCollectionsEmpty(Object): PrivateScope, Public, Static, HideBySig
+    get_BothCollectionsSameElements(): PrivateScope, Public, Static, HideBySig, SpecialName
+    BothCollectionsSameReference(Object): PrivateScope, Public, Static, HideBySig
+    BothSameElements(Object): PrivateScope, Public, Static, HideBySig
+    CollectionEqualReason(Object, Object): PrivateScope, Public, Static, HideBySig
+    ContainsFail(Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    ElementNumbersDontMatch(Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    ElementsAtIndexDontMatch(Object): PrivateScope, Public, Static, HideBySig
+    ElementTypesAtIndexDontMatch(Object, Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    ElementTypesAtIndexDontMatch2(Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    EndsWithFail(Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    get_Equal_1_2(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_Equal_1_n(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_Equal_2_1(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_Equal_2_n(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_Equal_ch_n(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_Equal_d_n(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_EqualsTesterInvalidArgs(): PrivateScope, Public, Static, HideBySig, SpecialName
+    ErrorInvalidCast(Object, Object): PrivateScope, Public, Static, HideBySig
+    AssertionFailed(Object, Object): PrivateScope, Public, Static, HideBySig
+    get_HashTesterHashMatch_Eq1_Eq2(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_HashTesterHashNotMatch_Eq1(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_HashTesterHashNotMatch_Eq2(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_HashTesterTypeMisMatch_1_2(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_HashTesterTypeMisMatch_1_3(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_InternalObjectNotValid(): PrivateScope, Public, Static, HideBySig, SpecialName
+    InvalidParameterToAssert(Object, Object): PrivateScope, Public, Static, HideBySig
+    IsInstanceOfFailMsg(Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    IsMatchFail(Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    IsNotInstanceOfFailMsg(Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    IsNotMatchFail(Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    get_DoNotUseAssertEquals(): PrivateScope, Public, Static, HideBySig, SpecialName
+    PrivateAccessorMemberNotFound(Object): PrivateScope, Public, Static, HideBySig
+    get_PrivateAccessorConstructorNotFound(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_NotEqual_1_ch(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_NotEqual_1_d(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_NotEqual_2_d(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_NotEqual_ch_1(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_NotEqual_ch_d(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_NotEqual_d_1(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_NotEqual_d_2(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_NotEqual_d_ch(): PrivateScope, Public, Static, HideBySig, SpecialName
+    NullParameterToAssert(Object, Object): PrivateScope, Public, Static, HideBySig
+    get_NumberOfElementsDiff(): PrivateScope, Public, Static, HideBySig, SpecialName
+    StartsWithFail(Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    InvalidPropertyType(Object, Object, Object): PrivateScope, Public, Static, HideBySig
+    get_Common_NullInMessages(): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_Common_ObjectString(): PrivateScope, Public, Static, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.TestInitializeAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.TestCleanupAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.ExpectedExceptionAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.Type): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.Type, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.Type ExceptionType 'get ' : 
+    System.String Message 'get ' : 
+  Methods:
+    get_ExceptionType(): PrivateScope, Public, HideBySig, SpecialName
+    get_Message(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.String, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String Name 'get ' : 
+    System.String Value 'get ' : 
+  Methods:
+    get_Name(): PrivateScope, Public, HideBySig, SpecialName
+    get_Value(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.ClassInitializeAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.ClassCleanupAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.AssemblyInitializeAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.AssemblyCleanupAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String Description 'get ' : 
+  Methods:
+    get_Description(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.OwnerAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String Owner 'get ' : 
+  Methods:
+    get_Owner(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.CssProjectStructureAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String CssProjectStructure 'get ' : 
+  Methods:
+    get_CssProjectStructure(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.CssIterationAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String CssIteration 'get ' : 
+  Methods:
+    get_CssIteration(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.PriorityAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(Int32): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    Int32 Priority 'get ' : 
+  Methods:
+    get_Priority(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.TimeoutAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(Int32): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    Int32 Timeout 'get ' : 
+  Methods:
+    get_Timeout(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.WorkItemAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(Int32): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    Int32 Id   'get ' : 
+  Methods:
+    get_Id(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.HostTypeAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String HostType 'get ' : 
+    System.String HostData 'get ' : 
+  Methods:
+    get_HostType(): PrivateScope, Public, HideBySig, SpecialName
+    get_HostData(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.DeploymentItemAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String Path 'get ' : 
+    System.String OutputDirectory 'get ' : 
+  Methods:
+    get_Path(): PrivateScope, Public, HideBySig, SpecialName
+    get_OutputDirectory(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.DataSourceAttribute: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Attribute
+    Void .ctor(System.String, System.String, System.String, Microsoft.VisualStudio.TestTools.UnitTesting.DataAccessMethod): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    System.String DefaultProviderName : Public, Static, InitOnly
+    Microsoft.VisualStudio.TestTools.UnitTesting.DataAccessMethod DefaultDataAccessMethod : Public, Static, InitOnly
+  Properties:
+    System.String ProviderInvariantName 'get ' : 
+    System.String ConnectionString 'get ' : 
+    System.String TableName 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.DataAccessMethod DataAccessMethod 'get ' : 
+    System.String DataSourceSettingName 'get ' : 
+  Methods:
+    get_ProviderInvariantName(): PrivateScope, Public, HideBySig, SpecialName
+    get_ConnectionString(): PrivateScope, Public, HideBySig, SpecialName
+    get_TableName(): PrivateScope, Public, HideBySig, SpecialName
+    get_DataAccessMethod(): PrivateScope, Public, HideBySig, SpecialName
+    get_DataSourceSettingName(): PrivateScope, Public, HideBySig, SpecialName
+Struct Microsoft.VisualStudio.TestTools.UnitTesting.DataAccessMethod: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    Microsoft.VisualStudio.TestTools.UnitTesting.DataAccessMethod Sequential = 0 : Public, Static, Literal, HasDefault
+    Microsoft.VisualStudio.TestTools.UnitTesting.DataAccessMethod Random = 1 : Public, Static, Literal, HasDefault
+Class Microsoft.VisualStudio.TestTools.UnitTesting.TestConfiguration: AutoLayout, AnsiClass, Class, Public, Abstract, Sealed, BeforeFieldInit
+  Properties:
+    Microsoft.VisualStudio.TestTools.UnitTesting.TestConfigurationSection ConfigurationSection 'get ' : 
+  Methods:
+    get_ConfigurationSection(): PrivateScope, Public, Static, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.TestConfigurationSection: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.Configuration.ConfigurationSection
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    Microsoft.VisualStudio.TestTools.UnitTesting.DataSourceElementCollection DataSources 'get ' : 
+  Methods:
+    get_DataSources(): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.DataSourceElementCollection: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  :System.Configuration.ConfigurationElementCollection
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    Microsoft.VisualStudio.TestTools.UnitTesting.DataSourceElement Item [System.String] 'get ' : 
+    Microsoft.VisualStudio.TestTools.UnitTesting.DataSourceElement Item [Int32] 'get set' : 
+  Methods:
+    Add(DataSourceElement): PrivateScope, Public, HideBySig
+    Remove(DataSourceElement): PrivateScope, Public, HideBySig
+    Remove(String): PrivateScope, Public, HideBySig
+    Clear(): PrivateScope, Public, HideBySig
+    get_Item(String): PrivateScope, Public, HideBySig, SpecialName
+    get_Item(Int32): PrivateScope, Public, HideBySig, SpecialName
+    set_Item(Int32, DataSourceElement): PrivateScope, Public, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.DataSourceElement: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.Configuration.ConfigurationElement
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.String Name 'get set' : 
+    System.String ConnectionString 'get set' : 
+    System.String DataTableName 'get set' : 
+    System.String DataAccessMethod 'get set' : 
+    System.String Key 'get ' : 
+  Methods:
+    get_Name(): PrivateScope, Public, HideBySig, SpecialName
+    set_Name(String): PrivateScope, Public, HideBySig, SpecialName
+    get_ConnectionString(): PrivateScope, Public, HideBySig, SpecialName
+    set_ConnectionString(String): PrivateScope, Public, HideBySig, SpecialName
+    get_DataTableName(): PrivateScope, Public, HideBySig, SpecialName
+    set_DataTableName(String): PrivateScope, Public, HideBySig, SpecialName
+    get_DataAccessMethod(): PrivateScope, Public, HideBySig, SpecialName
+    set_DataAccessMethod(String): PrivateScope, Public, HideBySig, SpecialName
+    get_Key(): PrivateScope, Assembly, HideBySig, SpecialName
+Class Microsoft.VisualStudio.TestTools.UnitTesting.ConfigurationNames: AutoLayout, AnsiClass, Class, Abstract, Sealed, BeforeFieldInit
+  Fields:
+    System.String SectionName = microsoft.visualstudio.testtools : Public, Static, Literal, HasDefault
+    System.String Beta2SectionName = microsoft.visualstudio.qualitytools : Public, Static, Literal, HasDefault
+    System.String DataSourcesSectionName = dataSources : Public, Static, Literal, HasDefault
+    System.String NameAttributeName = name : Public, Static, Literal, HasDefault
+    System.String ConnectionStringAttributeName = connectionString : Public, Static, Literal, HasDefault
+    System.String DataAccessMethodAttributeName = dataAccessMethod : Public, Static, Literal, HasDefault
+    System.String DataTableAttributeName = dataTableName : Public, Static, Literal, HasDefault
+Class Microsoft.VisualStudio.TestTools.UnitTesting.WebServiceHelper: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+  Methods:
+    TryUrlRedirection(WebClientProtocol, TestContext, String): PrivateScope, Public, Static, HideBySig
+Class Microsoft.VisualStudio.TestTools.UnitTesting.UtfMessage: AutoLayout, AnsiClass, Class, Serializable, BeforeFieldInit
+    Void .ctor(System.String, System.Type, System.Resources.ResourceManager, System.Object[]): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Properties:
+    System.Resources.ResourceManager RM 'get ' : 
+    System.String Name 'get ' : 
+    System.Object[] Params 'get ' : 
+  Methods:
+    op_Implicit(UtfMessage): PrivateScope, Public, Static, HideBySig, SpecialName
+    get_RM(): PrivateScope, Public, HideBySig, SpecialName
+    get_Name(): PrivateScope, Assembly, HideBySig, SpecialName
+    get_Params(): PrivateScope, Assembly, HideBySig, SpecialName
+    ToString(): PrivateScope, Public, Virtual, HideBySig
+Class Microsoft.VisualStudio.TestTools.UnitTesting.GenericParameterHelper: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(Int32): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IComparable
+    System.Collections.IEnumerable
+    System.ICloneable
+  Properties:
+    Int32 Data 'get set' : 
+  Methods:
+    get_Data(): PrivateScope, Public, HideBySig, SpecialName
+    set_Data(Int32): PrivateScope, Public, HideBySig, SpecialName
+    Equals(Object): PrivateScope, Public, Virtual, HideBySig
+    GetHashCode(): PrivateScope, Public, Virtual, HideBySig
+    CompareTo(Object): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    GetEnumerator(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    Clone(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+Class Microsoft.VisualStudio.TestTools.UnitTesting.RuntimeTypeHelper: AutoLayout, AnsiClass, Class, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Methods:
+    CompareMethodSigAndName(MethodBase, MethodBase): PrivateScope, Assembly, Static, HideBySig
+    GetHierarchyDepth(Type): PrivateScope, Assembly, Static, HideBySig
+    FindMostDerivedNewSlotMeth(MethodBase[], Int32): PrivateScope, Assembly, Static, HideBySig
+    SelectMethod(BindingFlags, MethodBase[], Type[], ParameterModifier[]): PrivateScope, Assembly, Static, HideBySig
+    FindMostSpecificMethod(MethodBase, Int32[], Type, MethodBase, Int32[], Type, Type[], Object[]): PrivateScope, Assembly, Static, HideBySig
+    FindMostSpecific(ParameterInfo[], Int32[], Type, ParameterInfo[], Int32[], Type, Type[], Object[]): PrivateScope, Assembly, Static, HideBySig
+    FindMostSpecificType(Type, Type, Type): PrivateScope, Assembly, Static, HideBySig
