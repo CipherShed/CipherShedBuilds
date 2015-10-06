@@ -1,0 +1,263 @@
+;	Static Name Aliases
+;
+;	$S672_MemoryMapContValue	EQU	MemoryMapContValue
+;	$S677_?function@?1??GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z@4KB	EQU	?function@?1??GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z@4KB
+;	$S679_?magic@?1??GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z@4KB	EQU	?magic@?1??GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z@4KB
+;	$S681_?bufferSize@?1??GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z@4KB	EQU	?bufferSize@?1??GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z@4KB
+	TITLE   ..\bootmemory.cpp
+	.MODEL  SMALL
+	.386p
+	.387
+_TEXT	SEGMENT  WORD USE16 PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD USE16 PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD USE16 PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD USE16 PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	?CopyMemory@@YAXIIPAXI@Z:NEAR
+CONST      SEGMENT
+$S677_?function@?1??GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z@4KB	DD	0e820H
+$S679_?magic@?1??GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z@4KB	DD	0534d4150H
+$S681_?bufferSize@?1??GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z@4KB	DD	014H
+CONST      ENDS
+_BSS      SEGMENT
+$S672_MemoryMapContValue	DW 02H DUP (?)
+_BSS      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+
+?GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z	PROC NEAR	; GetMemoryMapEntry COMDAT
+;|*** /*
+;|***  Copyright (c) 2008 TrueCrypt Developers Association. All rights reserved.
+;|*** 
+;|***  Governed by the TrueCrypt License 3.0 the full text of which is contained in
+;|***  the file License.txt included in TrueCrypt binary and source code distribution
+;|***  packages.
+;|*** */
+;|*** 
+;|*** #include "BootDefs.h"
+;|*** #include "BootMemory.h"
+;|*** 
+;|*** static uint32 MemoryMapContValue;
+;|*** 
+;|*** static bool GetMemoryMapEntry (BiosMemoryMapEntry &entry)
+;|*** {
+; Line 15
+	*** 000000	c8 0a 00 00 		enter	10,0
+	*** 000004	57 			push	di
+;	carry = -2
+;	resultMagic = -6
+;	resultSize = -10
+;	entry = 4
+;|*** 	static const uint32 function = 0x0000E820UL;
+;|*** 	static const uint32 magic = 0x534D4150UL;
+;|*** 	static const uint32 bufferSize = sizeof (BiosMemoryMapEntry);
+;|*** 
+;|*** 	bool carry = false;
+; Line 20
+	*** 000005	c6 46 fe 00 		mov	BYTE PTR [bp-2],0	;carry
+;|*** 	uint32 resultMagic;
+;|*** 	uint32 resultSize;
+;|*** 
+;|*** 	__asm
+;|*** 	{
+;|*** 		push es
+; Line 26
+	*** 000009	06 			push	es
+;|*** 
+;|*** 		lea di, function
+; Line 28
+	*** 00000a	8d 3e 00 00 		lea	di,WORD PTR $S677_?function@?1??GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z@4KB
+;|*** 		TC_ASM_MOV_EAX_DI
+; Line 29
+	*** 00000e	66 			DB	102	;0066H
+	*** 00000f	8b 			DB	139	;008bH
+	*** 000010	05 			DB	5
+;|*** 		lea di, MemoryMapContValue
+; Line 30
+	*** 000011	8d 3e 00 00 		lea	di,WORD PTR $S672_MemoryMapContValue
+;|*** 		TC_ASM_MOV_EBX_DI
+; Line 31
+	*** 000015	66 			DB	102	;0066H
+	*** 000016	8b 			DB	139	;008bH
+	*** 000017	1d 			DB	29	;001dH
+;|*** 		lea di, bufferSize
+; Line 32
+	*** 000018	8d 3e 00 00 		lea	di,WORD PTR $S681_?bufferSize@?1??GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z@4KB
+;|*** 		TC_ASM_MOV_ECX_DI
+; Line 33
+	*** 00001c	66 			DB	102	;0066H
+	*** 00001d	8b 			DB	139	;008bH
+	*** 00001e	0d 			DB	13	;000dH
+;|*** 		lea di, magic
+; Line 34
+	*** 00001f	8d 3e 00 00 		lea	di,WORD PTR $S679_?magic@?1??GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z@4KB
+;|*** 		TC_ASM_MOV_EDX_DI
+; Line 35
+	*** 000023	66 			DB	102	;0066H
+	*** 000024	8b 			DB	139	;008bH
+	*** 000025	15 			DB	21	;0015H
+;|*** 		lea di, MemoryMapContValue
+; Line 36
+	*** 000026	8d 3e 00 00 		lea	di,WORD PTR $S672_MemoryMapContValue
+;|*** 		TC_ASM_MOV_DI_ECX
+; Line 37
+	*** 00002a	66 			DB	102	;0066H
+	*** 00002b	89 			DB	137	;0089H
+	*** 00002c	0d 			DB	13	;000dH
+;|*** 
+;|*** 		// Use alternative segment to prevent memory corruption caused by buggy BIOSes
+;|*** 		push TC_BOOT_LOADER_ALT_SEGMENT
+; Line 40
+	*** 00002d	68 00 60 		push	24576	;6000H
+;|*** 		pop es
+; Line 41
+	*** 000030	07 			pop	es
+;|*** 		mov di, 0
+; Line 42
+	*** 000031	bf 00 00 		mov	di,0
+;|*** 		
+;|*** 		int 0x15
+; Line 44
+	*** 000034	cd 15 			int	21	;0015H
+;|*** 		jnc no_carry
+; Line 45
+	*** 000036	73 04 			jae	SHORT $no_carry686
+;|*** 		mov carry, true
+; Line 46
+	*** 000038	c6 46 fe 01 		mov	BYTE PTR [bp-2],1	;carry
+;|*** 	no_carry:
+; Line 47
+					$no_carry686:
+;|*** 
+;|*** 		lea di, resultMagic
+; Line 49
+	*** 00003c	8d 7e fa 		lea	di,WORD PTR [bp-6]	;resultMagic
+;|*** 		TC_ASM_MOV_DI_EAX
+; Line 50
+	*** 00003f	66 			DB	102	;0066H
+	*** 000040	89 			DB	137	;0089H
+	*** 000041	05 			DB	5
+;|*** 		lea di, MemoryMapContValue
+; Line 51
+	*** 000042	8d 3e 00 00 		lea	di,WORD PTR $S672_MemoryMapContValue
+;|*** 		TC_ASM_MOV_DI_EBX
+; Line 52
+	*** 000046	66 			DB	102	;0066H
+	*** 000047	89 			DB	137	;0089H
+	*** 000048	1d 			DB	29	;001dH
+;|*** 		lea di, resultSize
+; Line 53
+	*** 000049	8d 7e f6 		lea	di,WORD PTR [bp-10]	;resultSize
+;|*** 		TC_ASM_MOV_DI_ECX
+; Line 54
+	*** 00004c	66 			DB	102	;0066H
+	*** 00004d	89 			DB	137	;0089H
+	*** 00004e	0d 			DB	13	;000dH
+;|*** 
+;|*** 		pop es
+; Line 56
+	*** 00004f	07 			pop	es
+;|*** 	}
+; Line 57
+;|*** 
+;|*** 	CopyMemory (TC_BOOT_LOADER_ALT_SEGMENT, 0, &entry, sizeof (entry));
+; Line 59
+	*** 000050	6a 14 			push	20	;0014H
+	*** 000052	ff 76 04 		push	WORD PTR [bp+4]	;entry
+	*** 000055	6a 00 			push	0
+	*** 000057	68 00 60 		push	24576	;6000H
+	*** 00005a	e8 00 00 		call	?CopyMemory@@YAXIIPAXI@Z	; CopyMemory
+	*** 00005d	83 c4 08 		add	sp,8
+;|*** 
+;|*** 	// BIOS may set CF at the end of the list
+;|*** 	if (carry)
+; Line 62
+	*** 000060	80 7e fe 00 		cmp	BYTE PTR [bp-2],0	;carry
+	*** 000064	74 07 			je	SHORT $I687
+;|*** 		MemoryMapContValue = 0;
+; Line 63
+	*** 000066	66 2b c0 		sub	eax,eax
+	*** 000069	66 a3 00 00 		mov	DWORD PTR $S672_MemoryMapContValue,eax
+;|*** 
+;|*** 	return resultMagic == magic && resultSize == bufferSize;
+; Line 65
+					$I687:
+	*** 00006d	66 81 7e fa 50 41 4d 53 cmp	DWORD PTR [bp-6],1397571920	;534d4150H	;resultMagic
+	*** 000075	75 0c 			jne	SHORT $L693
+	*** 000077	66 83 7e f6 14 		cmp	DWORD PTR [bp-10],20	;00000014H	;resultSize
+	*** 00007c	75 05 			jne	SHORT $L693
+	*** 00007e	b0 01 			mov	al,1
+	*** 000080	5f 			pop	di
+	*** 000081	c9 			leave	
+	*** 000082	c3 			ret	
+					$L693:
+	*** 000083	32 c0 			xor	al,al
+;|*** }
+; Line 66
+	*** 000085	5f 			pop	di
+	*** 000086	c9 			leave	
+	*** 000087	c3 			ret	
+
+?GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z	ENDP
+	PUBLIC	?GetFirstBiosMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z	; GetFirstBiosMemoryMapEntry
+?GetFirstBiosMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z	PROC NEAR	; GetFirstBiosMemoryMapEntry COMDAT
+;|*** 
+;|*** 
+;|*** bool GetFirstBiosMemoryMapEntry (BiosMemoryMapEntry &entry)
+;|*** {
+; Line 70
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	entry = 4
+;|*** 	MemoryMapContValue = 0;
+; Line 71
+	*** 000003	66 c7 06 00 00 00 00 00 00 mov	DWORD PTR $S672_MemoryMapContValue,0
+;|*** 	return GetMemoryMapEntry (entry);
+; Line 72
+	*** 00000c	ff 76 04 		push	WORD PTR [bp+4]	;entry
+	*** 00000f	e8 00 00 		call	?GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z	; GetMemoryMapEntry
+	*** 000012	5b 			pop	bx
+;|*** }
+; Line 73
+	*** 000013	c9 			leave	
+	*** 000014	c3 			ret	
+
+?GetFirstBiosMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z	ENDP
+	PUBLIC	?GetNextBiosMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z	; GetNextBiosMemoryMapEntry
+?GetNextBiosMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z	PROC NEAR	; GetNextBiosMemoryMapEntry COMDAT
+;|*** 
+;|*** 
+;|*** bool GetNextBiosMemoryMapEntry (BiosMemoryMapEntry &entry)
+;|*** {
+; Line 77
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	entry = 4
+;|*** 	if (MemoryMapContValue == 0)
+; Line 78
+	*** 000003	a1 02 00 		mov	ax,WORD PTR $S672_MemoryMapContValue+2
+	*** 000006	0b 06 00 00 		or	ax,WORD PTR $S672_MemoryMapContValue
+	*** 00000a	75 04 			jne	SHORT $I692
+	*** 00000c	32 c0 			xor	al,al
+	*** 00000e	c9 			leave	
+	*** 00000f	c3 			ret	
+					$I692:
+	*** 000010	ff 76 04 		push	WORD PTR [bp+4]	;entry
+	*** 000013	e8 00 00 		call	?GetMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z	; GetMemoryMapEntry
+	*** 000016	5b 			pop	bx
+;|*** 		return false;
+;|*** 
+;|*** 	return GetMemoryMapEntry (entry);
+;|*** }
+; Line 82
+	*** 000017	c9 			leave	
+	*** 000018	c3 			ret	
+
+?GetNextBiosMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z	ENDP
+_TEXT	ENDS
+END
