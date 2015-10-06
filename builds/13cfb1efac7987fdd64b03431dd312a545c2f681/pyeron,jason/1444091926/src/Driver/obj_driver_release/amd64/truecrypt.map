@@ -1,0 +1,523 @@
+ truecrypt
+
+ Timestamp is 56131c8a (Tue Oct 06 01:57:46 2015)
+
+ Preferred load address is 0000000000010000
+
+ Start         Length     Name                   Class
+ 0001:00000000 000204e0H .text                   CODE
+ 0001:000204e0 00000701H .text$s                 CODE
+ 0002:00000000 000002e8H .idata$5                DATA
+ 0002:00000300 0000e1b0H .rdata                  DATA
+ 0002:0000e4b0 00000076H .rdata$debug            DATA
+ 0002:0000e528 00000ae0H .xdata                  DATA
+ 0003:00000000 00004650H .data                   DATA
+ 0003:00004660 00006b16H .bss                    DATA
+ 0004:00000000 000009c0H .pdata                  DATA
+ 0005:00000000 00000306H INIT                    CODE
+ 0005:00000310 0000006cH INIT$s                  CODE
+ 0005:0000037c 00000014H .idata$2                CODE
+ 0005:00000390 00000014H .idata$3                CODE
+ 0005:000003a8 000002e8H .idata$4                CODE
+ 0005:00000690 000007f6H .idata$6                CODE
+ 0006:00000000 00000058H .rsrc$01                DATA
+ 0006:00000060 00000290H .rsrc$02                DATA
+
+  Address         Publics by Value              Rva+Base               Lib:Object
+
+ 0000:00000000       ___safe_se_handler_table   0000000000000000     <absolute>
+ 0000:00000000       ___safe_se_handler_count   0000000000000000     <absolute>
+ 0000:00000000       __ImageBase                0000000000010000     <linker-defined>
+ 0001:00000008       LoadBootArguments          0000000000011008 f   drivefilter.obj
+ 0001:0000024c       DriveFilterAddDevice       000000000001124c f   drivefilter.obj
+ 0001:0000114c       DriveFilterDispatchIrp     000000000001214c f   drivefilter.obj
+ 0001:00001264       ReopenBootVolumeHeader     0000000000012264 f   drivefilter.obj
+ 0001:00001b8c       StartLegacyHibernationDriverFilter 0000000000012b8c f   drivefilter.obj
+ 0001:000023c8       StartBootEncryptionSetup   00000000000133c8 f   drivefilter.obj
+ 0001:000024e4       GetBootDriveVolumeProperties 00000000000134e4 f   drivefilter.obj
+ 0001:00002628       GetBootEncryptionStatus    0000000000013628 f   drivefilter.obj
+ 0001:000027b8       AbortBootEncryptionSetup   00000000000137b8 f   drivefilter.obj
+ 0001:00002b90       StartDecoySystemWipe       0000000000013b90 f   drivefilter.obj
+ 0001:00002ca8       GetDecoySystemWipeStatus   0000000000013ca8 f   drivefilter.obj
+ 0001:00002d60       AbortDecoySystemWipe       0000000000013d60 f   drivefilter.obj
+ 0001:00002dd8       DumpFilterEntry            0000000000013dd8 f   dumpfilter.obj
+ 0001:00004420       EncryptedIoQueueAddIrp     0000000000015420 f   encryptedioqueue.obj
+ 0001:000044d8       EncryptedIoQueueHoldWhenIdle 00000000000154d8 f   encryptedioqueue.obj
+ 0001:00004604       EncryptedIoQueueResumeFromHold 0000000000015604 f   encryptedioqueue.obj
+ 0001:00004634       EncryptedIoQueueStart      0000000000015634 f   encryptedioqueue.obj
+ 0001:00004948       EncryptedIoQueueStop       0000000000015948 f   encryptedioqueue.obj
+ 0001:00004a2c       DriverAddDevice            0000000000015a2c f   ntdriver.obj
+ 0001:00004abc       ValidateIOBufferSize       0000000000015abc f   ntdriver.obj
+ 0001:00004b4c       TCDispatchQueueIRP         0000000000015b4c f   ntdriver.obj
+ 0001:00004e38       TCCreateDeviceObject       0000000000015e38 f   ntdriver.obj
+ 0001:00004fd4       ProcessVolumeDeviceControlIrp 0000000000015fd4 f   ntdriver.obj
+ 0001:000055e4       ProcessMainDeviceControlIrp 00000000000165e4 f   ntdriver.obj
+ 0001:0000687c       TCStartThread              000000000001787c f   ntdriver.obj
+ 0001:00006958       TCStopThread               0000000000017958 f   ntdriver.obj
+ 0001:000069a4       TCStartVolumeThread        00000000000179a4 f   ntdriver.obj
+ 0001:00006b28       TCSleep                    0000000000017b28 f   ntdriver.obj
+ 0001:00006bac       VolumeThreadProc           0000000000017bac f   ntdriver.obj
+ 0001:00006e18       TCGetNTNameFromNumber      0000000000017e18 f   ntdriver.obj
+ 0001:00006e90       TCGetDosNameFromNumber     0000000000017e90 f   ntdriver.obj
+ 0001:00006f1c       TCDeleteDeviceObject       0000000000017f1c f   ntdriver.obj
+ 0001:00007080       TCUnloadDriver             0000000000018080 f   ntdriver.obj
+ 0001:000070e4       OnShutdownPending          00000000000180e4 f   ntdriver.obj
+ 0001:00007174       TCDeviceIoControl          0000000000018174 f   ntdriver.obj
+ 0001:000072e0       SendDeviceIoControlRequest 00000000000182e0 f   ntdriver.obj
+ 0001:000074a0       ProbeRealDriveSize         00000000000184a0 f   ntdriver.obj
+ 0001:000075cc       TCOpenFsVolume             00000000000185cc f   ntdriver.obj
+ 0001:000077d0       TCFsctlCall                00000000000187d0 f   ntdriver.obj
+ 0001:000078ac       MountManagerMount          00000000000188ac f   ntdriver.obj
+ 0001:00007a54       MountDevice                0000000000018a54 f   ntdriver.obj
+ 0001:00007d38       UnmountDevice              0000000000018d38 f   ntdriver.obj
+ 0001:00008008       UnmountAllDevices          0000000000019008 f   ntdriver.obj
+ 0001:000080ec       SymbolicLinkToTarget       00000000000190ec f   ntdriver.obj
+ 0001:000081b8       UserCanAccessDriveDevice   00000000000191b8 f   ntdriver.obj
+ 0001:0000828c       IsDriveLetterAvailable     000000000001928c f   ntdriver.obj
+ 0001:00008340       TCReadRegistryKey          0000000000019340 f   ntdriver.obj
+ 0001:0000846c       IsVolumeClassFilterRegistered 000000000001946c f   ntdriver.obj
+ 0001:00008524       ReadRegistryConfigFlags    0000000000019524 f   ntdriver.obj
+ 0001:0000860c       ZeroUnreadableSectors      000000000001960c f   ntdriver.obj
+ 0001:0000873c       ReadDeviceSkipUnreadableSectors 000000000001973c f   ntdriver.obj
+ 0001:00008824       IsVolumeAccessibleByCurrentUser 0000000000019824 f   ntdriver.obj
+ 0001:00008934       TCOpenVolume               0000000000019934 f   ntvol.obj
+ 0001:000097c8       TCCloseVolume              000000000001a7c8 f   ntvol.obj
+ 0001:000099b0       VolumeFilterAddDevice      000000000001a9b0 f   volumefilter.obj
+ 0001:00009ed8       VolumeFilterDispatchIrp    000000000001aed8 f   volumefilter.obj
+ 0001:0000a000       CipherInit                 000000000001b000 f   Common:crypto.obj
+ 0001:0000a1bc       EncipherBlock              000000000001b1bc f   Common:crypto.obj
+ 0001:0000a278       EncipherBlocks             000000000001b278 f   Common:crypto.obj
+ 0001:0000a320       DecipherBlock              000000000001b320 f   Common:crypto.obj
+ 0001:0000a3e0       DecipherBlocks             000000000001b3e0 f   Common:crypto.obj
+ 0001:0000a48c       CipherGet                  000000000001b48c f   Common:crypto.obj
+ 0001:0000a4d0       EAInit                     000000000001b4d0 f   Common:crypto.obj
+ 0001:0000a580       EAInitMode                 000000000001b580 f   Common:crypto.obj
+ 0001:0000a65c       EAGetName                  000000000001b65c f   Common:crypto.obj
+ 0001:0000a710       EAGetByName                000000000001b710 f   Common:crypto.obj
+ 0001:0000a7bc       EAGetKeySize               000000000001b7bc f   Common:crypto.obj
+ 0001:0000a808       EAGetKeyScheduleSize       000000000001b808 f   Common:crypto.obj
+ 0001:0000a854       EAGetLargestKeyForMode     000000000001b854 f   Common:crypto.obj
+ 0001:0000a8d4       EAGetLastCipher            000000000001b8d4 f   Common:crypto.obj
+ 0001:0000a910       EAGetNextCipher            000000000001b910 f   Common:crypto.obj
+ 0001:0000a958       EAGetPreviousCipher        000000000001b958 f   Common:crypto.obj
+ 0001:0000a9b4       EAIsModeSupported          000000000001b9b4 f   Common:crypto.obj
+ 0001:0000aa30       crypto_open                000000000001ba30 f   Common:crypto.obj
+ 0001:0000aa74       crypto_close               000000000001ba74 f   Common:crypto.obj
+ 0001:0000aab8       EncryptBufferLRW128        000000000001bab8 f   Common:crypto.obj
+ 0001:0000ac9c       EncryptBufferLRW64         000000000001bc9c f   Common:crypto.obj
+ 0001:0000adc8       DecryptBufferLRW128        000000000001bdc8 f   Common:crypto.obj
+ 0001:0000afb0       DecryptBufferLRW64         000000000001bfb0 f   Common:crypto.obj
+ 0001:0000b59c       EncryptBuffer              000000000001c59c f   Common:crypto.obj
+ 0001:0000b798       EncryptDataUnitsCurrentThread 000000000001c798 f   Common:crypto.obj
+ 0001:0000bab4       DecryptBuffer              000000000001cab4 f   Common:crypto.obj
+ 0001:0000bcbc       DecryptDataUnitsCurrentThread 000000000001ccbc f   Common:crypto.obj
+ 0001:0000bfcc       GetMaxPkcs5OutSize         000000000001cfcc f   Common:crypto.obj
+ 0001:0000c078       IsAesHwCpuSupported        000000000001d078 f   Common:crypto.obj
+ 0001:0000c0cc       crc32int                   000000000001d0cc f   Common:crc.obj
+ 0001:0000c13c       GetCrc32                   000000000001d13c f   Common:crc.obj
+ 0001:0000c184       ReadVolumeHeader           000000000001d184 f   Common:volumes.obj
+ 0001:0000cdec       GetWipePassCount           000000000001ddec f   Common:wipe.obj
+ 0001:0000ce50       WipeBuffer                 000000000001de50 f   Common:wipe.obj
+ 0001:0000cf18       ReadVolumeHeaderWCache     000000000001df18 f   Common:cache.obj
+ 0001:0000d058       CipherInit2                000000000001e058 f   Common:tests.obj
+ 0001:0000d0e0       TestSectorBufEncryption    000000000001e0e0 f   Common:tests.obj
+ 0001:0000d82c       TestLegacySectorBufEncryption 000000000001e82c f   Common:tests.obj
+ 0001:0000e940       AutoTestAlgorithms         000000000001f940 f   Common:tests.obj
+ 0001:0000e9a8       test_hmac_sha1             000000000001f9a8 f   Common:tests.obj
+ 0001:0000eaa8       test_hmac_ripemd160        000000000001faa8 f   Common:tests.obj
+ 0001:0000eb90       test_pkcs5                 000000000001fb90 f   Common:tests.obj
+ 0001:0000f1a4       EncryptionThreadPoolStart  00000000000201a4 f   Common:encryptionthreadpool.obj
+ 0001:0000f350       EncryptionThreadPoolStop   0000000000020350 f   Common:encryptionthreadpool.obj
+ 0001:0000f3cc       EncryptionThreadPoolDoWork 00000000000203cc f   Common:encryptionthreadpool.obj
+ 0001:0000f658       MirrorBytes64              0000000000020658 f   Common:endian.obj
+ 0001:0000f6d8       mul_x                      00000000000206d8 f i Common:gfmul.obj
+ 0001:0000f790       mul_x64                    0000000000020790 f i Common:gfmul.obj
+ 0001:0000f824       compile_8k_table           0000000000020824 f   Common:gfmul.obj
+ 0001:0000fa28       compile_4k_table64         0000000000020a28 f   Common:gfmul.obj
+ 0001:0000fbe4       MirrorBits128              0000000000020be4 f   Common:gfmul.obj
+ 0001:0000fc94       MirrorBits64               0000000000020c94 f   Common:gfmul.obj
+ 0001:0000fd40       Gf128Tab64Init             0000000000020d40 f   Common:gfmul.obj
+ 0001:0000feb4       Gf64TabInit                0000000000020eb4 f   Common:gfmul.obj
+ 0001:0001001c       Gf128MulBy64Tab            000000000002101c f   Common:gfmul.obj
+ 0001:00010274       Gf64MulTab                 0000000000021274 f   Common:gfmul.obj
+ 0001:00010410       EncryptBufferXTS           0000000000021410 f   Common:xts.obj
+ 0001:00010894       DecryptBufferXTS           0000000000021894 f   Common:xts.obj
+ 0001:00010ca4       hmac_sha512                0000000000021ca4 f   Common:pkcs5.obj
+ 0001:00010fe8       derive_u_sha512            0000000000021fe8 f   Common:pkcs5.obj
+ 0001:00011148       derive_key_sha512          0000000000022148 f   Common:pkcs5.obj
+ 0001:0001128c       hmac_sha1                  000000000002228c f   Common:pkcs5.obj
+ 0001:00011614       derive_u_sha1              0000000000022614 f   Common:pkcs5.obj
+ 0001:0001175c       derive_key_sha1            000000000002275c f   Common:pkcs5.obj
+ 0001:000118a8       hmac_ripemd160             00000000000228a8 f   Common:pkcs5.obj
+ 0001:00011da8       derive_u_ripemd160         0000000000022da8 f   Common:pkcs5.obj
+ 0001:00011ee8       derive_key_ripemd160       0000000000022ee8 f   Common:pkcs5.obj
+ 0001:00012034       hmac_whirlpool             0000000000023034 f   Common:pkcs5.obj
+ 0001:000123b8       derive_u_whirlpool         00000000000233b8 f   Common:pkcs5.obj
+ 0001:00012518       derive_key_whirlpool       0000000000023518 f   Common:pkcs5.obj
+ 0001:0001265c       get_pkcs5_iteration_count  000000000002365c f   Common:pkcs5.obj
+ 0001:000126bc       Cast5Encrypt               00000000000236bc f   Crypto:cast.obj
+ 0001:00012c74       Cast5Decrypt               0000000000023c74 f   Crypto:cast.obj
+ 0001:0001322c       Cast5SetKey                000000000002422c f   Crypto:cast.obj
+ 0001:00013d30       aes_encrypt_key256         0000000000024d30 f   Crypto:aeskey.obj
+ 0001:000142b8       aes_decrypt_key256         00000000000252b8 f   Crypto:aeskey.obj
+ 0001:00015060       BlowfishSetKey             0000000000026060 f   Crypto:blowfish.obj
+ 0001:00015188       BlowfishEncryptLE          0000000000026188 f   Crypto:blowfish.obj
+ 0001:00015a64       twofish_set_key            0000000000026a64 f   Crypto:twofish.obj
+ 0001:00015be4       twofish_encrypt            0000000000026be4 f   Crypto:twofish.obj
+ 0001:00016824       twofish_decrypt            0000000000027824 f   Crypto:twofish.obj
+ 0001:000177d4       TripleDesEncrypt           00000000000287d4 f   Crypto:des.obj
+ 0001:000179f8       serpent_set_key            00000000000289f8 f   Crypto:serpent.obj
+ 0001:00017dc4       serpent_encrypt            0000000000028dc4 f   Crypto:serpent.obj
+ 0001:00018608       serpent_decrypt            0000000000029608 f   Crypto:serpent.obj
+ 0001:00018e8c       sha1_compile               0000000000029e8c f   Crypto:sha1.obj
+ 0001:0001a170       sha1_hash                  000000000002b170 f   Crypto:sha1.obj
+ 0001:0001a244       sha1_end                   000000000002b244 f   Crypto:sha1.obj
+ 0001:0001a370       RMD160Update               000000000002b370 f   Crypto:rmd160.obj
+ 0001:0001a440       RMD160Final                000000000002b440 f   Crypto:rmd160.obj
+ 0001:0001a48c       RMD160Transform            000000000002b48c f   Crypto:rmd160.obj
+ 0001:0001b8c0       sha512_compile             000000000002c8c0 f   Crypto:sha2.obj
+ 0001:0001c560       sha512_hash                000000000002d560 f   Crypto:sha2.obj
+ 0001:0001d654       WHIRLPOOL_add              000000000002e654 f   Crypto:whirlpool.obj
+ 0001:0001d800       WHIRLPOOL_finalize         000000000002e800 f   Crypto:whirlpool.obj
+ 0001:0001d940       __security_check_cookie    000000000002e940 f   BufferOverflowK:amdsecgs.obj
+ 0001:0001d968       __report_gsfailure         000000000002e968 f   BufferOverflowK:gs_report.obj
+ 0001:0001d990       aes_encrypt                000000000002e990     Crypto:aes_x64.obj
+ 0001:0001e390       aes_decrypt                000000000002f390     Crypto:aes_x64.obj
+ 0001:0001ed90       aes_hw_cpu_enable_sse      000000000002fd90     Crypto:aes_hw_cpu.obj
+ 0001:0001ed9b       is_aes_hw_cpu_supported    000000000002fd9b     Crypto:aes_hw_cpu.obj
+ 0001:0001edad       aes_hw_cpu_decrypt         000000000002fdad     Crypto:aes_hw_cpu.obj
+ 0001:0001ee5f       aes_hw_cpu_decrypt_32_blocks 000000000002fe5f     Crypto:aes_hw_cpu.obj
+ 0001:0001f614       aes_hw_cpu_encrypt         0000000000030614     Crypto:aes_hw_cpu.obj
+ 0001:0001f6c6       aes_hw_cpu_encrypt_32_blocks 00000000000306c6     Crypto:aes_hw_cpu.obj
+ 0001:0001fe90       memset                     0000000000030e90 f   ntoskrnl:memset.obj
+ 0001:0001ff90       memmove                    0000000000030f90     ntoskrnl:memcpy.obj
+ 0001:0001ff90       memcpy                     0000000000030f90 f   ntoskrnl:memcpy.obj
+ 0001:000202e0       memcmp                     00000000000312e0 f   ntoskrnl:memcmp.obj
+ 0001:000203b0       __GSHandlerCheckCommon     00000000000313b0 f   sehupd:gshandler.obj
+ 0001:0002041c       __GSHandlerCheck           000000000003141c f   sehupd:gshandler.obj
+ 0001:00020440       __GSHandlerCheck_SEH       0000000000031440 f   sehupd:gshandlerseh.obj
+ 0001:000204da       __C_specific_handler       00000000000314da f   ntoskrnl:ntoskrnl.exe
+ 0001:000204e0       ??_C@_00CNPNBAHC@?$AA@FNODOBFM@ 00000000000314e0     drivefilter.obj
+ 0001:000204f0       ??_C@_1M@IMEHFNOE@?$AAh?$AAi?$AAb?$AAe?$AAr?$AA?$AA@FNODOBFM@ 00000000000314f0     drivefilter.obj
+ 0001:00020500       ??_C@_1M@JEHGIGBM@?$AAH?$AAi?$AAb?$AAe?$AAr?$AA?$AA@FNODOBFM@ 0000000000031500     drivefilter.obj
+ 0001:00020510       ??_C@_1M@IFMDENJC@?$AAH?$AAI?$AAB?$AAE?$AAR?$AA?$AA@FNODOBFM@ 0000000000031510     drivefilter.obj
+ 0001:00020520       ??_C@_1CE@IPABBIFA@?$AA?2?$AAD?$AAe?$AAv?$AAi?$AAc?$AAe?$AA?2?$AAT?$AAr?$AAu?$AAe?$AAC?$AAr?$AAy?$AAp?$AAt?$AA?$AA@FNODOBFM@ 0000000000031520     dumpfilter.obj
+ 0001:00020550       ??_C@_0BA@OLBPPLP@TrueCryptVolume?$AA@FNODOBFM@ 0000000000031550     ntdriver.obj
+ 0001:00020560       ??_C@_09EMKKFGIH@TrueCrypt?$AA@FNODOBFM@ 0000000000031560     ntdriver.obj
+ 0001:00020570       ??_C@_1BA@CCLAPIHO@?$AA?2?$AAD?$AAe?$AAv?$AAi?$AAc?$AAe?$AA?$AA@FNODOBFM@ 0000000000031570     ntdriver.obj
+ 0001:00020580       ??_C@_19JHEHLFPM@?$AA?2?$AA?$DP?$AA?$DP?$AA?2?$AA?$AA@FNODOBFM@ 0000000000031580     ntdriver.obj
+ 0001:00020590       ??_C@_1DA@GMJGMIMP@?$AA?2?$AAD?$AAe?$AAv?$AAi?$AAc?$AAe?$AA?2?$AAT?$AAr?$AAu?$AAe?$AAC?$AAr?$AAy?$AAp?$AAt?$AAV?$AAo?$AAl?$AAu?$AAm?$AAe?$AA?$AA@FNODOBFM@ 0000000000031590     ntdriver.obj
+ 0001:000205c0       ??_C@_1BK@LABJKOM@?$AA?2?$AAD?$AAo?$AAs?$AAD?$AAe?$AAv?$AAi?$AAc?$AAe?$AAs?$AA?2?$AA?$AA@FNODOBFM@ 00000000000315c0     ntdriver.obj
+ 0001:000205e0       ??_C@_1CM@KJDLPNIG@?$AA?2?$AAD?$AAo?$AAs?$AAD?$AAe?$AAv?$AAi?$AAc?$AAe?$AAs?$AA?2?$AAT?$AAr?$AAu?$AAe?$AAC?$AAr?$AAy?$AAp?$AAt?$AA?$AA@FNODOBFM@ 00000000000315e0     ntdriver.obj
+ 0001:00020610       ??_C@_1EA@FPAPEGHJ@?$AAP?$AAs?$AAD?$AAe?$AAr?$AAe?$AAf?$AAe?$AAr?$AAe?$AAn?$AAc?$AAe?$AAI?$AAm?$AAp?$AAe?$AAr?$AAs?$AAo?$AAn?$AAa?$AAt?$AAi?$AAo?$AAn?$AAT?$AAo?$AAk?$AAe?$AAn?$AA?$AA@FNODOBFM@ 0000000000031610     ntdriver.obj
+ 0001:00020650       ??_C@_1DE@MJJBHHAG@?$AA?2?$AAD?$AAe?$AAv?$AAi?$AAc?$AAe?$AA?2?$AAM?$AAo?$AAu?$AAn?$AAt?$AAP?$AAo?$AAi?$AAn?$AAt?$AAM?$AAa?$AAn?$AAa?$AAg?$AAe?$AAr?$AA?$AA@FNODOBFM@ 0000000000031650     ntdriver.obj
+ 0001:00020690       ??_C@_1MA@BNNNAGDA@?$AA?2?$AAR?$AAE?$AAG?$AAI?$AAS?$AAT?$AAR?$AAY?$AA?2?$AAM?$AAA?$AAC?$AAH?$AAI?$AAN?$AAE?$AA?2?$AAS?$AAY?$AAS?$AAT?$AAE?$AAM?$AA?2?$AAC?$AAu?$AAr?$AAr?$AAe?$AAn?$AAt@FNODOBFM@ 0000000000031690     ntdriver.obj
+ 0001:00020750       ??_C@_1BK@FNJCPENK@?$AAU?$AAp?$AAp?$AAe?$AAr?$AAF?$AAi?$AAl?$AAt?$AAe?$AAr?$AAs?$AA?$AA@FNODOBFM@ 0000000000031750     ntdriver.obj
+ 0001:00020770       ??_C@_1BE@OBOIPPHP@?$AAt?$AAr?$AAu?$AAe?$AAc?$AAr?$AAy?$AAp?$AAt?$AA?$AA@FNODOBFM@ 0000000000031770     ntdriver.obj
+ 0001:00020790       ??_C@_1HM@GLBNDPGI@?$AA?2?$AAR?$AAE?$AAG?$AAI?$AAS?$AAT?$AAR?$AAY?$AA?2?$AAM?$AAA?$AAC?$AAH?$AAI?$AAN?$AAE?$AA?2?$AAS?$AAY?$AAS?$AAT?$AAE?$AAM?$AA?2?$AAC?$AAu?$AAr?$AAr?$AAe?$AAn?$AAt@FNODOBFM@ 0000000000031790     ntdriver.obj
+ 0001:00020810       ??_C@_1CA@LGEHFLCO@?$AAT?$AAr?$AAu?$AAe?$AAC?$AAr?$AAy?$AAp?$AAt?$AAC?$AAo?$AAn?$AAf?$AAi?$AAg?$AA?$AA@FNODOBFM@ 0000000000031810     ntdriver.obj
+ 0001:00020830       ??_C@_1EA@CEOJFLPD@?$AAT?$AAr?$AAu?$AAe?$AAC?$AAr?$AAy?$AAp?$AAt?$AAE?$AAn?$AAc?$AAr?$AAy?$AAp?$AAt?$AAi?$AAo?$AAn?$AAF?$AAr?$AAe?$AAe?$AAC?$AAp?$AAu?$AAC?$AAo?$AAu?$AAn?$AAt?$AA?$AA@FNODOBFM@ 0000000000031830     ntdriver.obj
+ 0001:00020870       ??_C@_1DM@FMJIKGBL@?$AA?2?$AAD?$AAe?$AAv?$AAi?$AAc?$AAe?$AA?2?$AAH?$AAa?$AAr?$AAd?$AAd?$AAi?$AAs?$AAk?$AA?$CF?$AAd?$AA?2?$AAP?$AAa?$AAr?$AAt?$AAi?$AAt?$AAi?$AAo?$AAn?$AA0?$AA?$AA@FNODOBFM@ 0000000000031870     ntvol.obj
+ 0001:000208b0       ??_C@_1BC@MAMPPFNN@?$AA?2?$AA?$DP?$AA?$DP?$AA?2?$AAU?$AAN?$AAC?$AA?2?$AA?$AA@FNODOBFM@ 00000000000318b0     ntvol.obj
+ 0001:000208d0       ??_C@_1BA@GIIKONIJ@?$AA?2?$AA?$DP?$AA?$DP?$AA?2?$AA?2?$AA?$CF?$AAs?$AA?$AA@FNODOBFM@ 00000000000318d0     ntvol.obj
+ 0001:000208e0       ??_C@_01OGPIMHDM@?$DP?$AA@FNODOBFM@ 00000000000318e0     Common:crypto.obj
+ 0001:000208f0       ??_C@_01JOAMLHOP@?9?$AA@FNODOBFM@ 00000000000318f0     Common:crypto.obj
+ 0001:00020900       ??_C@_0L@NEGMAKNF@Triple?5DES?$AA@FNODOBFM@ 0000000000031900     Common:crypto.obj
+ 0001:00020910       ??_C@_03BKNEFOAH@AES?$AA@FNODOBFM@ 0000000000031910     Common:tests.obj
+ 0001:00020920       ??_C@_07CCCAKGBN@Serpent?$AA@FNODOBFM@ 0000000000031920     Common:tests.obj
+ 0001:00020930       ??_C@_07DABDIDEC@Twofish?$AA@FNODOBFM@ 0000000000031930     Common:tests.obj
+ 0001:00020940       ??_C@_0M@DKAIMMJ@AES?9Twofish?$AA@FNODOBFM@ 0000000000031940     Common:tests.obj
+ 0001:00020950       ??_C@_0BE@LPKAFENL@AES?9Twofish?9Serpent?$AA@FNODOBFM@ 0000000000031950     Common:tests.obj
+ 0001:00020970       ??_C@_0M@MCFMFOIH@Serpent?9AES?$AA@FNODOBFM@ 0000000000031970     Common:tests.obj
+ 0001:00020980       ??_C@_0BE@HADLPGPH@Serpent?9Twofish?9AES?$AA@FNODOBFM@ 0000000000031980     Common:tests.obj
+ 0001:000209a0       ??_C@_0BA@DNGGBODD@Twofish?9Serpent?$AA@FNODOBFM@ 00000000000319a0     Common:tests.obj
+ 0001:000209b0       ??_C@_08KOMAHJJD@Blowfish?$AA@FNODOBFM@ 00000000000319b0     Common:tests.obj
+ 0001:000209c0       ??_C@_05LCFOLDPB@CAST5?$AA@FNODOBFM@ 00000000000319c0     Common:tests.obj
+ 0001:000209d0       ??_C@_0N@NEJJJADE@AES?9Blowfish?$AA@FNODOBFM@ 00000000000319d0     Common:tests.obj
+ 0001:000209e0       ??_C@_0BF@GDBAFGNG@AES?9Blowfish?9Serpent?$AA@FNODOBFM@ 00000000000319e0     Common:tests.obj
+ 0001:00020a00       ??_C@_04NDGDACAK@?$BC4Vx?$AA@FNODOBFM@ 0000000000031a00     Common:tests.obj
+ 0001:00020a10       ??_C@_08NLHBPEGP@password?$AA@FNODOBFM@ 0000000000031a10     Common:tests.obj
+ 0001:00020a20       ??_C@_04KFFKJODL@?$BDd?$KO?x?$AA@FNODOBFM@ 0000000000031a20     Common:tests.obj
+ 0001:00020a30       ??_C@_0JB@EEHAMOLN@?$BDd?$KO?x?$AN?uWl0?UqL?$KHu?$DP?$PN?$AA?e?$CF?$IL9?GD?$HP?N?$CD?$DN?$AIu?$OA?1H@FNODOBFM@ 0000000000031a30     Common:tests.obj
+ 0001:00020ad0       ??_C@_0DB@MAMEFANK@?2u?N?p?$BK?$JG?$AN?wL?$LG?$LE?$JL?$JO8?f?$LF?$DL?$BB?$IA?c?1?w?$OA?$NN?$KK?J?$IP?$IB?8?v?$JPO@FNODOBFM@ 0000000000031ad0     Common:tests.obj
+ 0001:00020b10       ??_C@_04BHFCCAHB@?2u?N?p?$AA@FNODOBFM@ 0000000000031b10     Common:tests.obj
+ 0001:00020b20       ??_C@_04PODIBCAH@z?$DN?$HM?$AD?$AA@FNODOBFM@ 0000000000031b20     Common:tests.obj
+ 0001:00020b30       ??_C@_0DB@KJBGHKFA@z?$DN?$HM?$AD?g?$CGk?x?$DNx?$PL?$CJ?Rd?$BPV?j?p?e?u?L?D?31?$KI?$IEp?$LP?$LNo?$IOx@FNODOBFM@ 0000000000031b30     Common:tests.obj
+ 0001:00020b70       ??_C@_04OCKEDGEH@P?$HM6o?$AA@FNODOBFM@ 0000000000031b70     Common:tests.obj
+ 0001:00020b80       ??_C@_0GB@BHABHNEI@P?$HM6o?n?$BA?4?$JK?b?$IK?U?$ICr?$HN?8?$AP?hM?$HPhz?O?$LF?gCg?$KK?$JI?$JDR?$CL?7@FNODOBFM@ 0000000000031b80     Common:tests.obj
+ 0002:00000000       __imp_ExFreePoolWithTag    0000000000032000     ntoskrnl:ntoskrnl.exe
+ 0002:00000008       __imp_KeInitializeMutex    0000000000032008     ntoskrnl:ntoskrnl.exe
+ 0002:00000010       __imp_PsSetLoadImageNotifyRoutine 0000000000032010     ntoskrnl:ntoskrnl.exe
+ 0002:00000018       __imp_IoDeleteDevice       0000000000032018     ntoskrnl:ntoskrnl.exe
+ 0002:00000020       __imp_KeSetEvent           0000000000032020     ntoskrnl:ntoskrnl.exe
+ 0002:00000028       __imp_IoFreeWorkItem       0000000000032028     ntoskrnl:ntoskrnl.exe
+ 0002:00000030       __imp_KeInitializeEvent    0000000000032030     ntoskrnl:ntoskrnl.exe
+ 0002:00000038       __imp_IoReleaseRemoveLockEx 0000000000032038     ntoskrnl:ntoskrnl.exe
+ 0002:00000040       __imp_KeReleaseSpinLock    0000000000032040     ntoskrnl:ntoskrnl.exe
+ 0002:00000048       __imp_MmFreeContiguousMemory 0000000000032048     ntoskrnl:ntoskrnl.exe
+ 0002:00000050       __imp_IoDetachDevice       0000000000032050     ntoskrnl:ntoskrnl.exe
+ 0002:00000058       __imp_MmUnmapIoSpace       0000000000032058     ntoskrnl:ntoskrnl.exe
+ 0002:00000060       __imp_MmBuildMdlForNonPagedPool 0000000000032060     ntoskrnl:ntoskrnl.exe
+ 0002:00000068       __imp_IoFreeMdl            0000000000032068     ntoskrnl:ntoskrnl.exe
+ 0002:00000070       __imp_KeReleaseMutex       0000000000032070     ntoskrnl:ntoskrnl.exe
+ 0002:00000078       __imp_PsTerminateSystemThread 0000000000032078     ntoskrnl:ntoskrnl.exe
+ 0002:00000080       __imp_IoAllocateWorkItem   0000000000032080     ntoskrnl:ntoskrnl.exe
+ 0002:00000088       __imp_MmMapIoSpace         0000000000032088     ntoskrnl:ntoskrnl.exe
+ 0002:00000090       __imp_PoStartNextPowerIrp  0000000000032090     ntoskrnl:ntoskrnl.exe
+ 0002:00000098       __imp_IoReleaseRemoveLockAndWaitEx 0000000000032098     ntoskrnl:ntoskrnl.exe
+ 0002:000000a0       __imp_KeWaitForSingleObject 00000000000320a0     ntoskrnl:ntoskrnl.exe
+ 0002:000000a8       __imp_KeBugCheckEx         00000000000320a8     ntoskrnl:ntoskrnl.exe
+ 0002:000000b0       __imp_IoGetAttachedDeviceReference 00000000000320b0     ntoskrnl:ntoskrnl.exe
+ 0002:000000b8       __imp_IoAttachDeviceToDeviceStack 00000000000320b8     ntoskrnl:ntoskrnl.exe
+ 0002:000000c0       __imp_PoCallDriver         00000000000320c0     ntoskrnl:ntoskrnl.exe
+ 0002:000000c8       __imp_ObfDereferenceObject 00000000000320c8     ntoskrnl:ntoskrnl.exe
+ 0002:000000d0       __imp_IoInitializeRemoveLockEx 00000000000320d0     ntoskrnl:ntoskrnl.exe
+ 0002:000000d8       __imp_IoCreateDevice       00000000000320d8     ntoskrnl:ntoskrnl.exe
+ 0002:000000e0       __imp_IoQueueWorkItem      00000000000320e0     ntoskrnl:ntoskrnl.exe
+ 0002:000000e8       __imp_IoIsSystemThread     00000000000320e8     ntoskrnl:ntoskrnl.exe
+ 0002:000000f0       __imp_IoAllocateMdl        00000000000320f0     ntoskrnl:ntoskrnl.exe
+ 0002:000000f8       __imp_MmAllocateContiguousMemory 00000000000320f8     ntoskrnl:ntoskrnl.exe
+ 0002:00000100       __imp_IofCallDriver        0000000000032100     ntoskrnl:ntoskrnl.exe
+ 0002:00000108       __imp_KeAcquireSpinLockRaiseToDpc 0000000000032108     ntoskrnl:ntoskrnl.exe
+ 0002:00000110       __imp_MmMapLockedPagesSpecifyCache 0000000000032110     ntoskrnl:ntoskrnl.exe
+ 0002:00000118       __imp_KeClearEvent         0000000000032118     ntoskrnl:ntoskrnl.exe
+ 0002:00000120       __imp_ZwReadFile           0000000000032120     ntoskrnl:ntoskrnl.exe
+ 0002:00000128       __imp_KeSetPriorityThread  0000000000032128     ntoskrnl:ntoskrnl.exe
+ 0002:00000130       __imp_ExInterlockedInsertTailList 0000000000032130     ntoskrnl:ntoskrnl.exe
+ 0002:00000138       __imp_SeImpersonateClientEx 0000000000032138     ntoskrnl:ntoskrnl.exe
+ 0002:00000140       __imp_ExInterlockedRemoveHeadList 0000000000032140     ntoskrnl:ntoskrnl.exe
+ 0002:00000148       __imp_ZwWriteFile          0000000000032148     ntoskrnl:ntoskrnl.exe
+ 0002:00000150       __imp_SeTokenIsAdmin       0000000000032150     ntoskrnl:ntoskrnl.exe
+ 0002:00000158       __imp_KeQueryActiveProcessors 0000000000032158     ntoskrnl:ntoskrnl.exe
+ 0002:00000160       __imp_IoBuildDeviceIoControlRequest 0000000000032160     ntoskrnl:ntoskrnl.exe
+ 0002:00000168       __imp_IoAcquireRemoveLockEx 0000000000032168     ntoskrnl:ntoskrnl.exe
+ 0002:00000170       __imp_IoRegisterShutdownNotification 0000000000032170     ntoskrnl:ntoskrnl.exe
+ 0002:00000178       __imp_IoBuildSynchronousFsdRequest 0000000000032178     ntoskrnl:ntoskrnl.exe
+ 0002:00000180       __imp_ZwQuerySymbolicLinkObject 0000000000032180     ntoskrnl:ntoskrnl.exe
+ 0002:00000188       __imp_SeLockSubjectContext 0000000000032188     ntoskrnl:ntoskrnl.exe
+ 0002:00000190       __imp_IoGetRelatedDeviceObject 0000000000032190     ntoskrnl:ntoskrnl.exe
+ 0002:00000198       __imp_RtlInitUnicodeString 0000000000032198     ntoskrnl:ntoskrnl.exe
+ 0002:000001a0       __imp_RtlEqualSid          00000000000321a0     ntoskrnl:ntoskrnl.exe
+ 0002:000001a8       __imp_RtlCopySid           00000000000321a8     ntoskrnl:ntoskrnl.exe
+ 0002:000001b0       __imp_MmGetSystemRoutineAddress 00000000000321b0     ntoskrnl:ntoskrnl.exe
+ 0002:000001b8       __imp_wcsncat              00000000000321b8     ntoskrnl:ntoskrnl.exe
+ 0002:000001c0       __imp_ZwOpenSymbolicLinkObject 00000000000321c0     ntoskrnl:ntoskrnl.exe
+ 0002:000001c8       __imp_KeSetTimerEx         00000000000321c8     ntoskrnl:ntoskrnl.exe
+ 0002:000001d0       __imp_SeReleaseSubjectContext 00000000000321d0     ntoskrnl:ntoskrnl.exe
+ 0002:000001d8       __imp_SeCreateClientSecurity 00000000000321d8     ntoskrnl:ntoskrnl.exe
+ 0002:000001e0       __imp_ZwCreateFile         00000000000321e0     ntoskrnl:ntoskrnl.exe
+ 0002:000001e8       __imp_PsCreateSystemThread 00000000000321e8     ntoskrnl:ntoskrnl.exe
+ 0002:000001f0       __imp_IoGetDeviceObjectPointer 00000000000321f0     ntoskrnl:ntoskrnl.exe
+ 0002:000001f8       __imp_ZwQueryValueKey      00000000000321f8     ntoskrnl:ntoskrnl.exe
+ 0002:00000200       __imp_SeCaptureSubjectContext 0000000000032200     ntoskrnl:ntoskrnl.exe
+ 0002:00000208       __imp_ZwClose              0000000000032208     ntoskrnl:ntoskrnl.exe
+ 0002:00000210       __imp_IofCompleteRequest   0000000000032210     ntoskrnl:ntoskrnl.exe
+ 0002:00000218       __imp_SeQueryInformationToken 0000000000032218     ntoskrnl:ntoskrnl.exe
+ 0002:00000220       __imp_KeInitializeSemaphore 0000000000032220     ntoskrnl:ntoskrnl.exe
+ 0002:00000228       __imp_ObReferenceObjectByHandle 0000000000032228     ntoskrnl:ntoskrnl.exe
+ 0002:00000230       __imp_PsGetVersion         0000000000032230     ntoskrnl:ntoskrnl.exe
+ 0002:00000238       __imp_KeReleaseSemaphore   0000000000032238     ntoskrnl:ntoskrnl.exe
+ 0002:00000240       __imp_IoGetDeviceInterfaces 0000000000032240     ntoskrnl:ntoskrnl.exe
+ 0002:00000248       __imp_SeUnlockSubjectContext 0000000000032248     ntoskrnl:ntoskrnl.exe
+ 0002:00000250       __imp_ObfReferenceObject   0000000000032250     ntoskrnl:ntoskrnl.exe
+ 0002:00000258       __imp_IoCreateSymbolicLink 0000000000032258     ntoskrnl:ntoskrnl.exe
+ 0002:00000260       __imp_IoEnumerateDeviceObjectList 0000000000032260     ntoskrnl:ntoskrnl.exe
+ 0002:00000268       __imp_KeInitializeTimerEx  0000000000032268     ntoskrnl:ntoskrnl.exe
+ 0002:00000270       __imp_RtlLengthSid         0000000000032270     ntoskrnl:ntoskrnl.exe
+ 0002:00000278       __imp_SeTokenType          0000000000032278     ntoskrnl:ntoskrnl.exe
+ 0002:00000280       __imp_ZwOpenKey            0000000000032280     ntoskrnl:ntoskrnl.exe
+ 0002:00000288       __imp__snwprintf           0000000000032288     ntoskrnl:ntoskrnl.exe
+ 0002:00000290       __imp_wcsncpy              0000000000032290     ntoskrnl:ntoskrnl.exe
+ 0002:00000298       __imp_ZwSetInformationFile 0000000000032298     ntoskrnl:ntoskrnl.exe
+ 0002:000002a0       __imp_IoFileObjectType     00000000000322a0     ntoskrnl:ntoskrnl.exe
+ 0002:000002a0       IoFileObjectType           00000000000322a0     ntoskrnl:ntoskrnl.exe
+ 0002:000002a8       __imp_wcsstr               00000000000322a8     ntoskrnl:ntoskrnl.exe
+ 0002:000002b0       __imp_ZwQueryInformationFile 00000000000322b0     ntoskrnl:ntoskrnl.exe
+ 0002:000002b8       __imp_IoDeleteSymbolicLink 00000000000322b8     ntoskrnl:ntoskrnl.exe
+ 0002:000002c0       __imp_ExAllocatePoolWithTag 00000000000322c0     ntoskrnl:ntoskrnl.exe
+ 0002:000002c8       __imp_ExReleaseFastMutex   00000000000322c8     ntoskrnl:ntoskrnl.exe
+ 0002:000002d0       __imp_ExAcquireFastMutex   00000000000322d0     ntoskrnl:ntoskrnl.exe
+ 0002:000002d8       __imp___C_specific_handler 00000000000322d8     ntoskrnl:ntoskrnl.exe
+ 0002:000002e0       \177ntoskrnl_NULL_THUNK_DATA 00000000000322e0     ntoskrnl:ntoskrnl.exe
+ 0002:00000320       GUID_DEVINTERFACE_VOLUME   0000000000032320     uuid:cguid_i.obj
+ 0002:00000330       ??_C@_05HJMENKNE@SHA?91?$AA@ 0000000000032330     Common:crypto.obj
+ 0002:00000338       ??_C@_09HLDHDDJL@Whirlpool?$AA@ 0000000000032338     Common:crypto.obj
+ 0002:00000348       ??_C@_07MEOJAOJE@SHA?9512?$AA@ 0000000000032348     Common:crypto.obj
+ 0002:00000350       ??_C@_0L@PKFJAMAA@RIPEMD?9160?$AA@ 0000000000032350     Common:crypto.obj
+ 0002:00000360       ??_C@_0L@NEGMAKNF@Triple?5DES?$AA@ 0000000000032360     Common:crypto.obj
+ 0002:0000036c       ??_C@_05LCFOLDPB@CAST5?$AA@ 000000000003236c     Common:crypto.obj
+ 0002:00000378       ??_C@_08KOMAHJJD@Blowfish?$AA@ 0000000000032378     Common:crypto.obj
+ 0002:00000388       ??_C@_07DABDIDEC@Twofish?$AA@ 0000000000032388     Common:crypto.obj
+ 0002:00000390       ??_C@_07CCCAKGBN@Serpent?$AA@ 0000000000032390     Common:crypto.obj
+ 0002:00000398       ??_C@_03BKNEFOAH@AES?$AA@  0000000000032398     Common:crypto.obj
+ 0002:000003a0       ??_C@_0EB@PHFBDMAI@?$AD?$JB?R?$IA?$AA?$LGb?$LL?$LI?f?$CD?$DO?hl?r?$LC?$IEtLs?$ILX?$AA?$LK?$CI?$BC?mRo?c?$BF?3@ 00000000000323a0     Common:tests.obj
+ 0002:000003e8       ??_C@_0DJ@NGDOEGCI@abcdbcdecdefdefgefghfghighijhijk@ 00000000000323e8     Common:tests.obj
+ 0002:00000430       ??_C@_0EB@DIMDKBBC@?$AA?$BB?$CC3DUfw?$II?$JJ?$KK?$LL?L?$NN?n?$PP?$AB?$CDEg?$IJ?$KL?M?o?$AA?$BB?$CC3DUfw@ 0000000000032430     Common:tests.obj
+ 0002:00000478       ??_C@_0BF@PFENIDMG@?$IF?qdp?$DOa?$KG11?$LO?$HOE?$JF?$IO?$AH?$JE?$BC9?$AE?y?$AA@ 0000000000032478     Common:tests.obj
+ 0002:00000490       ??_C@_0BF@HFFLEHPC@?x6b?L?$IN3?$JM?$CC?$HO?$GA?$AP?MclW?RW?$BL?$BM4?$AA@ 0000000000032490     Common:tests.obj
+ 0002:000004b0       ??_C@_0FB@JDIKKJCI@12345678901234567890123456789012@ 00000000000324b0     Common:tests.obj
+ 0002:00000508       ??_C@_0P@ONGHGJEC@message?5digest?$AA@ 0000000000032508     Common:tests.obj
+ 0002:00000518       ??_C@_0BF@JFBGCNOI@?$AB?$CDEg?$IJ?$KL?M?o?$PO?$NM?$LK?$JIvT2?$BA?$AA?$BB?$CC3?$AA@ 0000000000032518     Common:tests.obj
+ 0002:00000530       ??_C@_0BF@EKEAJOKM@?$AA?$BB?$CC3DUfw?$II?$JJ?$KK?$LL?L?$NN?n?$PP?$AB?$CDEg?$AA@ 0000000000032530     Common:tests.obj
+ 0002:00000548       ??_C@_0BF@OJOCDNBL@?$BC?$FNsB?$LJ?$KM?$BB?M?$JB?$KD?$JK?t?$IK?$KB?$HLOc?qu?S?$AA@ 0000000000032548     Common:tests.obj
+ 0002:00000560       ??_C@_0BF@NPPNDLAN@?o?$PM?$NPj?e?k?1?$KC?Rt?$BG?U?q?$IE?$NP?$JM?$CF?$JK?$HMy?$AA@ 0000000000032560     Common:tests.obj
+ 0002:00000578       ??_C@_0BF@BDDOKADE@?$LG?$BH1?$IGU?$AFrd?b?$IL?$MA?$LG?$PL7?$IM?$IO?qF?$LO?$AA?$AA@ 0000000000032578     Common:tests.obj
+ 0002:00000590       ??_C@_0BF@KOBLBFLL@?$LM?t?$BO?$KL?$IL?$LC?X?$AC?s?P?2?$KP?$HM?$LA?$JC?l?x?Q?$KD?$KK?$AA@ 0000000000032590     Common:tests.obj
+ 0002:000005a8       ??_C@_09OCHOFPMP@Sample?5?$CD3?$AA@ 00000000000325a8     Common:tests.obj
+ 0002:000005c0       ??_C@_0GF@PEHFLIKL@PQRSTUVWXYZ?$FL?2?$FN?$FO_?$GAabcdefghijklmno@ 00000000000325c0     Common:tests.obj
+ 0002:00000630       ??_C@_0EB@IAGJFOJI@?c?$HLjw?$FN?H?$HN?$LK?$KE?$NP?$KJ?yn?$FO?$DP?$PN?$NO?$LNq?x?$IGr?$IJ?$IG?$FN?u?$KD?9?5?M?ID@ 0000000000032630     Common:tests.obj
+ 0002:00000680       ??_C@_0EB@HIMJOCNA@?$IA?$LCBc?G?A?$KD?k?$LH?$BE?$JD?A?$NN?$HL?h?$LE?$JLF?Q?t?$BLJ?n?A?$BC?$BL?$AB7?$ID?x?sR@ 0000000000032680     Common:tests.obj
+ 0002:000006d0       ??_C@_0EB@LPCMCIMB@?$LA?$LKFV7E?$IMi?$JA?e?$KI?E?v?$BNJ?w?ev?Y?$HP?yK?$IH?9?go?$IAP6?$BO?c?$NL@ 00000000000326d0     Common:tests.obj
+ 0002:00000720       ??_C@_0EB@KHIOOKPP@?zs?$LA?$AI?$JNV?$KC?$IE?o?$LA?pul?$IJ?$AL?i?$LB?$LF?$NL?$NN?$IO?h?$BK6U?x?$DO3?$LC?8?$JN9@ 0000000000032720     Common:tests.obj
+ 0002:00000770       ??_C@_0EB@OCCGLAFJ@?$BGKz?$HL?$PM?x?$BJ?b?c?$JF?$PL?g?$DLV?$OA?$KD?$IH?$LNd?$CC?4?$ID?$BP?V?$BA?8?$AM?W?j?$CF?$AFT@ 0000000000032770     Common:tests.obj
+ 0002:000007c0       ??_C@_0EB@NPCMCGAL@?$IH?$KK?$HM?$NO?$KF?oa?$JNO?p?$LE$?$BK?$BNl?$LA?$CDy?t?b?NN?Bxz?P?$LD?$AFE?a?$HM?$NO@ 00000000000327c0     Common:tests.obj
+ 0002:00000810       ??_C@_0JJ@PIHOAKB@This?5is?5a?5test?5using?5a?5larger?5th@ 0000000000032810     Common:tests.obj
+ 0002:000008b0       ??_C@_0DH@HELOGHDO@Test?5Using?5Larger?5Than?5Block?9Siz@ 00000000000328b0     Common:tests.obj
+ 0002:000008e8       ??_C@_0DD@JCGDPDJ@?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M?M@ 00000000000328e8     Common:tests.obj
+ 0002:00000920       ??_C@_0DD@ODBBAMCC@?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN?$NN@ 0000000000032920     Common:tests.obj
+ 0002:00000958       ??_C@_0BN@GJJCPKAL@what?5do?5ya?5want?5for?5nothing?$DP?$AA@ 0000000000032958     Common:tests.obj
+ 0002:00000978       ??_C@_08BPPJKMC@Hi?5There?$AA@ 0000000000032978     Common:tests.obj
+ 0002:00000990       ??_C@_0IE@FDPIKKAI@?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK@ 0000000000032990     Common:tests.obj
+ 0002:00000a18       ??_C@_0BK@LNLLCJNI@?$AB?$AC?$AD?$AE?$AF?$AG?$AH?$AI?7?6?$AL?$AM?$AN?$AO?$AP?$BA?$BB?$BC?$BD?$BE?$BF?$BG?$BH?$BI?$BJ?$AA@ 0000000000032a18     Common:tests.obj
+ 0002:00000a38       ??_C@_0BF@GHKGHDBL@?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$KK?$AA@ 0000000000032a38     Common:tests.obj
+ 0002:00000a50       ??_C@_04HDLGGHEL@Jefe?$AA@ 0000000000032a50     Common:tests.obj
+ 0002:00000a58       ??_C@_0BF@EOMNKBPJ@?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AL?$AA@ 0000000000032a58     Common:tests.obj
+ 0002:00000a80       t_rc                       0000000000032a80     Crypto:aestab.obj
+ 0002:00000ae0       t_fn                       0000000000032ae0     Crypto:aestab.obj
+ 0002:00001ae0       t_fl                       0000000000033ae0     Crypto:aestab.obj
+ 0002:00002ae0       t_in                       0000000000034ae0     Crypto:aestab.obj
+ 0002:00003ae0       t_il                       0000000000035ae0     Crypto:aestab.obj
+ 0002:00004ae0       t_im                       0000000000036ae0     Crypto:aestab.obj
+ 0002:00009b40       k256                       000000000003bb40     Crypto:sha2.obj
+ 0002:00009c40       i224                       000000000003bc40     Crypto:sha2.obj
+ 0002:00009c60       i256                       000000000003bc60     Crypto:sha2.obj
+ 0002:00009c80       k512                       000000000003bc80     Crypto:sha2.obj
+ 0002:00009f00       i384                       000000000003bf00     Crypto:sha2.obj
+ 0002:0000a180       i512                       000000000003c180     Crypto:sha2.obj
+ 0003:00000000       HotPatchBuffer             0000000000042000     hotpatch.obj
+ 0003:00000100       __security_cookie          0000000000042100     BufferOverflowK:gs_support.obj
+ 0003:00000108       __security_cookie_complement 0000000000042108     BufferOverflowK:gs_support.obj
+ 0003:00002238       tripledes_vectors          0000000000044238     Common:tests.obj
+ 0003:00002260       XTS_vectors                0000000000044260     Common:tests.obj
+ 0003:000037dc       cacheEmpty                 00000000000457dc     Common:cache.obj
+ 0003:000037e0       bf_ecb_vectors             00000000000457e0     Common:tests.obj
+ 0003:00003b10       cast_ecb_vectors           0000000000045b10     Common:tests.obj
+ 0003:00003b30       aes_ecb_vectors            0000000000045b30     Common:tests.obj
+ 0003:00003b70       serpent_vectors            0000000000045b70     Common:tests.obj
+ 0003:00003bb0       twofish_vectors            0000000000045bb0     Common:tests.obj
+ 0003:00003bf0       hmac_sha512_test_keys      0000000000045bf0     Common:tests.obj
+ 0003:00003c20       hmac_sha512_test_data      0000000000045c20     Common:tests.obj
+ 0003:00003c50       hmac_sha512_test_vectors   0000000000045c50     Common:tests.obj
+ 0003:00003c80       hmac_sha1_test_keys        0000000000045c80     Common:tests.obj
+ 0003:00003ca0       hmac_sha1_test_data        0000000000045ca0     Common:tests.obj
+ 0003:00003cc0       hmac_sha1_test_vectors     0000000000045cc0     Common:tests.obj
+ 0003:00003ce0       hmac_ripemd160_test_keys   0000000000045ce0     Common:tests.obj
+ 0003:00003cf0       hmac_ripemd160_test_data   0000000000045cf0     Common:tests.obj
+ 0003:00003d00       hmac_ripemd160_test_vectors 0000000000045d00     Common:tests.obj
+ 0003:00003d10       hmac_whirlpool_test_key    0000000000045d10     Common:tests.obj
+ 0003:00003d18       hmac_whirlpool_test_data   0000000000045d18     Common:tests.obj
+ 0003:00003d20       hmac_whirlpool_test_vectors 0000000000045d20     Common:tests.obj
+ 0003:00003d30       lrw_vectors                0000000000045d30     Common:tests.obj
+ 0003:00003e50       crc_32_tab                 0000000000045e50     Common:crc.obj
+ 0003:00009934       BootArgsValid              000000000004b934     drivefilter.obj
+ 0003:00009970       EncryptionSetupThread      000000000004b970     drivefilter.obj
+ 0003:00009978       DecoySystemWipeThread      000000000004b978     drivefilter.obj
+ 0003:00009984       DriverShuttingDown         000000000004b984     ntdriver.obj
+ 0003:00009998       RootDeviceObject           000000000004b998     ntdriver.obj
+ 0003:000099a0       OsMajorVersion             000000000004b9a0     ntdriver.obj
+ 0003:000099a4       DriverUnloadDisabled       000000000004b9a4     ntdriver.obj
+ 0003:000099a8       PortableMode               000000000004b9a8     ntdriver.obj
+ 0003:000099ac       VolumeClassFilterRegistered 000000000004b9ac     ntdriver.obj
+ 0003:000099b0       CacheBootPassword          000000000004b9b0     ntdriver.obj
+ 0003:000099b4       NonAdminSystemFavoritesAccessDisabled 000000000004b9b4     ntdriver.obj
+ 0003:000099c8       ProbingHostDeviceForWrite  000000000004b9c8     ntvol.obj
+ 0003:000099cc       HiddenSysLeakProtectionCount 000000000004b9cc     volumefilter.obj
+ 0003:000099dc       ReadVolumeHeaderRecoveryMode 000000000004b9dc     Common:volumes.obj
+ 0003:00009a00       ks_tmp                     000000000004ba00     <common>
+ 0003:0000aee0       CachedPasswords            000000000004cee0     <common>
+ 0003:0000b000       SelfTestsPassed            000000000004d000     <common>
+ 0003:0000b004       OsMinorVersion             000000000004d004     <common>
+ 0003:0000b008       LastUniqueVolumeId         000000000004d008     <common>
+ 0003:0000b010       TCDriverObject             000000000004d010     <common>
+ 0003:0000b020       VirtualVolumeDeviceObjects 000000000004d020     <common>
+ 0003:0000b100       BootArgs                   000000000004d100     <common>
+ 0005:00000008       DriverEntry                000000000004f008 f   ntdriver.obj
+ 0005:0000028c       __security_init_cookie     000000000004f28c f   BufferOverflowK:gs_support.obj
+ 0005:000002e8       GsDriverEntry              000000000004f2e8 f   BufferOverflowK:gs_support.obj
+ 0005:00000310       ??_C@_1CE@IPABBIFA@?$AA?2?$AAD?$AAe?$AAv?$AAi?$AAc?$AAe?$AA?2?$AAT?$AAr?$AAu?$AAe?$AAC?$AAr?$AAy?$AAp?$AAt?$AA?$AA@PBOPGDP@ 000000000004f310     ntdriver.obj
+ 0005:00000340       ??_C@_1M@IOJLKPKK@?$AAS?$AAt?$AAa?$AAr?$AAt?$AA?$AA@PBOPGDP@ 000000000004f340     ntdriver.obj
+ 0005:00000350       ??_C@_1CM@KJDLPNIG@?$AA?2?$AAD?$AAo?$AAs?$AAD?$AAe?$AAv?$AAi?$AAc?$AAe?$AAs?$AA?2?$AAT?$AAr?$AAu?$AAe?$AAC?$AAr?$AAy?$AAp?$AAt?$AA?$AA@PBOPGDP@ 000000000004f350     ntdriver.obj
+ 0005:0000037c       __IMPORT_DESCRIPTOR_ntoskrnl 000000000004f37c     ntoskrnl:ntoskrnl.exe
+ 0005:00000390       __NULL_IMPORT_DESCRIPTOR   000000000004f390     ntoskrnl:ntoskrnl.exe
+
+ entry point at        0005:000002e8
+
+ Static symbols
+
+ 0001:000003c8       MountDrive                 00000000000113c8 f    CIL library: CIL module
+ 0001:00000848       SaveDriveVolumeHeader      0000000000011848 f    CIL library: CIL module
+ 0001:00000a50       PassFilteredIrp            0000000000011a50 f    CIL library: CIL module
+ 0001:00000a50       PassFilteredIrp            0000000000011a50 f    CIL library: CIL module
+ 0001:00000ad8       OnDeviceUsageNotificationCompleted 0000000000011ad8 f    CIL library: CIL module
+ 0001:00000ad8       OnDeviceUsageNotificationCompleted 0000000000011ad8 f    CIL library: CIL module
+ 0001:00000b20       IsVolumeDevice             0000000000011b20 f    CIL library: CIL module
+ 0001:00000c60       CheckDeviceTypeAndMount    0000000000011c60 f    CIL library: CIL module
+ 0001:00000d1c       MountDriveWorkItemRoutine  0000000000011d1c f    CIL library: CIL module
+ 0001:00000d4c       OnStartDeviceCompleted     0000000000011d4c f    CIL library: CIL module
+ 0001:00000e40       DispatchPnp                0000000000011e40 f    CIL library: CIL module
+ 0001:00001058       DispatchPower              0000000000012058 f    CIL library: CIL module
+ 0001:00001474       HiberDriverWriteFunctionFilter 0000000000012474 f    CIL library: CIL module
+ 0001:000016d4       HiberDriverWriteFunctionAFilter0 00000000000126d4 f    CIL library: CIL module
+ 0001:000016f8       HiberDriverWriteFunctionAFilter1 00000000000126f8 f    CIL library: CIL module
+ 0001:0000171c       HiberDriverWriteFunctionAFilter2 000000000001271c f    CIL library: CIL module
+ 0001:00001740       HiberDriverWriteFunctionBFilter0 0000000000012740 f    CIL library: CIL module
+ 0001:00001770       HiberDriverWriteFunctionBFilter1 0000000000012770 f    CIL library: CIL module
+ 0001:000017a0       HiberDriverWriteFunctionBFilter2 00000000000127a0 f    CIL library: CIL module
+ 0001:000017d0       HiberDriverEntryFilter     00000000000127d0 f    CIL library: CIL module
+ 0001:00001978       HiberDriverEntryFilter0    0000000000012978 f    CIL library: CIL module
+ 0001:0000198c       HiberDriverEntryFilter1    000000000001298c f    CIL library: CIL module
+ 0001:000019a4       HiberDriverEntryFilter2    00000000000129a4 f    CIL library: CIL module
+ 0001:000019bc       LoadImageNotifyRoutine     00000000000129bc f    CIL library: CIL module
+ 0001:00001c90       SetupThreadProc            0000000000012c90 f    CIL library: CIL module
+ 0001:00002830       DecoySystemWipeThreadProc  0000000000013830 f    CIL library: CIL module
+ 0001:00002fcc       DumpFilterStart            0000000000013fcc f    CIL library: CIL module
+ 0001:00003028       DumpFilterWrite            0000000000014028 f    CIL library: CIL module
+ 0001:000032e4       DumpFilterFinish           00000000000142e4 f    CIL library: CIL module
+ 0001:000032f0       DumpFilterUnload           00000000000142f0 f    CIL library: CIL module
+ 0001:00003338       AcquireBufferPoolMutex     0000000000014338 f    CIL library: CIL module
+ 0001:00003380       GetPoolBuffer              0000000000014380 f    CIL library: CIL module
+ 0001:000034c4       ReleasePoolBuffer          00000000000144c4 f    CIL library: CIL module
+ 0001:00003528       FreePoolBuffers            0000000000014528 f    CIL library: CIL module
+ 0001:00003598       DecrementOutstandingIoCount 0000000000014598 f    CIL library: CIL module
+ 0001:000035dc       CompleteOriginalIrp        00000000000145dc f    CIL library: CIL module
+ 0001:00003668       ReleaseFragmentBuffer      0000000000014668 f    CIL library: CIL module
+ 0001:000036cc       CompletionThreadProc       00000000000146cc f    CIL library: CIL module
+ 0001:00003834       TCCachedRead               0000000000014834 f    CIL library: CIL module
+ 0001:00003904       IoThreadProc               0000000000014904 f    CIL library: CIL module
+ 0001:00003d14       MainThreadProc             0000000000014d14 f    CIL library: CIL module
+ 0001:00007294       SendDeviceIoControlRequestWorkItemRoutine 0000000000018294 f    CIL library: CIL module
+ 0001:000076f4       TCReadWriteDevice          00000000000186f4 f    CIL library: CIL module
+ 0001:00009820       TCSendHostDeviceIoControlRequest 000000000001a820 f    CIL library: CIL module
+ 0001:000098f8       RestoreTimeStamp           000000000001a8f8 f    CIL library: CIL module
+ 0001:00009adc       OnStartDeviceCompleted     000000000001aadc f    CIL library: CIL module
+ 0001:00009b20       DispatchControl            000000000001ab20 f    CIL library: CIL module
+ 0001:00009d80       DispatchPnp                000000000001ad80 f    CIL library: CIL module
+ 0001:0000b0dc       InitSectorIVAndWhitening   000000000001c0dc f    CIL library: CIL module
+ 0001:0000b1dc       EncryptBufferCBC           000000000001c1dc f    CIL library: CIL module
+ 0001:0000b394       DecryptBufferCBC           000000000001c394 f    CIL library: CIL module
+ 0001:0000cd10       Wipe35Gutmann              000000000001dd10 f    CIL library: CIL module
+ 0001:0000dff0       DoAutoTestAlgorithms       000000000001eff0 f    CIL library: CIL module
+ 0001:0000eee4       EncryptionThreadProc       000000000001fee4 f    CIL library: CIL module
+ 0001:000104c0       EncryptBufferXTSParallel   00000000000214c0 f    CIL library: CIL module
+ 0001:000106d4       EncryptBufferXTSNonParallel 00000000000216d4 f    CIL library: CIL module
+ 0001:00010938       DecryptBufferXTSParallel   0000000000021938 f    CIL library: CIL module
+ 0001:00010b24       DecryptBufferXTSNonParallel 0000000000021b24 f    CIL library: CIL module
+ 0001:00014f5c       crypt_block                0000000000025f5c f    CIL library: CIL module
+ 0001:000152a0       gen_qtab                   00000000000262a0 f    CIL library: CIL module
+ 0001:000153b8       gen_mtab                   00000000000263b8 f    CIL library: CIL module
+ 0001:000154d4       h_fun                      00000000000264d4 f    CIL library: CIL module
+ 0001:0001569c       gen_mk_tab                 000000000002669c f    CIL library: CIL module
+ 0001:00017464       RawSetKey                  0000000000028464 f    CIL library: CIL module
+ 0001:00017654       RawProcessBlock            0000000000028654 f    CIL library: CIL module
+ 0001:0001c660       sha_end2                   000000000002d660 f    CIL library: CIL module
+ 0001:0001c7d4       processBuffer              000000000002d7d4 f    CIL library: CIL module
