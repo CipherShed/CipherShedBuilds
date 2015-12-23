@@ -1,0 +1,1158 @@
+;	Static Name Aliases
+;
+	TITLE   ..\platform.cpp
+	.MODEL  SMALL
+	.386p
+	.387
+_TEXT	SEGMENT  WORD USE16 PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD USE16 PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD USE16 PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD USE16 PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	__aNlshl:NEAR
+EXTRN	_memset:NEAR
+EXTRN	?Print@@YAXK@Z:NEAR
+EXTRN	?PrintChar@@YAXD@Z:NEAR
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+	PUBLIC	??H@YA?ATUINT64_STRUCT@@ABT0@0@Z	; operator+
+??H@YA?ATUINT64_STRUCT@@ABT0@0@Z	PROC NEAR	; operator+ COMDAT
+;|*** /*
+;|***  Copyright (c) 2008 TrueCrypt Developers Association. All rights reserved.
+;|*** 
+;|***  Governed by the TrueCrypt License 3.0 the full text of which is contained in
+;|***  the file License.txt included in TrueCrypt binary and source code distribution
+;|***  packages.
+;|*** */
+;|*** 
+;|*** #include "Platform.h"
+;|*** #include "BootConsoleIo.h"
+;|*** 
+;|*** 
+;|*** uint64 operator+ (const uint64 &a, const uint64 &b)
+;|*** {
+; Line 14
+	*** 000000	c8 0a 00 00 		enter	10,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+	*** 000006	8b 76 04 		mov	si,WORD PTR [bp+4]	;__$ReturnUdt
+;	carry = -2
+;	r = -10
+;	b = 8
+;	a = 6
+;	register si = __$ReturnUdt
+;|*** 	int carry = 0;
+; Line 15
+	*** 000009	c7 46 fe 00 00 		mov	WORD PTR [bp-2],0	;carry
+;|*** 	uint64 r;
+;|*** 
+;|*** 	r.LowPart = a.LowPart + b.LowPart;
+; Line 18
+	*** 00000e	8b 5e 08 		mov	bx,WORD PTR [bp+8]	;b
+	*** 000011	66 8b 07 		mov	eax,DWORD PTR [bx]
+	*** 000014	8b 5e 06 		mov	bx,WORD PTR [bp+6]	;a
+	*** 000017	66 03 07 		add	eax,DWORD PTR [bx]
+	*** 00001a	66 89 46 f6 		mov	DWORD PTR [bp-10],eax	;r
+;|*** 	__asm
+;|*** 	{
+;|*** 		jnc nocarry
+; Line 21
+	*** 00001e	73 05 			jae	SHORT $nocarry715
+;|*** 		mov carry, 1
+; Line 22
+	*** 000020	c7 46 fe 01 00 		mov	WORD PTR [bp-2],1	;carry
+;|*** 	nocarry:
+; Line 23
+					$nocarry715:
+;|*** 	}
+; Line 24
+	*** 000025	66 8b d0 		mov	edx,eax
+	*** 000028	66 c1 ea 10 		shr	edx,16	;00000010H
+;|*** 
+;|*** 	r.HighPart = a.HighPart + b.HighPart + carry;
+; Line 26
+	*** 00002c	8b 46 fe 		mov	ax,WORD PTR [bp-2]	;carry
+	*** 00002f	99 			cwd	
+	*** 000030	8b 5e 08 		mov	bx,WORD PTR [bp+8]	;b
+	*** 000033	8b 4f 04 		mov	cx,WORD PTR [bx+4]
+	*** 000036	8b 7f 06 		mov	di,WORD PTR [bx+6]
+	*** 000039	8b 5e 06 		mov	bx,WORD PTR [bp+6]	;a
+	*** 00003c	03 4f 04 		add	cx,WORD PTR [bx+4]
+	*** 00003f	13 7f 06 		adc	di,WORD PTR [bx+6]
+	*** 000042	03 c8 			add	cx,ax
+	*** 000044	13 fa 			adc	di,dx
+	*** 000046	89 4e fa 		mov	WORD PTR [bp-6],cx
+	*** 000049	89 7e fc 		mov	WORD PTR [bp-4],di
+;|*** 
+;|*** 	return r;
+; Line 28
+	*** 00004c	56 			push	si
+	*** 00004d	8b fe 			mov	di,si
+	*** 00004f	8d 76 f6 		lea	si,WORD PTR [bp-10]	;r
+	*** 000052	1e 			push	ds
+	*** 000053	07 			pop	es
+	*** 000054	66 a5 			movsd
+	*** 000056	66 a5 			movsd
+	*** 000058	5e 			pop	si
+	*** 000059	8b c6 			mov	ax,si
+;|*** }
+; Line 29
+	*** 00005b	5e 			pop	si
+	*** 00005c	5f 			pop	di
+	*** 00005d	c9 			leave	
+	*** 00005e	c3 			ret	
+
+??H@YA?ATUINT64_STRUCT@@ABT0@0@Z	ENDP
+	PUBLIC	??H@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator+
+??H@YA?ATUINT64_STRUCT@@ABT0@K@Z	PROC NEAR	; operator+ COMDAT
+;|*** 
+;|*** uint64 operator+ (const uint64 &a, uint32 b)
+;|*** {
+; Line 32
+	*** 000000	c8 08 00 00 		enter	8,0
+	*** 000004	56 			push	si
+;	a = 6
+;	b = 8
+;	__$ReturnUdt = 4
+;	b64 = -8
+	*** 000005	8b 76 04 		mov	si,WORD PTR [bp+4]	;__$ReturnUdt
+;|*** 	uint64 b64;
+;|*** 	b64.HighPart = 0;
+; Line 34
+	*** 000008	66 c7 46 fc 00 00 00 00 mov	DWORD PTR [bp-4],0
+;|*** 	b64.LowPart = b;
+; Line 35
+	*** 000010	66 8b 46 08 		mov	eax,DWORD PTR [bp+8]	;b
+	*** 000014	66 89 46 f8 		mov	DWORD PTR [bp-8],eax	;b64
+;|*** 	return a + b64;
+; Line 36
+	*** 000018	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;b64
+	*** 00001b	50 			push	ax
+	*** 00001c	ff 76 06 		push	WORD PTR [bp+6]	;a
+	*** 00001f	56 			push	si
+	*** 000020	e8 00 00 		call	??H@YA?ATUINT64_STRUCT@@ABT0@0@Z	; operator+
+	*** 000023	83 c4 06 		add	sp,6
+	*** 000026	8b c6 			mov	ax,si
+;|*** }
+; Line 37
+	*** 000028	5e 			pop	si
+	*** 000029	c9 			leave	
+	*** 00002a	c3 			ret	
+
+??H@YA?ATUINT64_STRUCT@@ABT0@K@Z	ENDP
+	PUBLIC	??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator+=
+??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	PROC NEAR	; operator+= COMDAT
+;|*** 
+;|*** uint64 &operator+= (uint64 &a, const uint64 &b)
+;|*** {
+; Line 40
+	*** 000000	c8 08 00 00 		enter	8,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	a = 4
+;	b = 6
+;|*** 	return a = a + b;
+; Line 41
+	*** 000006	66 ff 76 04 		push	DWORD PTR [bp+4]	;a
+	*** 00000a	8d 46 f8 		lea	ax,WORD PTR [bp-8]
+	*** 00000d	50 			push	ax
+	*** 00000e	e8 00 00 		call	??H@YA?ATUINT64_STRUCT@@ABT0@0@Z	; operator+
+	*** 000011	83 c4 06 		add	sp,6
+	*** 000014	8b f0 			mov	si,ax
+	*** 000016	1e 			push	ds
+	*** 000017	07 			pop	es
+	*** 000018	8b 7e 04 		mov	di,WORD PTR [bp+4]	;a
+	*** 00001b	66 a5 			movsd
+	*** 00001d	66 a5 			movsd
+	*** 00001f	8b 46 04 		mov	ax,WORD PTR [bp+4]	;a
+;|*** }
+; Line 42
+	*** 000022	5e 			pop	si
+	*** 000023	5f 			pop	di
+	*** 000024	c9 			leave	
+	*** 000025	c3 			ret	
+
+??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	ENDP
+	PUBLIC	??G@YA?ATUINT64_STRUCT@@ABT0@0@Z	; operator-
+??G@YA?ATUINT64_STRUCT@@ABT0@0@Z	PROC NEAR	; operator- COMDAT
+;|*** 
+;|*** uint64 operator- (const uint64 &a, const uint64 &b)
+;|*** {
+; Line 45
+	*** 000000	c8 0a 00 00 		enter	10,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+	*** 000006	8b 76 04 		mov	si,WORD PTR [bp+4]	;__$ReturnUdt
+;	carry = -2
+;	r = -10
+;	b = 8
+;	a = 6
+;	register si = __$ReturnUdt
+;|*** 	int carry = 0;
+; Line 46
+	*** 000009	c7 46 fe 00 00 		mov	WORD PTR [bp-2],0	;carry
+;|*** 	uint64 r;
+;|*** 
+;|*** 	r.LowPart = a.LowPart - b.LowPart;
+; Line 49
+	*** 00000e	8b 5e 06 		mov	bx,WORD PTR [bp+6]	;a
+	*** 000011	66 8b 07 		mov	eax,DWORD PTR [bx]
+	*** 000014	8b 5e 08 		mov	bx,WORD PTR [bp+8]	;b
+	*** 000017	66 2b 07 		sub	eax,DWORD PTR [bx]
+	*** 00001a	66 89 46 f6 		mov	DWORD PTR [bp-10],eax	;r
+;|*** 	__asm
+;|*** 	{
+;|*** 		jnc nocarry
+; Line 52
+	*** 00001e	73 05 			jae	SHORT $nocarry732
+;|*** 		mov carry, 1
+; Line 53
+	*** 000020	c7 46 fe 01 00 		mov	WORD PTR [bp-2],1	;carry
+;|*** 	nocarry:
+; Line 54
+					$nocarry732:
+;|*** 	}
+; Line 55
+	*** 000025	66 8b d0 		mov	edx,eax
+	*** 000028	66 c1 ea 10 		shr	edx,16	;00000010H
+;|*** 
+;|*** 	r.HighPart = a.HighPart - b.HighPart - carry;
+; Line 57
+	*** 00002c	8b 46 fe 		mov	ax,WORD PTR [bp-2]	;carry
+	*** 00002f	99 			cwd	
+	*** 000030	8b 5e 06 		mov	bx,WORD PTR [bp+6]	;a
+	*** 000033	8b 4f 04 		mov	cx,WORD PTR [bx+4]
+	*** 000036	8b 7f 06 		mov	di,WORD PTR [bx+6]
+	*** 000039	8b 5e 08 		mov	bx,WORD PTR [bp+8]	;b
+	*** 00003c	2b 4f 04 		sub	cx,WORD PTR [bx+4]
+	*** 00003f	1b 7f 06 		sbb	di,WORD PTR [bx+6]
+	*** 000042	2b c8 			sub	cx,ax
+	*** 000044	1b fa 			sbb	di,dx
+	*** 000046	89 4e fa 		mov	WORD PTR [bp-6],cx
+	*** 000049	89 7e fc 		mov	WORD PTR [bp-4],di
+;|*** 
+;|*** 	return r;
+; Line 59
+	*** 00004c	56 			push	si
+	*** 00004d	8b fe 			mov	di,si
+	*** 00004f	8d 76 f6 		lea	si,WORD PTR [bp-10]	;r
+	*** 000052	1e 			push	ds
+	*** 000053	07 			pop	es
+	*** 000054	66 a5 			movsd
+	*** 000056	66 a5 			movsd
+	*** 000058	5e 			pop	si
+	*** 000059	8b c6 			mov	ax,si
+;|*** }
+; Line 60
+	*** 00005b	5e 			pop	si
+	*** 00005c	5f 			pop	di
+	*** 00005d	c9 			leave	
+	*** 00005e	c3 			ret	
+
+??G@YA?ATUINT64_STRUCT@@ABT0@0@Z	ENDP
+	PUBLIC	??G@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator-
+??G@YA?ATUINT64_STRUCT@@ABT0@K@Z	PROC NEAR	; operator- COMDAT
+;|*** 
+;|*** uint64 operator- (const uint64 &a, uint32 b)
+;|*** {
+; Line 63
+	*** 000000	c8 08 00 00 		enter	8,0
+	*** 000004	56 			push	si
+;	a = 6
+;	b = 8
+;	__$ReturnUdt = 4
+;	b64 = -8
+	*** 000005	8b 76 04 		mov	si,WORD PTR [bp+4]	;__$ReturnUdt
+;|*** 	uint64 b64;
+;|*** 	b64.HighPart = 0;
+; Line 65
+	*** 000008	66 c7 46 fc 00 00 00 00 mov	DWORD PTR [bp-4],0
+;|*** 	b64.LowPart = b;
+; Line 66
+	*** 000010	66 8b 46 08 		mov	eax,DWORD PTR [bp+8]	;b
+	*** 000014	66 89 46 f8 		mov	DWORD PTR [bp-8],eax	;b64
+;|*** 	return a - b64;
+; Line 67
+	*** 000018	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;b64
+	*** 00001b	50 			push	ax
+	*** 00001c	ff 76 06 		push	WORD PTR [bp+6]	;a
+	*** 00001f	56 			push	si
+	*** 000020	e8 00 00 		call	??G@YA?ATUINT64_STRUCT@@ABT0@0@Z	; operator-
+	*** 000023	83 c4 06 		add	sp,6
+	*** 000026	8b c6 			mov	ax,si
+;|*** }
+; Line 68
+	*** 000028	5e 			pop	si
+	*** 000029	c9 			leave	
+	*** 00002a	c3 			ret	
+
+??G@YA?ATUINT64_STRUCT@@ABT0@K@Z	ENDP
+	PUBLIC	??Z@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator-=
+??Z@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	PROC NEAR	; operator-= COMDAT
+;|*** 
+;|*** uint64 &operator-= (uint64 &a, const uint64 &b)
+;|*** {
+; Line 71
+	*** 000000	c8 08 00 00 		enter	8,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	a = 4
+;	b = 6
+;|*** 	return a = a - b;
+; Line 72
+	*** 000006	66 ff 76 04 		push	DWORD PTR [bp+4]	;a
+	*** 00000a	8d 46 f8 		lea	ax,WORD PTR [bp-8]
+	*** 00000d	50 			push	ax
+	*** 00000e	e8 00 00 		call	??G@YA?ATUINT64_STRUCT@@ABT0@0@Z	; operator-
+	*** 000011	83 c4 06 		add	sp,6
+	*** 000014	8b f0 			mov	si,ax
+	*** 000016	1e 			push	ds
+	*** 000017	07 			pop	es
+	*** 000018	8b 7e 04 		mov	di,WORD PTR [bp+4]	;a
+	*** 00001b	66 a5 			movsd
+	*** 00001d	66 a5 			movsd
+	*** 00001f	8b 46 04 		mov	ax,WORD PTR [bp+4]	;a
+;|*** }
+; Line 73
+	*** 000022	5e 			pop	si
+	*** 000023	5f 			pop	di
+	*** 000024	c9 			leave	
+	*** 000025	c3 			ret	
+
+??Z@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	ENDP
+	PUBLIC	??5@YA?ATUINT64_STRUCT@@ABT0@H@Z	; operator>>
+??5@YA?ATUINT64_STRUCT@@ABT0@H@Z	PROC NEAR	; operator>> COMDAT
+;|*** 
+;|*** uint64 operator>> (const uint64 &a, int shiftCount)
+;|*** {
+; Line 76
+	*** 000000	c8 08 00 00 		enter	8,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	a = 6
+;	shiftCount = 8
+;	__$ReturnUdt = 4
+;	r = -8
+;|*** 	uint64 r = a;
+; Line 77
+	*** 000006	8b 46 06 		mov	ax,WORD PTR [bp+6]	;a
+	*** 000009	8d 7e f8 		lea	di,WORD PTR [bp-8]	;r
+	*** 00000c	8b f0 			mov	si,ax
+	*** 00000e	16 			push	ss
+	*** 00000f	07 			pop	es
+	*** 000010	66 a5 			movsd
+	*** 000012	66 a5 			movsd
+	*** 000014	8b 76 08 		mov	si,WORD PTR [bp+8]	;shiftCount
+;|*** 
+;|*** 	while (shiftCount--)
+; Line 79
+	*** 000017	eb 20 			jmp	SHORT $L866
+					$FC749:
+;|*** 	{
+;|*** 		r.LowPart >>= 1;
+; Line 81
+	*** 000019	66 8b 46 f8 		mov	eax,DWORD PTR [bp-8]	;r
+	*** 00001d	66 d1 e8 		shr	eax,1
+	*** 000020	66 89 46 f8 		mov	DWORD PTR [bp-8],eax	;r
+;|*** 		
+;|*** 		if ((byte) r.HighPart & 1)
+; Line 83
+	*** 000024	f6 46 fc 01 		test	BYTE PTR [bp-4],1
+	*** 000028	74 04 			je	SHORT $I752
+;|*** 			r.LowPart |= 0x80000000UL;
+; Line 84
+	*** 00002a	80 4e fb 80 		or	BYTE PTR [bp-5],128	;0080H
+;|*** 
+;|*** 		r.HighPart >>= 1;
+; Line 86
+					$I752:
+	*** 00002e	66 8b 46 fc 		mov	eax,DWORD PTR [bp-4]
+	*** 000032	66 d1 e8 		shr	eax,1
+	*** 000035	66 89 46 fc 		mov	DWORD PTR [bp-4],eax
+;|*** 	}
+; Line 87
+					$L866:
+	*** 000039	8b c6 			mov	ax,si
+	*** 00003b	4e 			dec	si
+	*** 00003c	0b c0 			or	ax,ax
+	*** 00003e	75 d9 			jne	SHORT $FC749
+	*** 000040	8b 56 04 		mov	dx,WORD PTR [bp+4]	;__$ReturnUdt
+;|*** 
+;|*** 	return r;
+; Line 89
+	*** 000043	8b fa 			mov	di,dx
+	*** 000045	8d 76 f8 		lea	si,WORD PTR [bp-8]	;r
+	*** 000048	1e 			push	ds
+	*** 000049	07 			pop	es
+	*** 00004a	66 a5 			movsd
+	*** 00004c	66 a5 			movsd
+	*** 00004e	8b c2 			mov	ax,dx
+;|*** }
+; Line 90
+	*** 000050	5e 			pop	si
+	*** 000051	5f 			pop	di
+	*** 000052	c9 			leave	
+	*** 000053	c3 			ret	
+
+??5@YA?ATUINT64_STRUCT@@ABT0@H@Z	ENDP
+	PUBLIC	??6@YA?ATUINT64_STRUCT@@ABT0@H@Z	; operator<<
+??6@YA?ATUINT64_STRUCT@@ABT0@H@Z	PROC NEAR	; operator<< COMDAT
+;|*** 
+;|*** uint64 operator<< (const uint64 &a, int shiftCount)
+;|*** {
+; Line 93
+	*** 000000	c8 08 00 00 		enter	8,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	a = 6
+;	shiftCount = 8
+;	__$ReturnUdt = 4
+;	r = -8
+;|*** 	uint64 r = a;
+; Line 94
+	*** 000006	8b 46 06 		mov	ax,WORD PTR [bp+6]	;a
+	*** 000009	8d 7e f8 		lea	di,WORD PTR [bp-8]	;r
+	*** 00000c	8b f0 			mov	si,ax
+	*** 00000e	16 			push	ss
+	*** 00000f	07 			pop	es
+	*** 000010	66 a5 			movsd
+	*** 000012	66 a5 			movsd
+	*** 000014	8b 76 08 		mov	si,WORD PTR [bp+8]	;shiftCount
+;|*** 	
+;|*** 	while (shiftCount--)
+; Line 96
+	*** 000017	eb 0b 			jmp	SHORT $L867
+					$FC759:
+;|*** 		r += r;
+; Line 97
+	*** 000019	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;r
+	*** 00001c	50 			push	ax
+	*** 00001d	50 			push	ax
+	*** 00001e	e8 00 00 		call	??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator+=
+	*** 000021	83 c4 04 		add	sp,4
+					$L867:
+	*** 000024	8b c6 			mov	ax,si
+	*** 000026	4e 			dec	si
+	*** 000027	0b c0 			or	ax,ax
+	*** 000029	75 ee 			jne	SHORT $FC759
+	*** 00002b	8b 56 04 		mov	dx,WORD PTR [bp+4]	;__$ReturnUdt
+;|*** 
+;|*** 	return r;
+; Line 99
+	*** 00002e	8b fa 			mov	di,dx
+	*** 000030	8d 76 f8 		lea	si,WORD PTR [bp-8]	;r
+	*** 000033	1e 			push	ds
+	*** 000034	07 			pop	es
+	*** 000035	66 a5 			movsd
+	*** 000037	66 a5 			movsd
+	*** 000039	8b c2 			mov	ax,dx
+;|*** }
+; Line 100
+	*** 00003b	5e 			pop	si
+	*** 00003c	5f 			pop	di
+	*** 00003d	c9 			leave	
+	*** 00003e	c3 			ret	
+
+??6@YA?ATUINT64_STRUCT@@ABT0@H@Z	ENDP
+	PUBLIC	??E@YAAATUINT64_STRUCT@@AAT0@@Z	; operator++
+??E@YAAATUINT64_STRUCT@@AAT0@@Z	PROC NEAR	; operator++ COMDAT
+;|*** 
+;|*** uint64 &operator++ (uint64 &a)
+;|*** {
+; Line 103
+	*** 000000	c8 08 00 00 		enter	8,0
+;	a = 4
+;	b = -8
+;|*** 	uint64 b;
+;|*** 	b.HighPart = 0;
+; Line 105
+	*** 000004	66 2b c0 		sub	eax,eax
+	*** 000007	66 89 46 fc 		mov	DWORD PTR [bp-4],eax
+;|*** 	b.LowPart = 1;
+; Line 106
+	*** 00000b	c7 46 f8 01 00 		mov	WORD PTR [bp-8],1	;b
+	*** 000010	89 46 fa 		mov	WORD PTR [bp-6],ax
+;|*** 
+;|*** 	return a += b;
+; Line 108
+	*** 000013	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;b
+	*** 000016	50 			push	ax
+	*** 000017	ff 76 04 		push	WORD PTR [bp+4]	;a
+	*** 00001a	e8 00 00 		call	??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator+=
+;|*** }
+; Line 109
+	*** 00001d	c9 			leave	
+	*** 00001e	c3 			ret	
+
+??E@YAAATUINT64_STRUCT@@AAT0@@Z	ENDP
+	PUBLIC	??8@YADABTUINT64_STRUCT@@0@Z	; operator==
+??8@YADABTUINT64_STRUCT@@0@Z	PROC NEAR	; operator== COMDAT
+;|*** 
+;|*** bool operator== (const uint64 &a, const uint64 &b)
+;|*** {
+; Line 112
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+;	a = 4
+;	b = 6
+	*** 000004	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;a
+	*** 000007	8b 7e 06 		mov	di,WORD PTR [bp+6]	;b
+;|*** 	return a.HighPart == b.HighPart && a.LowPart == b.LowPart;
+; Line 113
+	*** 00000a	66 8b 47 04 		mov	eax,DWORD PTR [bx+4]
+	*** 00000e	66 39 45 04 		cmp	DWORD PTR [di+4],eax
+	*** 000012	75 0d 			jne	SHORT $L832
+	*** 000014	66 8b 07 		mov	eax,DWORD PTR [bx]
+	*** 000017	66 39 05 		cmp	DWORD PTR [di],eax
+	*** 00001a	75 05 			jne	SHORT $L832
+	*** 00001c	b0 01 			mov	al,1
+	*** 00001e	5f 			pop	di
+	*** 00001f	c9 			leave	
+	*** 000020	c3 			ret	
+					$L832:
+	*** 000021	32 c0 			xor	al,al
+;|*** }
+; Line 114
+	*** 000023	5f 			pop	di
+	*** 000024	c9 			leave	
+	*** 000025	c3 			ret	
+
+??8@YADABTUINT64_STRUCT@@0@Z	ENDP
+	PUBLIC	??O@YADABTUINT64_STRUCT@@0@Z	; operator>
+??O@YADABTUINT64_STRUCT@@0@Z	PROC NEAR	; operator> COMDAT
+;|*** 
+;|*** bool operator> (const uint64 &a, const uint64 &b)
+;|*** {
+; Line 117
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+;	b = 6
+;	a = 4
+	*** 000004	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;a
+	*** 000007	8b 7e 06 		mov	di,WORD PTR [bp+6]	;b
+;|*** 	return (a.HighPart > b.HighPart) || (a.HighPart == b.HighPart && a.LowPart > b.LowPart);
+; Line 118
+	*** 00000a	66 8b 47 04 		mov	eax,DWORD PTR [bx+4]
+	*** 00000e	8b 57 06 		mov	dx,WORD PTR [bx+6]
+	*** 000011	66 39 45 04 		cmp	DWORD PTR [di+4],eax
+	*** 000015	72 17 			jb	SHORT $L836
+					$L837:
+	*** 000017	39 45 04 		cmp	WORD PTR [di+4],ax
+	*** 00001a	75 0d 			jne	SHORT $L838
+	*** 00001c	39 55 06 		cmp	WORD PTR [di+6],dx
+	*** 00001f	75 08 			jne	SHORT $L838
+	*** 000021	66 8b 07 		mov	eax,DWORD PTR [bx]
+	*** 000024	66 39 05 		cmp	DWORD PTR [di],eax
+	*** 000027	72 05 			jb	SHORT $L836
+					$L838:
+	*** 000029	32 c0 			xor	al,al
+	*** 00002b	5f 			pop	di
+	*** 00002c	c9 			leave	
+	*** 00002d	c3 			ret	
+					$L836:
+	*** 00002e	b0 01 			mov	al,1
+;|*** }
+; Line 119
+	*** 000030	5f 			pop	di
+	*** 000031	c9 			leave	
+	*** 000032	c3 			ret	
+
+??O@YADABTUINT64_STRUCT@@0@Z	ENDP
+	PUBLIC	??M@YADABTUINT64_STRUCT@@0@Z	; operator<
+??M@YADABTUINT64_STRUCT@@0@Z	PROC NEAR	; operator< COMDAT
+;|*** 
+;|*** bool operator< (const uint64 &a, const uint64 &b)
+;|*** {
+; Line 122
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+;	a = 4
+;	b = 6
+	*** 000004	8b 5e 04 		mov	bx,WORD PTR [bp+4]	;a
+	*** 000007	8b 7e 06 		mov	di,WORD PTR [bp+6]	;b
+;|*** 	return (a.HighPart < b.HighPart) || (a.HighPart == b.HighPart && a.LowPart < b.LowPart);
+; Line 123
+	*** 00000a	66 8b 47 04 		mov	eax,DWORD PTR [bx+4]
+	*** 00000e	8b 57 06 		mov	dx,WORD PTR [bx+6]
+	*** 000011	66 39 45 04 		cmp	DWORD PTR [di+4],eax
+	*** 000015	77 17 			ja	SHORT $L841
+					$L842:
+	*** 000017	39 45 04 		cmp	WORD PTR [di+4],ax
+	*** 00001a	75 0d 			jne	SHORT $L843
+	*** 00001c	39 55 06 		cmp	WORD PTR [di+6],dx
+	*** 00001f	75 08 			jne	SHORT $L843
+	*** 000021	66 8b 07 		mov	eax,DWORD PTR [bx]
+	*** 000024	66 39 05 		cmp	DWORD PTR [di],eax
+	*** 000027	77 05 			ja	SHORT $L841
+					$L843:
+	*** 000029	32 c0 			xor	al,al
+	*** 00002b	5f 			pop	di
+	*** 00002c	c9 			leave	
+	*** 00002d	c3 			ret	
+					$L841:
+	*** 00002e	b0 01 			mov	al,1
+;|*** }
+; Line 124
+	*** 000030	5f 			pop	di
+	*** 000031	c9 			leave	
+	*** 000032	c3 			ret	
+
+??M@YADABTUINT64_STRUCT@@0@Z	ENDP
+	PUBLIC	??P@YADABTUINT64_STRUCT@@0@Z	; operator>=
+??P@YADABTUINT64_STRUCT@@0@Z	PROC NEAR	; operator>= COMDAT
+;|*** 
+;|*** bool operator>= (const uint64 &a, const uint64 &b)
+;|*** {
+; Line 127
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	a = 4
+;	b = 6
+	*** 000005	8b 7e 06 		mov	di,WORD PTR [bp+6]	;b
+	*** 000008	8b 76 04 		mov	si,WORD PTR [bp+4]	;a
+;|*** 	return a > b || a == b;
+; Line 128
+	*** 00000b	57 			push	di
+	*** 00000c	56 			push	si
+	*** 00000d	e8 00 00 		call	??O@YADABTUINT64_STRUCT@@0@Z	; operator>
+	*** 000010	83 c4 04 		add	sp,4
+	*** 000013	0a c0 			or	al,al
+	*** 000015	75 0c 			jne	SHORT $L846
+	*** 000017	57 			push	di
+	*** 000018	56 			push	si
+	*** 000019	e8 00 00 		call	??8@YADABTUINT64_STRUCT@@0@Z	; operator==
+	*** 00001c	83 c4 04 		add	sp,4
+	*** 00001f	0a c0 			or	al,al
+	*** 000021	74 02 			je	SHORT $EX775
+					$L846:
+	*** 000023	b0 01 			mov	al,1
+;|*** }
+; Line 129
+					$EX775:
+	*** 000025	5e 			pop	si
+	*** 000026	5f 			pop	di
+	*** 000027	c9 			leave	
+	*** 000028	c3 			ret	
+
+??P@YADABTUINT64_STRUCT@@0@Z	ENDP
+	PUBLIC	??N@YADABTUINT64_STRUCT@@0@Z	; operator<=
+??N@YADABTUINT64_STRUCT@@0@Z	PROC NEAR	; operator<= COMDAT
+;|*** 
+;|*** bool operator<= (const uint64 &a, const uint64 &b)
+;|*** {
+; Line 132
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	a = 4
+;	b = 6
+	*** 000005	8b 7e 06 		mov	di,WORD PTR [bp+6]	;b
+	*** 000008	8b 76 04 		mov	si,WORD PTR [bp+4]	;a
+;|*** 	return a < b || a == b;
+; Line 133
+	*** 00000b	57 			push	di
+	*** 00000c	56 			push	si
+	*** 00000d	e8 00 00 		call	??M@YADABTUINT64_STRUCT@@0@Z	; operator<
+	*** 000010	83 c4 04 		add	sp,4
+	*** 000013	0a c0 			or	al,al
+	*** 000015	75 0c 			jne	SHORT $L849
+	*** 000017	57 			push	di
+	*** 000018	56 			push	si
+	*** 000019	e8 00 00 		call	??8@YADABTUINT64_STRUCT@@0@Z	; operator==
+	*** 00001c	83 c4 04 		add	sp,4
+	*** 00001f	0a c0 			or	al,al
+	*** 000021	74 02 			je	SHORT $EX778
+					$L849:
+	*** 000023	b0 01 			mov	al,1
+;|*** }
+; Line 134
+					$EX778:
+	*** 000025	5e 			pop	si
+	*** 000026	5f 			pop	di
+	*** 000027	c9 			leave	
+	*** 000028	c3 			ret	
+
+??N@YADABTUINT64_STRUCT@@0@Z	ENDP
+	PUBLIC	?TestInt64@@YADXZ	; TestInt64
+?TestInt64@@YADXZ	PROC NEAR	; TestInt64 COMDAT
+;|*** 
+;|*** bool TestInt64 ()
+;|*** {
+; Line 137
+	*** 000000	c8 38 00 00 		enter	56,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	a = -8
+;	b = -16
+;	c = -24
+;|*** 	uint64 a, b, c;
+;|*** 	a.HighPart = 0x00112233UL;
+; Line 139
+	*** 000006	66 c7 46 fc 33 22 11 00 mov	DWORD PTR [bp-4],1122867	;00112233H
+;|*** 	a.LowPart = 0xabcd1234UL;
+; Line 140
+	*** 00000e	66 c7 46 f8 34 12 cd ab mov	DWORD PTR [bp-8],-1412623820	;abcd1234H	;a
+;|*** 
+;|*** 	b.HighPart = 0x00ffeeddUL;
+; Line 142
+	*** 000016	66 c7 46 f4 dd ee ff 00 mov	DWORD PTR [bp-12],16772829	;00ffeeddH
+;|*** 	b.LowPart = 0xffffFFFFUL;
+; Line 143
+	*** 00001e	66 c7 46 f0 ff ff ff ff mov	DWORD PTR [bp-16],-1	;b
+;|*** 
+;|*** 	a += b;
+; Line 145
+	*** 000026	8d 46 f0 		lea	ax,WORD PTR [bp-16]	;b
+	*** 000029	50 			push	ax
+	*** 00002a	8d 4e f8 		lea	cx,WORD PTR [bp-8]	;a
+	*** 00002d	51 			push	cx
+	*** 00002e	e8 00 00 		call	??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator+=
+	*** 000031	83 c4 04 		add	sp,4
+;|*** 	a -= b;
+; Line 146
+	*** 000034	8d 46 f0 		lea	ax,WORD PTR [bp-16]	;b
+	*** 000037	50 			push	ax
+	*** 000038	8d 4e f8 		lea	cx,WORD PTR [bp-8]	;a
+	*** 00003b	51 			push	cx
+	*** 00003c	e8 00 00 		call	??Z@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator-=
+	*** 00003f	83 c4 04 		add	sp,4
+;|*** 	
+;|*** 	++a;
+; Line 148
+	*** 000042	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;a
+	*** 000045	50 			push	ax
+	*** 000046	e8 00 00 		call	??E@YAAATUINT64_STRUCT@@AAT0@@Z	; operator++
+	*** 000049	5b 			pop	bx
+;|*** 	
+;|*** 	b = b + (uint32) 1UL;
+; Line 150
+	*** 00004a	6a 00 			push	0
+	*** 00004c	6a 01 			push	1
+	*** 00004e	8d 46 f0 		lea	ax,WORD PTR [bp-16]	;b
+	*** 000051	50 			push	ax
+	*** 000052	8d 4e e0 		lea	cx,WORD PTR [bp-32]
+	*** 000055	51 			push	cx
+	*** 000056	e8 00 00 		call	??H@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator+
+	*** 000059	83 c4 08 		add	sp,8
+	*** 00005c	8d 7e f0 		lea	di,WORD PTR [bp-16]	;b
+	*** 00005f	8b f0 			mov	si,ax
+	*** 000061	16 			push	ss
+	*** 000062	07 			pop	es
+	*** 000063	66 a5 			movsd
+	*** 000065	66 a5 			movsd
+;|*** 
+;|*** 	c = (a - ((a + b) >> 32) - (uint32) 1UL);
+; Line 152
+	*** 000067	6a 00 			push	0
+	*** 000069	6a 01 			push	1
+	*** 00006b	6a 20 			push	32	;0020H
+	*** 00006d	8d 46 f0 		lea	ax,WORD PTR [bp-16]	;b
+	*** 000070	50 			push	ax
+	*** 000071	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;a
+	*** 000074	50 			push	ax
+	*** 000075	8d 4e e0 		lea	cx,WORD PTR [bp-32]
+	*** 000078	51 			push	cx
+	*** 000079	e8 00 00 		call	??H@YA?ATUINT64_STRUCT@@ABT0@0@Z	; operator+
+	*** 00007c	83 c4 06 		add	sp,6
+	*** 00007f	50 			push	ax
+	*** 000080	8d 46 d0 		lea	ax,WORD PTR [bp-48]
+	*** 000083	50 			push	ax
+	*** 000084	e8 00 00 		call	??5@YA?ATUINT64_STRUCT@@ABT0@H@Z	; operator>>
+	*** 000087	83 c4 06 		add	sp,6
+	*** 00008a	50 			push	ax
+	*** 00008b	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;a
+	*** 00008e	50 			push	ax
+	*** 00008f	8d 46 c8 		lea	ax,WORD PTR [bp-56]
+	*** 000092	50 			push	ax
+	*** 000093	e8 00 00 		call	??G@YA?ATUINT64_STRUCT@@ABT0@0@Z	; operator-
+	*** 000096	83 c4 06 		add	sp,6
+	*** 000099	50 			push	ax
+	*** 00009a	8d 46 d8 		lea	ax,WORD PTR [bp-40]
+	*** 00009d	50 			push	ax
+	*** 00009e	e8 00 00 		call	??G@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator-
+	*** 0000a1	83 c4 08 		add	sp,8
+	*** 0000a4	8d 7e e8 		lea	di,WORD PTR [bp-24]	;c
+	*** 0000a7	8b f0 			mov	si,ax
+	*** 0000a9	16 			push	ss
+	*** 0000aa	07 			pop	es
+	*** 0000ab	66 a5 			movsd
+	*** 0000ad	66 a5 			movsd
+;|*** 	if (c.HighPart != 0x112233UL || c.LowPart != 0xAABC0123UL)
+; Line 153
+	*** 0000af	66 81 7e ec 33 22 11 00 cmp	DWORD PTR [bp-20],1122867	;00112233H
+	*** 0000b7	75 3d 			jne	SHORT $I792
+	*** 0000b9	66 81 7e e8 23 01 bc aa cmp	DWORD PTR [bp-24],-1430519517	;aabc0123H	;c
+	*** 0000c1	75 33 			jne	SHORT $I792
+;|*** 		return false;
+;|*** 
+;|*** 	c = c << 9;
+; Line 156
+	*** 0000c3	6a 09 			push	9
+	*** 0000c5	8d 46 e8 		lea	ax,WORD PTR [bp-24]	;c
+	*** 0000c8	50 			push	ax
+	*** 0000c9	8d 4e d8 		lea	cx,WORD PTR [bp-40]
+	*** 0000cc	51 			push	cx
+	*** 0000cd	e8 00 00 		call	??6@YA?ATUINT64_STRUCT@@ABT0@H@Z	; operator<<
+	*** 0000d0	83 c4 06 		add	sp,6
+	*** 0000d3	8d 7e e8 		lea	di,WORD PTR [bp-24]	;c
+	*** 0000d6	8b f0 			mov	si,ax
+	*** 0000d8	16 			push	ss
+	*** 0000d9	07 			pop	es
+	*** 0000da	66 a5 			movsd
+	*** 0000dc	66 a5 			movsd
+;|*** 	return c.HighPart == 0x22446755UL && c.LowPart == 0x78024600UL;
+; Line 157
+	*** 0000de	66 81 7e ec 55 67 44 22 cmp	DWORD PTR [bp-20],574908245	;22446755H
+	*** 0000e6	75 0e 			jne	SHORT $I792
+	*** 0000e8	66 81 7e e8 00 46 02 78 cmp	DWORD PTR [bp-24],2013414912	;78024600H	;c
+	*** 0000f0	75 04 			jne	SHORT $I792
+	*** 0000f2	b0 01 			mov	al,1
+	*** 0000f4	eb 02 			jmp	SHORT $EX780
+;|*** 	if (c.HighPart != 0x112233UL || c.LowPart != 0xAABC0123UL)
+; Line 153
+					$I792:
+;|*** 		return false;
+; Line 154
+	*** 0000f6	32 c0 			xor	al,al
+;|*** 
+;|*** 	c = c << 9;
+;|*** 	return c.HighPart == 0x22446755UL && c.LowPart == 0x78024600UL;
+;|*** }
+; Line 158
+					$EX780:
+	*** 0000f8	5e 			pop	si
+	*** 0000f9	5f 			pop	di
+	*** 0000fa	c9 			leave	
+	*** 0000fb	c3 			ret	
+
+?TestInt64@@YADXZ	ENDP
+	PUBLIC	?CopyMemory@@YAXPAXIII@Z	; CopyMemory
+?CopyMemory@@YAXPAXIII@Z	PROC NEAR	; CopyMemory COMDAT
+;|*** 
+;|*** 
+;|*** void CopyMemory (void *source, uint16 destSegment, uint16 destOffset, uint16 blockSize)
+;|*** {
+; Line 162
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	blockSize = 10
+;	destOffset = 8
+;	destSegment = 6
+;	source = 4
+;|*** 	__asm
+;|*** 	{
+;|*** 		push es
+; Line 165
+	*** 000005	06 			push	es
+;|*** 		mov si, ss:source
+; Line 166
+	*** 000006	36 8b 76 04 		mov	si,WORD PTR ss:[bp+4]	;source
+;|*** 		mov es, ss:destSegment
+; Line 167
+	*** 00000a	36 8e 46 06 		mov	es,WORD PTR ss:[bp+6]	;destSegment
+;|*** 		mov di, ss:destOffset
+; Line 168
+	*** 00000e	36 8b 7e 08 		mov	di,WORD PTR ss:[bp+8]	;destOffset
+;|*** 		mov cx, ss:blockSize
+; Line 169
+	*** 000012	36 8b 4e 0a 		mov	cx,WORD PTR ss:[bp+10]	;blockSize
+;|*** 		cld
+; Line 170
+	*** 000016	fc 			cld	
+;|*** 		rep movsb
+; Line 171
+	*** 000017	f3 			rep
+	*** 000018	a4 			movsb
+;|*** 		pop es
+; Line 172
+	*** 000019	07 			pop	es
+;|*** 	}
+; Line 173
+;|*** }
+; Line 174
+	*** 00001a	5e 			pop	si
+	*** 00001b	5f 			pop	di
+	*** 00001c	c9 			leave	
+	*** 00001d	c3 			ret	
+
+?CopyMemory@@YAXPAXIII@Z	ENDP
+	PUBLIC	?CopyMemory@@YAXIIPAXI@Z	; CopyMemory
+?CopyMemory@@YAXIIPAXI@Z	PROC NEAR	; CopyMemory COMDAT
+;|*** 
+;|*** 
+;|*** void CopyMemory (uint16 sourceSegment, uint16 sourceOffset, void *destination, uint16 blockSize)
+;|*** {
+; Line 178
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+	*** 000003	57 			push	di
+	*** 000004	56 			push	si
+;	blockSize = 10
+;	destination = 8
+;	sourceOffset = 6
+;	sourceSegment = 4
+;|*** 	__asm
+;|*** 	{
+;|*** 		push ds
+; Line 181
+	*** 000005	1e 			push	ds
+;|*** 		push es
+; Line 182
+	*** 000006	06 			push	es
+;|*** 		mov ax, ds
+; Line 183
+	*** 000007	8c d8 			mov	ax,ds
+;|*** 		mov es, ax
+; Line 184
+	*** 000009	8e c0 			mov	es,ax
+;|*** 		mov di, ss:destination
+; Line 185
+	*** 00000b	36 8b 7e 08 		mov	di,WORD PTR ss:[bp+8]	;destination
+;|*** 		mov si, ss:sourceOffset
+; Line 186
+	*** 00000f	36 8b 76 06 		mov	si,WORD PTR ss:[bp+6]	;sourceOffset
+;|*** 		mov cx, ss:blockSize
+; Line 187
+	*** 000013	36 8b 4e 0a 		mov	cx,WORD PTR ss:[bp+10]	;blockSize
+;|*** 		mov ds, ss:sourceSegment
+; Line 188
+	*** 000017	36 8e 5e 04 		mov	ds,WORD PTR ss:[bp+4]	;sourceSegment
+;|*** 		cld
+; Line 189
+	*** 00001b	fc 			cld	
+;|*** 		rep movsb
+; Line 190
+	*** 00001c	f3 			rep
+	*** 00001d	a4 			movsb
+;|*** 		pop es
+; Line 191
+	*** 00001e	07 			pop	es
+;|*** 		pop ds
+; Line 192
+	*** 00001f	1f 			pop	ds
+;|*** 	}
+; Line 193
+;|*** }
+; Line 194
+	*** 000020	5e 			pop	si
+	*** 000021	5f 			pop	di
+	*** 000022	c9 			leave	
+	*** 000023	c3 			ret	
+
+?CopyMemory@@YAXIIPAXI@Z	ENDP
+	PUBLIC	_EraseMemory
+_EraseMemory	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** void EraseMemory (void *memory, int size)
+;|*** {
+; Line 198
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	memory = 4
+;	size = 6
+;|*** 	memset (memory, 0, size);
+; Line 199
+	*** 000003	ff 76 06 		push	WORD PTR [bp+6]	;size
+	*** 000006	6a 00 			push	0
+	*** 000008	ff 76 04 		push	WORD PTR [bp+4]	;memory
+	*** 00000b	e8 00 00 		call	_memset
+;|*** }
+; Line 200
+	*** 00000e	c9 			leave	
+	*** 00000f	c3 			ret	
+
+_EraseMemory	ENDP
+	PUBLIC	?GetLinearAddress@@YAKII@Z	; GetLinearAddress
+?GetLinearAddress@@YAKII@Z	PROC NEAR	; GetLinearAddress COMDAT
+;|*** 
+;|*** 
+;|*** uint32 GetLinearAddress (uint16 segment, uint16 offset)
+;|*** {
+; Line 204
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	segment = 4
+;	offset = 6
+;|*** 	return (uint32 (segment) << 4) + offset;
+; Line 205
+	*** 000003	2b d2 			sub	dx,dx
+	*** 000005	8b 46 04 		mov	ax,WORD PTR [bp+4]	;segment
+	*** 000008	b1 04 			mov	cl,4
+	*** 00000a	e8 00 00 		call	__aNlshl
+	*** 00000d	03 46 06 		add	ax,WORD PTR [bp+6]	;offset
+	*** 000010	83 d2 00 		adc	dx,0
+;|*** }
+; Line 206
+	*** 000013	c9 			leave	
+	*** 000014	c3 			ret	
+
+?GetLinearAddress@@YAKII@Z	ENDP
+	PUBLIC	?RegionsIntersect@@YADABTUINT64_STRUCT@@K00@Z	; RegionsIntersect
+?RegionsIntersect@@YADABTUINT64_STRUCT@@K00@Z	PROC NEAR	; RegionsIntersect COMDAT
+;|*** 
+;|*** 
+;|*** bool RegionsIntersect (const uint64 &start1, uint32 length1, const uint64 &start2, const uint64 &end2)
+;|*** {
+; Line 210
+	*** 000000	c8 2c 00 00 		enter	44,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	start1 = 4
+;	length1 = 6
+;	start2 = 10
+;	end2 = 12
+;	end1 = -12
+;	intersectEnd = -36
+;	intersectStart = -44
+;|*** 	uint64 end1 = start1 + length1 - 1UL;
+; Line 211
+	*** 000006	6a 00 			push	0
+	*** 000008	6a 01 			push	1
+	*** 00000a	66 ff 76 06 		push	DWORD PTR [bp+6]	;length1
+	*** 00000e	ff 76 04 		push	WORD PTR [bp+4]	;start1
+	*** 000011	8d 46 ec 		lea	ax,WORD PTR [bp-20]
+	*** 000014	50 			push	ax
+	*** 000015	e8 00 00 		call	??H@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator+
+	*** 000018	83 c4 08 		add	sp,8
+	*** 00001b	50 			push	ax
+	*** 00001c	8d 46 e4 		lea	ax,WORD PTR [bp-28]
+	*** 00001f	50 			push	ax
+	*** 000020	e8 00 00 		call	??G@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator-
+	*** 000023	83 c4 08 		add	sp,8
+	*** 000026	8d 7e f4 		lea	di,WORD PTR [bp-12]	;end1
+	*** 000029	8b f0 			mov	si,ax
+	*** 00002b	16 			push	ss
+	*** 00002c	07 			pop	es
+	*** 00002d	66 a5 			movsd
+	*** 00002f	66 a5 			movsd
+;|*** 	uint64 intersectEnd = (end1 <= end2) ? end1 : end2;
+; Line 212
+	*** 000031	ff 76 0c 		push	WORD PTR [bp+12]	;end2
+	*** 000034	8d 46 f4 		lea	ax,WORD PTR [bp-12]	;end1
+	*** 000037	50 			push	ax
+	*** 000038	e8 00 00 		call	??N@YADABTUINT64_STRUCT@@0@Z	; operator<=
+	*** 00003b	83 c4 04 		add	sp,4
+	*** 00003e	0a c0 			or	al,al
+	*** 000040	74 05 			je	SHORT $L859
+	*** 000042	8d 46 f4 		lea	ax,WORD PTR [bp-12]	;end1
+	*** 000045	eb 03 			jmp	SHORT $L860
+					$L859:
+	*** 000047	8b 46 0c 		mov	ax,WORD PTR [bp+12]	;end2
+					$L860:
+	*** 00004a	89 46 fe 		mov	WORD PTR [bp-2],ax
+	*** 00004d	8d 7e dc 		lea	di,WORD PTR [bp-36]	;intersectEnd
+	*** 000050	8b f0 			mov	si,ax
+	*** 000052	16 			push	ss
+	*** 000053	07 			pop	es
+	*** 000054	66 a5 			movsd
+	*** 000056	66 a5 			movsd
+;|*** 	
+;|*** 	uint64 intersectStart = (start1 >= start2) ? start1 : start2;
+; Line 214
+	*** 000058	ff 76 0a 		push	WORD PTR [bp+10]	;start2
+	*** 00005b	ff 76 04 		push	WORD PTR [bp+4]	;start1
+	*** 00005e	e8 00 00 		call	??P@YADABTUINT64_STRUCT@@0@Z	; operator>=
+	*** 000061	83 c4 04 		add	sp,4
+	*** 000064	0a c0 			or	al,al
+	*** 000066	74 05 			je	SHORT $L861
+	*** 000068	8b 46 04 		mov	ax,WORD PTR [bp+4]	;start1
+	*** 00006b	eb 03 			jmp	SHORT $L862
+					$L861:
+	*** 00006d	8b 46 0a 		mov	ax,WORD PTR [bp+10]	;start2
+					$L862:
+	*** 000070	89 46 fc 		mov	WORD PTR [bp-4],ax
+	*** 000073	8d 7e d4 		lea	di,WORD PTR [bp-44]	;intersectStart
+	*** 000076	8b f0 			mov	si,ax
+	*** 000078	16 			push	ss
+	*** 000079	07 			pop	es
+	*** 00007a	66 a5 			movsd
+	*** 00007c	66 a5 			movsd
+;|*** 	if (intersectStart > intersectEnd)
+; Line 215
+	*** 00007e	8d 46 dc 		lea	ax,WORD PTR [bp-36]	;intersectEnd
+	*** 000081	50 			push	ax
+	*** 000082	8d 46 d4 		lea	ax,WORD PTR [bp-44]	;intersectStart
+	*** 000085	50 			push	ax
+	*** 000086	e8 00 00 		call	??O@YADABTUINT64_STRUCT@@0@Z	; operator>
+	*** 000089	83 c4 04 		add	sp,4
+	*** 00008c	0a c0 			or	al,al
+	*** 00008e	75 2e 			jne	SHORT $L863
+	*** 000090	8d 46 d4 		lea	ax,WORD PTR [bp-44]	;intersectStart
+	*** 000093	50 			push	ax
+	*** 000094	6a 00 			push	0
+	*** 000096	6a 01 			push	1
+	*** 000098	8d 46 dc 		lea	ax,WORD PTR [bp-36]	;intersectEnd
+	*** 00009b	50 			push	ax
+	*** 00009c	8d 46 e4 		lea	ax,WORD PTR [bp-28]
+	*** 00009f	50 			push	ax
+	*** 0000a0	e8 00 00 		call	??H@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator+
+	*** 0000a3	83 c4 08 		add	sp,8
+	*** 0000a6	50 			push	ax
+	*** 0000a7	8d 46 ec 		lea	ax,WORD PTR [bp-20]
+	*** 0000aa	50 			push	ax
+	*** 0000ab	e8 00 00 		call	??G@YA?ATUINT64_STRUCT@@ABT0@0@Z	; operator-
+	*** 0000ae	8b d8 			mov	bx,ax
+	*** 0000b0	83 c4 06 		add	sp,6
+	*** 0000b3	8b 47 02 		mov	ax,WORD PTR [bx+2]
+	*** 0000b6	0b 07 			or	ax,WORD PTR [bx]
+	*** 0000b8	74 04 			je	SHORT $L863
+	*** 0000ba	b0 01 			mov	al,1
+	*** 0000bc	eb 02 			jmp	SHORT $L864
+					$L863:
+	*** 0000be	32 c0 			xor	al,al
+					$L864:
+;|*** 		return false;
+;|*** 		
+;|*** 	return (intersectEnd + 1UL - intersectStart).LowPart != 0;
+;|*** }
+; Line 219
+	*** 0000c0	5e 			pop	si
+	*** 0000c1	5f 			pop	di
+	*** 0000c2	c9 			leave	
+	*** 0000c3	c3 			ret	
+
+?RegionsIntersect@@YADABTUINT64_STRUCT@@K00@Z	ENDP
+	PUBLIC	_ThrowFatalException
+_ThrowFatalException	PROC NEAR	;  COMDAT
+;|*** 
+;|*** 
+;|*** void ThrowFatalException (int line)
+;|*** {
+; Line 223
+	*** 000000	55 			push	bp
+	*** 000001	8b ec 			mov	bp,sp
+;	line = 4
+;|*** 	PrintChar ('#'); Print (line);
+; Line 224
+	*** 000003	6a 23 			push	35	;0023H
+	*** 000005	e8 00 00 		call	?PrintChar@@YAXD@Z	; PrintChar
+	*** 000008	5b 			pop	bx
+	*** 000009	8b 46 04 		mov	ax,WORD PTR [bp+4]	;line
+	*** 00000c	99 			cwd	
+	*** 00000d	52 			push	dx
+	*** 00000e	50 			push	ax
+	*** 00000f	e8 00 00 		call	?Print@@YAXK@Z	; Print
+	*** 000012	8b e5 			mov	sp,bp
+;|*** 	while (1);
+; Line 225
+					$FC826:
+	*** 000014	eb fe 			jmp	SHORT $FC826
+
+_ThrowFatalException	ENDP
+_TEXT	ENDS
+END
+;|*** }

@@ -1,0 +1,486 @@
+
+ Start  Stop   Length Name                   Class
+ 00000H 065F5H 065F6H _TEXT                  CODE
+ 065F6H 07558H 00F63H _DATA                  DATA
+ 0755AH 07565H 0000CH CONST                  CONST
+ 07566H 090ADH 01B48H _BSS                   BSS
+ 090B0H 09883H 007D4H c_common               BSS
+
+ Origin   Group
+ 0000:0   DGROUP
+
+  Address         Publics by Name
+
+ 0000:2536       ??5@YA?ATUINT64_STRUCT@@ABT0@H@Z
+ 0000:258A       ??6@YA?ATUINT64_STRUCT@@ABT0@H@Z
+ 0000:25EA       ??8@YADABTUINT64_STRUCT@@0@Z
+ 0000:25CA       ??E@YAAATUINT64_STRUCT@@AAT0@@Z
+ 0000:2484       ??G@YA?ATUINT64_STRUCT@@ABT0@0@Z
+ 0000:24E4       ??G@YA?ATUINT64_STRUCT@@ABT0@K@Z
+ 0000:23D2       ??H@YA?ATUINT64_STRUCT@@ABT0@0@Z
+ 0000:2432       ??H@YA?ATUINT64_STRUCT@@ABT0@K@Z
+ 0000:2644       ??M@YADABTUINT64_STRUCT@@0@Z
+ 0000:26A2       ??N@YADABTUINT64_STRUCT@@0@Z
+ 0000:2610       ??O@YADABTUINT64_STRUCT@@0@Z
+ 0000:2678       ??P@YADABTUINT64_STRUCT@@0@Z
+ 0000:245E       ??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z
+ 0000:2510       ??Z@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z
+ 0000:7132       ??_C@_00A@?$AA@
+ 0000:71F2       ??_C@_01KHLB@?$FL?$AA@
+ 0000:7232       ??_C@_02HFBK@?3?5?$AA@
+ 0000:70DE       ??_C@_02PIMC@?$AN?6?$AA@
+ 0000:71EE       ??_C@_03EDHP@n?$AN?6?$AA@
+ 0000:753A       ??_C@_03MCBA@AES?$AA@
+ 0000:71EA       ??_C@_03NMHE@y?$AN?6?$AA@
+ 0000:7116       ??_C@_04HAAB@?5MB?5?$AA@
+ 0000:70F0       ??_C@_04KCBC@Read?$AA@
+ 0000:7522       ??_C@_04PLFG@MMP?3?$AA@
+ 0000:7110       ??_C@_05CLDD@?5CHS?3?$AA@
+ 0000:70EA       ??_C@_05DHHK@Write?$AA@
+ 0000:74A8       ??_C@_05DILO@Abort?$AA@
+ 0000:71F4       ??_C@_05EFLO@?$FN?5?5?5?5?$AA@
+ 0000:711C       ??_C@_06OLBI@Drive?5?$AA@
+ 0000:70F6       ??_C@_07EIJM@?5error?3?$AA@
+ 0000:753E       ??_C@_07FAMF@Serpent?$AA@
+ 0000:7546       ??_C@_07FNOL@Twofish?$AA@
+ 0000:70FE       ??_C@_07JBEK@?5Drive?3?$AA@
+ 0000:738A       ??_C@_07MCKD@Drive?3?5?$AA@
+ 0000:70E2       ??_C@_07MKMO@Error?3?5?$AA@
+ 0000:7106       ??_C@_08NNOK@?5Sector?3?$AA@
+ 0000:73A0       ??_C@_08PFEJ@?0?5Size?3?5?$AA@
+ 0000:71E0       ??_C@_09LGPG@?$DP?5?$CIy?1n?$CJ?3?5?$AA@
+ 0000:7528       ??_C@_0BB@EEAO@Memory?5corrupted?$AA@
+ 0000:71FA       ??_C@_0BC@DHAO@?$FLEsc?$FN?5?5Cancel?$AN?6?$AN?6?$AA@
+ 0000:750E       ??_C@_0BE@KCNB@?$ANCopying?5completed?4?$AA@
+ 0000:721C       ??_C@_0BG@GEFN@?5for?5hidden?5system?3?$AN?6?$AA@
+ 0000:7372       ??_C@_0BH@CKJE@Bootable?5Partitions?3?$AN?6?$AA@
+ 0000:7400       ??_C@_0BH@EGEK@?$AN?6?9?5Enable?5LBA?5in?5BIOS?$AA@
+ 0000:72BC       ??_C@_0BI@KFOG@Incorrect?5password?4?$AN?6?$AN?6?$AA@
+ 0000:7170       ??_C@_0BJ@CIJ@?5?5?5?5Keyboard?5Controls?3?$AN?6?$AA@
+ 0000:7134       ??_C@_0BM@IDKA@No?5bootable?5partition?5found?$AA@
+ 0000:72A0       ??_C@_0BM@NMNK@Warning?3?5Caps?5Lock?5is?5on?4?$AN?6?$AA@
+ 0000:7150       ??_C@_0CA@BGAH@?5CipherShed?5Boot?5Loader?50?47?43?$AN?6?$AA@
+ 0000:7244       ??_C@_0CA@FBFB@BIOS?5reserved?5too?5much?5memory?3?5?$AA@
+ 0000:73AA       ??_C@_0CA@HAB@Press?51?99?5to?5select?5partition?3?5?$AA@
+ 0000:71BC       ??_C@_0CD@GJAD@Skip?5Authentication?5?$CIBoot?5Manage@
+ 0000:7196       ??_C@_0CG@HLF@Boot?5Non?9Hidden?5System?5?$CIBoot?5Man@
+ 0000:73CA       ??_C@_0CI@CHP@Your?5BIOS?5does?5not?5support?5large@
+ 0000:7264       ??_C@_0DM@HBD@?9?5Upgrade?5BIOS?$AN?6?9?5Use?5a?5differen@
+ 0000:7418       ??_C@_0DM@NDEP@?$AN?6Copying?5system?5to?5hidden?5volum@
+ 0000:74AE       ??_C@_0FB@DHKC@To?5fix?5bad?5sectors?3?51?$CJ?5Terminate@
+ 0000:7454       ??_C@_0FD@OPN@?$ANIf?5aborted?0?5copying?5will?5have?5t@
+ 0000:72D4       ??_C@_0JO@GLOI@If?5you?5are?5sure?5the?5password?5is?5@
+ 0000:754E       ??_C@_0L@FEML@RIPEMD?9160?$AA@
+ 0000:718A       ??_C@_0M@NCBA@?5?5?5?5?$FLEsc?$FN?5?5?$AA@
+ 0000:7500       ??_C@_0N@BNAP@?$ANRemaining?3?5?$AA@
+ 0000:7236       ??_C@_0N@DGHN@Booting?4?4?4?$AN?6?$AA@
+ 0000:7124       ??_C@_0N@JJKN@?5not?5found?3?5?$AA@
+ 0000:7392       ??_C@_0O@LEMN@?0?5Partition?3?5?$AA@
+ 0000:73F2       ??_C@_0O@PLFN@?5due?5to?5a?5bug?$AA@
+ 0000:720C       ??_C@_0P@EOMF@Enter?5password?$AA@
+ 0000:75AE       ?ActivePartition@@3UPartition@@A
+ 0000:04C6       ?Beep@@YAXXZ
+ 0000:7828       ?BiosMemoryMap@@3QAUBiosMemoryMapEntry@@A
+ 0000:758C       ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A
+ 0000:7568       ?BootDrive@@3EA
+ 0000:756A       ?BootDriveGeometry@@3UDriveGeometry@@A
+ 0000:65F6       ?BootDriveGeometryValid@@3DA
+ 0000:7567       ?BootLoaderDrive@@3EA
+ 0000:7566       ?BootSectorFlags@@3EA
+ 0000:65F9       ?BootStarted@@3DA
+ 0000:0A5C       ?ChsToLba@@YAXABUDriveGeometry@@ABUChsAddress@@AATUINT64_STRUCT@@@Z
+ 0000:05C8       ?ClearBiosKeystrokeBuffer@@YAXXZ
+ 0000:04E4       ?ClearScreen@@YAXXZ
+ 0000:26EA       ?CopyMemory@@YAXIIPAXI@Z
+ 0000:26CC       ?CopyMemory@@YAXPAXIII@Z
+ 0000:756E       ?CustomUserMessage@@3QADA
+ 0000:0328       ?DisableScreenOutput@@YAXXZ
+ 0000:0000  Unr  ?EnableScreenOutput@@YAXXZ
+ 0000:758E       ?EncryptedVirtualPartition@@3UPartition@@A
+ 0000:05A6       ?EscKeyPressed@@YADXZ
+ 0000:65FA       ?ExtraBootPartitionPresent@@3DA
+ 0000:0DD4       ?GetActivePartition@@YADE@Z
+ 0000:09D4       ?GetDriveGeometry@@YAEEAAUDriveGeometry@@D@Z
+ 0000:0BAE       ?GetDrivePartitions@@YAEEPAUPartition@@IAAID0D@Z
+ 0000:1D22       ?GetFirstBiosMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z
+ 0000:0560       ?GetKeyboardChar@@YAEPAE@Z
+ 0000:0552       ?GetKeyboardChar@@YAEXZ
+ 0000:271E       ?GetLinearAddress@@YAKII@Z
+ 0000:1D38       ?GetNextBiosMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z
+ 0000:0542       ?GetShiftFlags@@YAEXZ
+ 0000:05F8       ?GetString@@YAHPADI@Z
+ 0000:75F6       ?HiddenVolumeStartSector@@3TUINT64_STRUCT@@A
+ 0000:75EE       ?HiddenVolumeStartUnitNo@@3TUINT64_STRUCT@@A
+ 0000:04CE       ?InitVideoMode@@YAXXZ
+ 0000:2336       ?InstallInterruptFilters@@YADXZ
+ 0000:1D52       ?Int13Filter@@YADXZ
+ 0000:2312       ?Int13FilterEntry@@YAXXZ
+ 0000:2148       ?Int15Filter@@YADXZ
+ 0000:2202       ?IntFilterEntry@@YAXXZ
+ 0000:058E       ?IsKeyboardCharAvailable@@YADXZ
+ 0000:064C       ?IsLbaSupported@@YADE@Z
+ 0000:05E0       ?IsPrintable@@YADD@Z
+ 0000:0AA4       ?LbaToChs@@YAXABUDriveGeometry@@ABTUINT64_STRUCT@@AAUChsAddress@@@Z
+ 0000:7588       ?OuterVolumeBackupHeaderCrc@@3KA
+ 0000:0B08       ?PartitionEntryMBRToPartition@@YAXABUPartitionEntryMBR@@AAUPartition@@@Z
+ 0000:75CE       ?PartitionFollowingActive@@3UPartition@@A
+ 0000:65F8       ?PreventBootMenu@@3DA
+ 0000:65F7       ?PreventNormalSystemBoot@@3DA
+ 0000:03E0       ?Print@@YAXABTUINT64_STRUCT@@@Z
+ 0000:06FE       ?Print@@YAXABUChsAddress@@@Z
+ 0000:037C       ?Print@@YAXK@Z
+ 0000:035E       ?Print@@YAXPBD@Z
+ 0000:0504       ?PrintBackspace@@YAXXZ
+ 0000:032E       ?PrintChar@@YAXD@Z
+ 0000:0344       ?PrintCharAtCursor@@YAXD@Z
+ 0000:0688       ?PrintDiskError@@YAXEDEPBTUINT64_STRUCT@@PBUChsAddress@@@Z
+ 0000:04B0       ?PrintEndl@@YAXH@Z
+ 0000:04A8       ?PrintEndl@@YAXXZ
+ 0000:0512       ?PrintError@@YAXPBD@Z
+ 0000:052C       ?PrintErrorNoEndl@@YAXPBD@Z
+ 0000:046E       ?PrintHex@@YAXABTUINT64_STRUCT@@@Z
+ 0000:0402       ?PrintHex@@YAXE@Z
+ 0000:0442       ?PrintHex@@YAXI@Z
+ 0000:045A       ?PrintHex@@YAXK@Z
+ 0000:048C       ?PrintRepeatedChar@@YAXDH@Z
+ 0000:073A       ?PrintSectorCountInMB@@YAXABTUINT64_STRUCT@@@Z
+ 0000:029E       ?ReadBootSectorUserConfiguration@@YAXXZ
+ 0000:0E10       ?ReadEncryptedSectors@@YAEIIETUINT64_STRUCT@@I@Z
+ 0000:0952       ?ReadSectors@@YAEIIEABTUINT64_STRUCT@@ID@Z
+ 0000:096C       ?ReadSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z
+ 0000:0000  Unr  ?ReadSectors@@YAEPAEEABUChsAddress@@ED@Z
+ 0000:0B6E       ?ReadWriteMBR@@YAEDED@Z
+ 0000:0928       ?ReadWriteSectors@@YAEDIIEABTUINT64_STRUCT@@ID@Z
+ 0000:075C       ?ReadWriteSectors@@YAEDIIEABUChsAddress@@ED@Z
+ 0000:07F0       ?ReadWriteSectors@@YAEDPAEEABUChsAddress@@ED@Z
+ 0000:2734       ?RegionsIntersect@@YADABTUINT64_STRUCT@@K00@Z
+ 0000:75FE       ?SectorBuffer@@3QAEA
+ 0000:0000  Unr  ?TestInt64@@YADXZ
+ 0000:02F6       ?UpdateBootSectorConfiguration@@YAEE@Z
+ 0000:0F54       ?WriteEncryptedSectors@@YAEIIETUINT64_STRUCT@@I@Z
+ 0000:09BA       ?WriteSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z
+ 0000:0000  Unr  ?WriteSectors@@YAEPAEEABUChsAddress@@ED@Z
+ 0000:055A       ?yield@@YAXXZ
+ 0000:435E       _aes_decrypt
+ 0000:42DA       _aes_encrypt
+ 0000:4156       _aes_set_key
+ 0000:29BE       _CipherGet
+ 0000:0000  Unr  _CipherGetBlockSize
+ 0000:29FE       _CipherGetKeyScheduleSize
+ 0000:29EC       _CipherGetKeySize
+ 0000:0000  Unr  _CipherGetName
+ 0000:28D2       _CipherInit
+ 0000:0000  Unr  _crc32_selftests
+ 0000:90B0       _CryptoInfoBuffer
+ 0000:2C7C       _crypto_close
+ 0000:0000  Unr  _crypto_loadkey
+ 0000:2C72       _crypto_open
+ 0000:2978       _DecipherBlock
+ 0000:2D7A       _DecryptBuffer
+ 0000:36B2       _DecryptBufferXTS
+ 0000:2E00       _DecryptDataUnits
+ 0000:30F8       _derive_key_ripemd160
+ 0000:3030       _derive_u_ripemd160
+ 0000:0000  Unr  _EAGetCipherCount
+ 0000:0000  Unr  _EAGetCount
+ 0000:2A10       _EAGetFirst
+ 0000:2B74       _EAGetFirstCipher
+ 0000:2AC6       _EAGetFirstMode
+ 0000:2B04       _EAGetKeyScheduleSize
+ 0000:2A92       _EAGetKeySize
+ 0000:0000  Unr  _EAGetLargestKey
+ 0000:2B38       _EAGetLargestKeyForMode
+ 0000:2B82       _EAGetLastCipher
+ 0000:2A14       _EAGetNext
+ 0000:2BAA       _EAGetNextCipher
+ 0000:2AD4       _EAGetNextMode
+ 0000:2BDA       _EAGetPreviousCipher
+ 0000:2A30       _EAInit
+ 0000:0000  Unr  _EAIsFormatEnabled
+ 0000:2C18       _EAIsModeSupported
+ 0000:7566       _edata
+ 0000:2932       _EncipherBlock
+ 0000:2C8E       _EncryptBuffer
+ 0000:3698       _EncryptBufferXTS
+ 0000:2D04       _EncryptDataUnits
+ 0000:9884       _end
+ 0000:270E       _EraseMemory
+ 0000:28C6       _GetCrc32
+ 0000:3194       _GetHeaderField16
+ 0000:31A8       _GetHeaderField32
+ 0000:31BE       _GetHeaderField64
+ 0000:0000  Unr  _GetMaxPkcs5OutSize
+ 0000:0000  Unr  _get_pkcs5_iteration_count
+ 0000:2C44       _HashGet
+ 0000:0000  Unr  _HashGetIdByName
+ 0000:0000  Unr  _HashGetName
+ 0000:0000  Unr  _HashIsDeprecated
+ 0000:2EF0       _hmac_ripemd160
+ 0000:0000  Unr  _hmac_truncate
+ 0000:1BE4       _main
+ 0000:0130       _memcpy
+ 0000:015C       _memset
+ 0000:2E88       _MirrorBytes16
+ 0000:2E98       _MirrorBytes32
+ 0000:31FE       _ReadVolumeHeader
+ 0000:3818       _RMD160Final
+ 0000:36CC       _RMD160Init
+ 0000:388A       _RMD160Transform
+ 0000:3708       _RMD160Update
+ 0000:53E0       _serpent_decrypt
+ 0000:4FB6       _serpent_encrypt
+ 0000:4A72       _serpent_set_key
+ 0000:0104       _strcmp
+ 0000:27F8       _ThrowFatalException
+ 0000:6426       _twofish_decrypt
+ 0000:6240       _twofish_encrypt
+ 0000:60AE       _twofish_set_key
+ 0000:1BE2       __acrtused
+ 0000:018A       __aNlmul
+ 0000:01BC       __aNlshl
+ 0000:01C8       __aNuldiv
+ 0000:018A       __aNulmul
+ 0000:0228       __aNulrem
+ 0000:0292       __aNulshr
+ 0000:7566       __edata
+ 0000:9884       __end
+ 0000:987C       __mbac
+
+  Address         Publics by Value
+
+ 0000:0000  Unr  ?ReadSectors@@YAEPAEEABUChsAddress@@ED@Z
+ 0000:0000  Unr  ?WriteSectors@@YAEPAEEABUChsAddress@@ED@Z
+ 0000:0000  Unr  _HashGetIdByName
+ 0000:0000  Unr  _HashGetName
+ 0000:0000  Unr  _CipherGetName
+ 0000:0000  Unr  _hmac_truncate
+ 0000:0000  Unr  ?EnableScreenOutput@@YAXXZ
+ 0000:0000  Unr  ?TestInt64@@YADXZ
+ 0000:0000  Unr  _get_pkcs5_iteration_count
+ 0000:0000  Unr  _crypto_loadkey
+ 0000:0000  Unr  _CipherGetBlockSize
+ 0000:0000  Unr  _crc32_selftests
+ 0000:0000  Unr  _HashIsDeprecated
+ 0000:0000  Unr  _EAGetCipherCount
+ 0000:0000  Unr  _EAIsFormatEnabled
+ 0000:0000  Unr  _GetMaxPkcs5OutSize
+ 0000:0000  Unr  _EAGetLargestKey
+ 0000:0000  Unr  _EAGetCount
+ 0000:0104       _strcmp
+ 0000:0130       _memcpy
+ 0000:015C       _memset
+ 0000:018A       __aNlmul
+ 0000:018A       __aNulmul
+ 0000:01BC       __aNlshl
+ 0000:01C8       __aNuldiv
+ 0000:0228       __aNulrem
+ 0000:0292       __aNulshr
+ 0000:029E       ?ReadBootSectorUserConfiguration@@YAXXZ
+ 0000:02F6       ?UpdateBootSectorConfiguration@@YAEE@Z
+ 0000:0328       ?DisableScreenOutput@@YAXXZ
+ 0000:032E       ?PrintChar@@YAXD@Z
+ 0000:0344       ?PrintCharAtCursor@@YAXD@Z
+ 0000:035E       ?Print@@YAXPBD@Z
+ 0000:037C       ?Print@@YAXK@Z
+ 0000:03E0       ?Print@@YAXABTUINT64_STRUCT@@@Z
+ 0000:0402       ?PrintHex@@YAXE@Z
+ 0000:0442       ?PrintHex@@YAXI@Z
+ 0000:045A       ?PrintHex@@YAXK@Z
+ 0000:046E       ?PrintHex@@YAXABTUINT64_STRUCT@@@Z
+ 0000:048C       ?PrintRepeatedChar@@YAXDH@Z
+ 0000:04A8       ?PrintEndl@@YAXXZ
+ 0000:04B0       ?PrintEndl@@YAXH@Z
+ 0000:04C6       ?Beep@@YAXXZ
+ 0000:04CE       ?InitVideoMode@@YAXXZ
+ 0000:04E4       ?ClearScreen@@YAXXZ
+ 0000:0504       ?PrintBackspace@@YAXXZ
+ 0000:0512       ?PrintError@@YAXPBD@Z
+ 0000:052C       ?PrintErrorNoEndl@@YAXPBD@Z
+ 0000:0542       ?GetShiftFlags@@YAEXZ
+ 0000:0552       ?GetKeyboardChar@@YAEXZ
+ 0000:055A       ?yield@@YAXXZ
+ 0000:0560       ?GetKeyboardChar@@YAEPAE@Z
+ 0000:058E       ?IsKeyboardCharAvailable@@YADXZ
+ 0000:05A6       ?EscKeyPressed@@YADXZ
+ 0000:05C8       ?ClearBiosKeystrokeBuffer@@YAXXZ
+ 0000:05E0       ?IsPrintable@@YADD@Z
+ 0000:05F8       ?GetString@@YAHPADI@Z
+ 0000:064C       ?IsLbaSupported@@YADE@Z
+ 0000:0688       ?PrintDiskError@@YAXEDEPBTUINT64_STRUCT@@PBUChsAddress@@@Z
+ 0000:06FE       ?Print@@YAXABUChsAddress@@@Z
+ 0000:073A       ?PrintSectorCountInMB@@YAXABTUINT64_STRUCT@@@Z
+ 0000:075C       ?ReadWriteSectors@@YAEDIIEABUChsAddress@@ED@Z
+ 0000:07F0       ?ReadWriteSectors@@YAEDPAEEABUChsAddress@@ED@Z
+ 0000:0928       ?ReadWriteSectors@@YAEDIIEABTUINT64_STRUCT@@ID@Z
+ 0000:0952       ?ReadSectors@@YAEIIEABTUINT64_STRUCT@@ID@Z
+ 0000:096C       ?ReadSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z
+ 0000:09BA       ?WriteSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z
+ 0000:09D4       ?GetDriveGeometry@@YAEEAAUDriveGeometry@@D@Z
+ 0000:0A5C       ?ChsToLba@@YAXABUDriveGeometry@@ABUChsAddress@@AATUINT64_STRUCT@@@Z
+ 0000:0AA4       ?LbaToChs@@YAXABUDriveGeometry@@ABTUINT64_STRUCT@@AAUChsAddress@@@Z
+ 0000:0B08       ?PartitionEntryMBRToPartition@@YAXABUPartitionEntryMBR@@AAUPartition@@@Z
+ 0000:0B6E       ?ReadWriteMBR@@YAEDED@Z
+ 0000:0BAE       ?GetDrivePartitions@@YAEEPAUPartition@@IAAID0D@Z
+ 0000:0DD4       ?GetActivePartition@@YADE@Z
+ 0000:0E10       ?ReadEncryptedSectors@@YAEIIETUINT64_STRUCT@@I@Z
+ 0000:0F54       ?WriteEncryptedSectors@@YAEIIETUINT64_STRUCT@@I@Z
+ 0000:1BE2       __acrtused
+ 0000:1BE4       _main
+ 0000:1D22       ?GetFirstBiosMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z
+ 0000:1D38       ?GetNextBiosMemoryMapEntry@@YADAAUBiosMemoryMapEntry@@@Z
+ 0000:1D52       ?Int13Filter@@YADXZ
+ 0000:2148       ?Int15Filter@@YADXZ
+ 0000:2202       ?IntFilterEntry@@YAXXZ
+ 0000:2312       ?Int13FilterEntry@@YAXXZ
+ 0000:2336       ?InstallInterruptFilters@@YADXZ
+ 0000:23D2       ??H@YA?ATUINT64_STRUCT@@ABT0@0@Z
+ 0000:2432       ??H@YA?ATUINT64_STRUCT@@ABT0@K@Z
+ 0000:245E       ??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z
+ 0000:2484       ??G@YA?ATUINT64_STRUCT@@ABT0@0@Z
+ 0000:24E4       ??G@YA?ATUINT64_STRUCT@@ABT0@K@Z
+ 0000:2510       ??Z@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z
+ 0000:2536       ??5@YA?ATUINT64_STRUCT@@ABT0@H@Z
+ 0000:258A       ??6@YA?ATUINT64_STRUCT@@ABT0@H@Z
+ 0000:25CA       ??E@YAAATUINT64_STRUCT@@AAT0@@Z
+ 0000:25EA       ??8@YADABTUINT64_STRUCT@@0@Z
+ 0000:2610       ??O@YADABTUINT64_STRUCT@@0@Z
+ 0000:2644       ??M@YADABTUINT64_STRUCT@@0@Z
+ 0000:2678       ??P@YADABTUINT64_STRUCT@@0@Z
+ 0000:26A2       ??N@YADABTUINT64_STRUCT@@0@Z
+ 0000:26CC       ?CopyMemory@@YAXPAXIII@Z
+ 0000:26EA       ?CopyMemory@@YAXIIPAXI@Z
+ 0000:270E       _EraseMemory
+ 0000:271E       ?GetLinearAddress@@YAKII@Z
+ 0000:2734       ?RegionsIntersect@@YADABTUINT64_STRUCT@@K00@Z
+ 0000:27F8       _ThrowFatalException
+ 0000:28C6       _GetCrc32
+ 0000:28D2       _CipherInit
+ 0000:2932       _EncipherBlock
+ 0000:2978       _DecipherBlock
+ 0000:29BE       _CipherGet
+ 0000:29EC       _CipherGetKeySize
+ 0000:29FE       _CipherGetKeyScheduleSize
+ 0000:2A10       _EAGetFirst
+ 0000:2A14       _EAGetNext
+ 0000:2A30       _EAInit
+ 0000:2A92       _EAGetKeySize
+ 0000:2AC6       _EAGetFirstMode
+ 0000:2AD4       _EAGetNextMode
+ 0000:2B04       _EAGetKeyScheduleSize
+ 0000:2B38       _EAGetLargestKeyForMode
+ 0000:2B74       _EAGetFirstCipher
+ 0000:2B82       _EAGetLastCipher
+ 0000:2BAA       _EAGetNextCipher
+ 0000:2BDA       _EAGetPreviousCipher
+ 0000:2C18       _EAIsModeSupported
+ 0000:2C44       _HashGet
+ 0000:2C72       _crypto_open
+ 0000:2C7C       _crypto_close
+ 0000:2C8E       _EncryptBuffer
+ 0000:2D04       _EncryptDataUnits
+ 0000:2D7A       _DecryptBuffer
+ 0000:2E00       _DecryptDataUnits
+ 0000:2E88       _MirrorBytes16
+ 0000:2E98       _MirrorBytes32
+ 0000:2EF0       _hmac_ripemd160
+ 0000:3030       _derive_u_ripemd160
+ 0000:30F8       _derive_key_ripemd160
+ 0000:3194       _GetHeaderField16
+ 0000:31A8       _GetHeaderField32
+ 0000:31BE       _GetHeaderField64
+ 0000:31FE       _ReadVolumeHeader
+ 0000:3698       _EncryptBufferXTS
+ 0000:36B2       _DecryptBufferXTS
+ 0000:36CC       _RMD160Init
+ 0000:3708       _RMD160Update
+ 0000:3818       _RMD160Final
+ 0000:388A       _RMD160Transform
+ 0000:4156       _aes_set_key
+ 0000:42DA       _aes_encrypt
+ 0000:435E       _aes_decrypt
+ 0000:4A72       _serpent_set_key
+ 0000:4FB6       _serpent_encrypt
+ 0000:53E0       _serpent_decrypt
+ 0000:60AE       _twofish_set_key
+ 0000:6240       _twofish_encrypt
+ 0000:6426       _twofish_decrypt
+ 0000:65F6       ?BootDriveGeometryValid@@3DA
+ 0000:65F7       ?PreventNormalSystemBoot@@3DA
+ 0000:65F8       ?PreventBootMenu@@3DA
+ 0000:65F9       ?BootStarted@@3DA
+ 0000:65FA       ?ExtraBootPartitionPresent@@3DA
+ 0000:70DE       ??_C@_02PIMC@?$AN?6?$AA@
+ 0000:70E2       ??_C@_07MKMO@Error?3?5?$AA@
+ 0000:70EA       ??_C@_05DHHK@Write?$AA@
+ 0000:70F0       ??_C@_04KCBC@Read?$AA@
+ 0000:70F6       ??_C@_07EIJM@?5error?3?$AA@
+ 0000:70FE       ??_C@_07JBEK@?5Drive?3?$AA@
+ 0000:7106       ??_C@_08NNOK@?5Sector?3?$AA@
+ 0000:7110       ??_C@_05CLDD@?5CHS?3?$AA@
+ 0000:7116       ??_C@_04HAAB@?5MB?5?$AA@
+ 0000:711C       ??_C@_06OLBI@Drive?5?$AA@
+ 0000:7124       ??_C@_0N@JJKN@?5not?5found?3?5?$AA@
+ 0000:7132       ??_C@_00A@?$AA@
+ 0000:7134       ??_C@_0BM@IDKA@No?5bootable?5partition?5found?$AA@
+ 0000:7150       ??_C@_0CA@BGAH@?5CipherShed?5Boot?5Loader?50?47?43?$AN?6?$AA@
+ 0000:7170       ??_C@_0BJ@CIJ@?5?5?5?5Keyboard?5Controls?3?$AN?6?$AA@
+ 0000:718A       ??_C@_0M@NCBA@?5?5?5?5?$FLEsc?$FN?5?5?$AA@
+ 0000:7196       ??_C@_0CG@HLF@Boot?5Non?9Hidden?5System?5?$CIBoot?5Man@
+ 0000:71BC       ??_C@_0CD@GJAD@Skip?5Authentication?5?$CIBoot?5Manage@
+ 0000:71E0       ??_C@_09LGPG@?$DP?5?$CIy?1n?$CJ?3?5?$AA@
+ 0000:71EA       ??_C@_03NMHE@y?$AN?6?$AA@
+ 0000:71EE       ??_C@_03EDHP@n?$AN?6?$AA@
+ 0000:71F2       ??_C@_01KHLB@?$FL?$AA@
+ 0000:71F4       ??_C@_05EFLO@?$FN?5?5?5?5?$AA@
+ 0000:71FA       ??_C@_0BC@DHAO@?$FLEsc?$FN?5?5Cancel?$AN?6?$AN?6?$AA@
+ 0000:720C       ??_C@_0P@EOMF@Enter?5password?$AA@
+ 0000:721C       ??_C@_0BG@GEFN@?5for?5hidden?5system?3?$AN?6?$AA@
+ 0000:7232       ??_C@_02HFBK@?3?5?$AA@
+ 0000:7236       ??_C@_0N@DGHN@Booting?4?4?4?$AN?6?$AA@
+ 0000:7244       ??_C@_0CA@FBFB@BIOS?5reserved?5too?5much?5memory?3?5?$AA@
+ 0000:7264       ??_C@_0DM@HBD@?9?5Upgrade?5BIOS?$AN?6?9?5Use?5a?5differen@
+ 0000:72A0       ??_C@_0BM@NMNK@Warning?3?5Caps?5Lock?5is?5on?4?$AN?6?$AA@
+ 0000:72BC       ??_C@_0BI@KFOG@Incorrect?5password?4?$AN?6?$AN?6?$AA@
+ 0000:72D4       ??_C@_0JO@GLOI@If?5you?5are?5sure?5the?5password?5is?5@
+ 0000:7372       ??_C@_0BH@CKJE@Bootable?5Partitions?3?$AN?6?$AA@
+ 0000:738A       ??_C@_07MCKD@Drive?3?5?$AA@
+ 0000:7392       ??_C@_0O@LEMN@?0?5Partition?3?5?$AA@
+ 0000:73A0       ??_C@_08PFEJ@?0?5Size?3?5?$AA@
+ 0000:73AA       ??_C@_0CA@HAB@Press?51?99?5to?5select?5partition?3?5?$AA@
+ 0000:73CA       ??_C@_0CI@CHP@Your?5BIOS?5does?5not?5support?5large@
+ 0000:73F2       ??_C@_0O@PLFN@?5due?5to?5a?5bug?$AA@
+ 0000:7400       ??_C@_0BH@EGEK@?$AN?6?9?5Enable?5LBA?5in?5BIOS?$AA@
+ 0000:7418       ??_C@_0DM@NDEP@?$AN?6Copying?5system?5to?5hidden?5volum@
+ 0000:7454       ??_C@_0FD@OPN@?$ANIf?5aborted?0?5copying?5will?5have?5t@
+ 0000:74A8       ??_C@_05DILO@Abort?$AA@
+ 0000:74AE       ??_C@_0FB@DHKC@To?5fix?5bad?5sectors?3?51?$CJ?5Terminate@
+ 0000:7500       ??_C@_0N@BNAP@?$ANRemaining?3?5?$AA@
+ 0000:750E       ??_C@_0BE@KCNB@?$ANCopying?5completed?4?$AA@
+ 0000:7522       ??_C@_04PLFG@MMP?3?$AA@
+ 0000:7528       ??_C@_0BB@EEAO@Memory?5corrupted?$AA@
+ 0000:753A       ??_C@_03MCBA@AES?$AA@
+ 0000:753E       ??_C@_07FAMF@Serpent?$AA@
+ 0000:7546       ??_C@_07FNOL@Twofish?$AA@
+ 0000:754E       ??_C@_0L@FEML@RIPEMD?9160?$AA@
+ 0000:7566       __edata
+ 0000:7566       ?BootSectorFlags@@3EA
+ 0000:7566       _edata
+ 0000:7567       ?BootLoaderDrive@@3EA
+ 0000:7568       ?BootDrive@@3EA
+ 0000:756A       ?BootDriveGeometry@@3UDriveGeometry@@A
+ 0000:756E       ?CustomUserMessage@@3QADA
+ 0000:7588       ?OuterVolumeBackupHeaderCrc@@3KA
+ 0000:758C       ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A
+ 0000:758E       ?EncryptedVirtualPartition@@3UPartition@@A
+ 0000:75AE       ?ActivePartition@@3UPartition@@A
+ 0000:75CE       ?PartitionFollowingActive@@3UPartition@@A
+ 0000:75EE       ?HiddenVolumeStartUnitNo@@3TUINT64_STRUCT@@A
+ 0000:75F6       ?HiddenVolumeStartSector@@3TUINT64_STRUCT@@A
+ 0000:75FE       ?SectorBuffer@@3QAEA
+ 0000:7828       ?BiosMemoryMap@@3QAUBiosMemoryMapEntry@@A
+ 0000:90B0       _CryptoInfoBuffer
+ 0000:987C       __mbac
+ 0000:9884       _end
+ 0000:9884       __end
+
+Program entry point at 0000:0100
