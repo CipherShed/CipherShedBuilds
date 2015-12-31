@@ -1,0 +1,592 @@
+;	Static Name Aliases
+;
+	TITLE   ..\bootencryptedio.cpp
+	.MODEL  SMALL
+	.386p
+	.387
+_TEXT	SEGMENT  WORD USE16 PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD USE16 PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD USE16 PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD USE16 PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+EXTRN	??O@YADABTUINT64_STRUCT@@0@Z:NEAR
+EXTRN	??M@YADABTUINT64_STRUCT@@0@Z:NEAR
+EXTRN	_EncryptDataUnits:NEAR
+EXTRN	??P@YADABTUINT64_STRUCT@@0@Z:NEAR
+EXTRN	??N@YADABTUINT64_STRUCT@@0@Z:NEAR
+EXTRN	?WriteSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z:NEAR
+EXTRN	_DecryptDataUnits:NEAR
+EXTRN	?CopyMemory@@YAXPAXIII@Z:NEAR
+EXTRN	?CopyMemory@@YAXIIPAXI@Z:NEAR
+EXTRN	??H@YA?ATUINT64_STRUCT@@ABT0@0@Z:NEAR
+EXTRN	??H@YA?ATUINT64_STRUCT@@ABT0@K@Z:NEAR
+EXTRN	??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z:NEAR
+EXTRN	??Z@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z:NEAR
+EXTRN	?ReadSectors@@YAEIIEABTUINT64_STRUCT@@ID@Z:NEAR
+EXTRN	??E@YAAATUINT64_STRUCT@@AAT0@@Z:NEAR
+EXTRN	?SectorBuffer@@3QAEA:BYTE
+EXTRN	?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A:WORD
+EXTRN	?EncryptedVirtualPartition@@3UPartition@@A:BYTE
+EXTRN	?HiddenVolumeStartUnitNo@@3TUINT64_STRUCT@@A:QWORD
+EXTRN	?HiddenVolumeStartSector@@3TUINT64_STRUCT@@A:QWORD
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+	PUBLIC	?ReadEncryptedSectors@@YAEIIETUINT64_STRUCT@@I@Z	; ReadEncryptedSectors
+?ReadEncryptedSectors@@YAEIIETUINT64_STRUCT@@I@Z	PROC NEAR	; ReadEncryptedSectors COMDAT
+;|*** /*
+;|***  Copyright (c) 2008 TrueCrypt Developers Association. All rights reserved.
+;|*** 
+;|***  Governed by the TrueCrypt License 3.0 the full text of which is contained in
+;|***  the file License.txt included in TrueCrypt binary and source code distribution
+;|***  packages.
+;|*** */
+;|*** 
+;|*** #include "../../Common/Crypto.h"
+;|*** #include "Platform.h"
+;|*** #include "BootConfig.h"
+;|*** #include "BootDebug.h"
+;|*** #include "BootDefs.h"
+;|*** #include "BootDiskIo.h"
+;|*** #include "BootEncryptedIo.h"
+;|*** 
+;|*** 
+;|*** BiosResult ReadEncryptedSectors (uint16 destSegment, uint16 destOffset, byte drive, uint64 sector, uint16 sectorCount)
+;|*** {
+; Line 19
+	*** 000000	c8 02 00 00 		enter	2,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	decrypt = -2
+;	destSegment = 4
+;	destOffset = 6
+;	drive = 8
+;	sector = 10
+;	sectorCount = 18
+;	result = -1
+;|*** 	BiosResult result;
+;|*** 	bool decrypt = true;
+; Line 21
+	*** 000006	c6 46 fe 01 		mov	BYTE PTR [bp-2],1	;decrypt
+;|*** 
+;|*** 	if (BootCryptoInfo->hiddenVolume)
+; Line 23
+	*** 00000a	8b 1e 00 00 		mov	bx,WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 00000e	80 bf 6c 21 00 		cmp	BYTE PTR [bx+8556],0
+	*** 000013	74 58 			je	SHORT $I1409
+;|*** 	{
+;|*** 		if (ReadWritePartiallyCoversEncryptedArea (sector, sectorCount))
+; Line 25
+	*** 000015	ff 76 12 		push	WORD PTR [bp+18]	;sectorCount
+	*** 000018	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 00001b	50 			push	ax
+	*** 00001c	e8 00 00 		call	?ReadWritePartiallyCoversEncryptedArea@@YADABTUINT64_STRUCT@@I@Z	; ReadWritePartiallyCoversEncryptedArea
+	*** 00001f	83 c4 04 		add	sp,4
+	*** 000022	0a c0 			or	al,al
+	*** 000024	74 05 			je	SHORT $I1410
+;|*** 			return BiosResultInvalidFunction;
+; Line 26
+	*** 000026	b0 01 			mov	al,1
+	*** 000028	e9 14 01 		jmp	$EX1406
+;|*** 
+;|*** 		if (sector >= EncryptedVirtualPartition.StartSector && sector <= EncryptedVirtualPartition.EndSector)
+; Line 28
+					$I1410:
+	*** 00002b	68 16 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+22	;EncryptedVirtualPartition
+	*** 00002e	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 000031	50 			push	ax
+	*** 000032	e8 00 00 		call	??P@YADABTUINT64_STRUCT@@0@Z	; operator>=
+	*** 000035	83 c4 04 		add	sp,4
+	*** 000038	0a c0 			or	al,al
+	*** 00003a	74 2d 			je	SHORT $I1411
+	*** 00003c	68 04 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+4	;EncryptedVirtualPartition
+	*** 00003f	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 000042	50 			push	ax
+	*** 000043	e8 00 00 		call	??N@YADABTUINT64_STRUCT@@0@Z	; operator<=
+	*** 000046	83 c4 04 		add	sp,4
+	*** 000049	0a c0 			or	al,al
+	*** 00004b	74 1c 			je	SHORT $I1411
+;|*** 		{
+;|*** 			// Remap the request to the hidden volume
+;|*** 			sector -= EncryptedVirtualPartition.StartSector;
+; Line 31
+	*** 00004d	68 16 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+22	;EncryptedVirtualPartition
+	*** 000050	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 000053	50 			push	ax
+	*** 000054	e8 00 00 		call	??Z@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator-=
+	*** 000057	83 c4 04 		add	sp,4
+;|*** 			sector += HiddenVolumeStartSector;
+; Line 32
+	*** 00005a	68 00 00 		push	OFFSET ?HiddenVolumeStartSector@@3TUINT64_STRUCT@@A	;HiddenVolumeStartSector
+	*** 00005d	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 000060	50 			push	ax
+	*** 000061	e8 00 00 		call	??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator+=
+	*** 000064	83 c4 04 		add	sp,4
+;|*** 		}
+;|*** 		else
+; Line 34
+	*** 000067	eb 04 			jmp	SHORT $I1409
+					$I1411:
+;|*** 			decrypt = false;
+; Line 35
+	*** 000069	c6 46 fe 00 		mov	BYTE PTR [bp-2],0	;decrypt
+;|*** 	}
+;|*** 
+;|*** 	result = ReadSectors (destSegment, destOffset, drive, sector, sectorCount);
+; Line 38
+					$I1409:
+;|*** 
+;|*** 	if (result != BiosResultSuccess || !decrypt)
+; Line 40
+	*** 00006d	6a 00 			push	0
+	*** 00006f	ff 76 12 		push	WORD PTR [bp+18]	;sectorCount
+	*** 000072	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 000075	50 			push	ax
+	*** 000076	8a 46 08 		mov	al,BYTE PTR [bp+8]	;drive
+	*** 000079	50 			push	ax
+	*** 00007a	66 ff 76 04 		push	DWORD PTR [bp+4]	;destSegment
+	*** 00007e	e8 00 00 		call	?ReadSectors@@YAEIIEABTUINT64_STRUCT@@ID@Z	; ReadSectors
+	*** 000081	83 c4 0c 		add	sp,12	;000cH
+	*** 000084	88 46 ff 		mov	BYTE PTR [bp-1],al	;result
+	*** 000087	0a c0 			or	al,al
+	*** 000089	0f 85 af 00 		jne	$I1414
+	*** 00008d	38 46 fe 		cmp	BYTE PTR [bp-2],al	;decrypt
+	*** 000090	0f 84 a8 00 		je	$I1414
+;|*** 		return result;
+;|*** 
+;|*** 	if (BootCryptoInfo->hiddenVolume)
+; Line 43
+	*** 000094	8b 1e 00 00 		mov	bx,WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 000098	38 87 6c 21 		cmp	BYTE PTR [bx+8556],al
+	*** 00009c	74 1a 			je	SHORT $I1415
+;|*** 	{
+;|*** 		// Convert sector number to data unit number of the hidden volume
+;|*** 		sector -= HiddenVolumeStartSector;
+; Line 46
+	*** 00009e	68 00 00 		push	OFFSET ?HiddenVolumeStartSector@@3TUINT64_STRUCT@@A	;HiddenVolumeStartSector
+	*** 0000a1	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 0000a4	50 			push	ax
+	*** 0000a5	e8 00 00 		call	??Z@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator-=
+	*** 0000a8	83 c4 04 		add	sp,4
+;|*** 		sector += HiddenVolumeStartUnitNo;
+; Line 47
+	*** 0000ab	68 00 00 		push	OFFSET ?HiddenVolumeStartUnitNo@@3TUINT64_STRUCT@@A	;HiddenVolumeStartUnitNo
+	*** 0000ae	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 0000b1	50 			push	ax
+	*** 0000b2	e8 00 00 		call	??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator+=
+	*** 0000b5	83 c4 04 		add	sp,4
+;|*** 	}
+;|*** 
+;|*** 	if (drive == EncryptedVirtualPartition.Drive)
+; Line 50
+					$I1415:
+	*** 0000b8	a0 01 00 		mov	al,BYTE PTR ?EncryptedVirtualPartition@@3UPartition@@A+1	;EncryptedVirtualPartition
+	*** 0000bb	38 46 08 		cmp	BYTE PTR [bp+8],al	;drive
+	*** 0000be	75 7c 			jne	SHORT $I1414
+	*** 0000c0	8b 76 06 		mov	si,WORD PTR [bp+6]	;destOffset
+	*** 0000c3	8b 7e 04 		mov	di,WORD PTR [bp+4]	;destSegment
+;|*** 	{
+;|*** 		while (sectorCount-- > 0)
+; Line 52
+					$FC1418:
+	*** 0000c6	8b 46 12 		mov	ax,WORD PTR [bp+18]	;sectorCount
+	*** 0000c9	ff 4e 12 		dec	WORD PTR [bp+18]	;sectorCount
+	*** 0000cc	0b c0 			or	ax,ax
+	*** 0000ce	74 6c 			je	SHORT $I1414
+;|*** 		{
+;|*** 			if (BootCryptoInfo->hiddenVolume
+;|*** 				|| (sector >= EncryptedVirtualPartition.StartSector && sector <= EncryptedVirtualPartition.EndSector))
+; Line 55
+	*** 0000d0	8b 1e 00 00 		mov	bx,WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 0000d4	80 bf 6c 21 00 		cmp	BYTE PTR [bx+8556],0
+	*** 0000d9	75 22 			jne	SHORT $I1421
+	*** 0000db	68 16 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+22	;EncryptedVirtualPartition
+	*** 0000de	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 0000e1	50 			push	ax
+	*** 0000e2	e8 00 00 		call	??P@YADABTUINT64_STRUCT@@0@Z	; operator>=
+	*** 0000e5	83 c4 04 		add	sp,4
+	*** 0000e8	0a c0 			or	al,al
+	*** 0000ea	74 42 			je	SHORT $I1420
+	*** 0000ec	68 04 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+4	;EncryptedVirtualPartition
+	*** 0000ef	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 0000f2	50 			push	ax
+	*** 0000f3	e8 00 00 		call	??N@YADABTUINT64_STRUCT@@0@Z	; operator<=
+	*** 0000f6	83 c4 04 		add	sp,4
+	*** 0000f9	0a c0 			or	al,al
+	*** 0000fb	74 31 			je	SHORT $I1420
+					$I1421:
+;|*** 			{
+;|*** 				AcquireSectorBuffer();
+;|*** 				CopyMemory (destSegment, destOffset, SectorBuffer, TC_LB_SIZE);
+; Line 58
+	*** 0000fd	68 00 02 		push	512	;0200H
+	*** 000100	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000103	56 			push	si
+	*** 000104	57 			push	di
+	*** 000105	e8 00 00 		call	?CopyMemory@@YAXIIPAXI@Z	; CopyMemory
+	*** 000108	83 c4 08 		add	sp,8
+;|*** 
+;|*** 				DecryptDataUnits (SectorBuffer, &sector, 1, BootCryptoInfo);
+; Line 60
+	*** 00010b	ff 36 00 00 		push	WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 00010f	6a 00 			push	0
+	*** 000111	6a 01 			push	1
+	*** 000113	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 000116	50 			push	ax
+	*** 000117	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 00011a	e8 00 00 		call	_DecryptDataUnits
+	*** 00011d	83 c4 0a 		add	sp,10	;000aH
+;|*** 
+;|*** 				CopyMemory (SectorBuffer, destSegment, destOffset, TC_LB_SIZE);
+; Line 62
+	*** 000120	68 00 02 		push	512	;0200H
+	*** 000123	56 			push	si
+	*** 000124	57 			push	di
+	*** 000125	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 000128	e8 00 00 		call	?CopyMemory@@YAXPAXIII@Z	; CopyMemory
+	*** 00012b	83 c4 08 		add	sp,8
+;|*** 				ReleaseSectorBuffer();
+;|*** 			}
+;|*** 
+;|*** 			++sector;
+; Line 66
+					$I1420:
+	*** 00012e	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 000131	50 			push	ax
+	*** 000132	e8 00 00 		call	??E@YAAATUINT64_STRUCT@@AAT0@@Z	; operator++
+	*** 000135	5b 			pop	bx
+;|*** 			destOffset += TC_LB_SIZE;
+; Line 67
+	*** 000136	81 c6 00 02 		add	si,512	;0200H
+;|*** 		}
+; Line 68
+	*** 00013a	eb 8a 			jmp	SHORT $FC1418
+;|*** 	if (result != BiosResultSuccess || !decrypt)
+; Line 40
+					$I1414:
+;|*** 		return result;
+; Line 41
+	*** 00013c	8a 46 ff 		mov	al,BYTE PTR [bp-1]	;result
+;|*** 
+;|*** 	if (BootCryptoInfo->hiddenVolume)
+;|*** 	{
+;|*** 		// Convert sector number to data unit number of the hidden volume
+;|*** 		sector -= HiddenVolumeStartSector;
+;|*** 		sector += HiddenVolumeStartUnitNo;
+;|*** 	}
+;|*** 
+;|*** 	if (drive == EncryptedVirtualPartition.Drive)
+;|*** 	{
+;|*** 		while (sectorCount-- > 0)
+;|*** 		{
+;|*** 			if (BootCryptoInfo->hiddenVolume
+;|*** 				|| (sector >= EncryptedVirtualPartition.StartSector && sector <= EncryptedVirtualPartition.EndSector))
+;|*** 			{
+;|*** 				AcquireSectorBuffer();
+;|*** 				CopyMemory (destSegment, destOffset, SectorBuffer, TC_LB_SIZE);
+;|*** 
+;|*** 				DecryptDataUnits (SectorBuffer, &sector, 1, BootCryptoInfo);
+;|*** 
+;|*** 				CopyMemory (SectorBuffer, destSegment, destOffset, TC_LB_SIZE);
+;|*** 				ReleaseSectorBuffer();
+;|*** 			}
+;|*** 
+;|*** 			++sector;
+;|*** 			destOffset += TC_LB_SIZE;
+;|*** 		}
+;|*** 	}
+;|*** 
+;|*** 	return result;
+;|*** }
+; Line 72
+					$EX1406:
+	*** 00013f	5e 			pop	si
+	*** 000140	5f 			pop	di
+	*** 000141	c9 			leave	
+	*** 000142	c3 			ret	
+
+?ReadEncryptedSectors@@YAEIIETUINT64_STRUCT@@I@Z	ENDP
+	PUBLIC	?WriteEncryptedSectors@@YAEIIETUINT64_STRUCT@@I@Z	; WriteEncryptedSectors
+?WriteEncryptedSectors@@YAEIIETUINT64_STRUCT@@I@Z	PROC NEAR	; WriteEncryptedSectors COMDAT
+;|*** 
+;|*** 
+;|*** BiosResult WriteEncryptedSectors (uint16 sourceSegment, uint16 sourceOffset, byte drive, uint64 sector, uint16 sectorCount)
+;|*** {
+; Line 76
+	*** 000000	c8 1a 00 00 		enter	26,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	sourceSegment = 4
+;	sourceOffset = 6
+;	drive = 8
+;	sector = 10
+;	sectorCount = 18
+;	result = -1
+;	dataUnitNo = -10
+;	writeOffset = -18
+;|*** 	BiosResult result;
+;|*** 	AcquireSectorBuffer();
+;|*** 	uint64 dataUnitNo;
+;|*** 	uint64 writeOffset;
+;|*** 
+;|*** 	dataUnitNo = sector;
+; Line 82
+	*** 000006	8d 7e f6 		lea	di,WORD PTR [bp-10]	;dataUnitNo
+	*** 000009	8d 76 0a 		lea	si,WORD PTR [bp+10]	;sector
+	*** 00000c	16 			push	ss
+	*** 00000d	07 			pop	es
+	*** 00000e	66 a5 			movsd
+	*** 000010	66 a5 			movsd
+;|*** 	writeOffset.HighPart = 0;
+; Line 83
+	*** 000012	66 2b c0 		sub	eax,eax
+	*** 000015	66 89 46 f2 		mov	DWORD PTR [bp-14],eax
+;|*** 	writeOffset.LowPart = 0;
+; Line 84
+	*** 000019	66 89 46 ee 		mov	DWORD PTR [bp-18],eax	;writeOffset
+;|*** 
+;|*** 	if (BootCryptoInfo->hiddenVolume)
+; Line 86
+	*** 00001d	8b 1e 00 00 		mov	bx,WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 000021	38 87 6c 21 		cmp	BYTE PTR [bx+8556],al
+	*** 000025	74 49 			je	SHORT $L1446
+;|*** 	{
+;|*** 		if (ReadWritePartiallyCoversEncryptedArea (sector, sectorCount))
+; Line 88
+	*** 000027	ff 76 12 		push	WORD PTR [bp+18]	;sectorCount
+	*** 00002a	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 00002d	50 			push	ax
+	*** 00002e	e8 00 00 		call	?ReadWritePartiallyCoversEncryptedArea@@YADABTUINT64_STRUCT@@I@Z	; ReadWritePartiallyCoversEncryptedArea
+	*** 000031	83 c4 04 		add	sp,4
+	*** 000034	0a c0 			or	al,al
+	*** 000036	74 05 			je	SHORT $I1432
+;|*** 			return BiosResultInvalidFunction;
+; Line 89
+	*** 000038	b0 01 			mov	al,1
+	*** 00003a	e9 d6 00 		jmp	$EX1427
+;|*** 
+;|*** 		// Remap the request to the hidden volume
+;|*** 		writeOffset = HiddenVolumeStartSector;
+; Line 92
+					$I1432:
+	*** 00003d	8d 7e ee 		lea	di,WORD PTR [bp-18]	;writeOffset
+	*** 000040	be 00 00 		mov	si,OFFSET ?HiddenVolumeStartSector@@3TUINT64_STRUCT@@A	;HiddenVolumeStartSector
+	*** 000043	16 			push	ss
+	*** 000044	07 			pop	es
+	*** 000045	66 a5 			movsd
+	*** 000047	66 a5 			movsd
+;|*** 		writeOffset -= EncryptedVirtualPartition.StartSector;
+; Line 93
+	*** 000049	68 16 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+22	;EncryptedVirtualPartition
+	*** 00004c	8d 46 ee 		lea	ax,WORD PTR [bp-18]	;writeOffset
+	*** 00004f	50 			push	ax
+	*** 000050	e8 00 00 		call	??Z@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator-=
+	*** 000053	83 c4 04 		add	sp,4
+;|*** 		dataUnitNo -= EncryptedVirtualPartition.StartSector;
+; Line 94
+	*** 000056	68 16 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+22	;EncryptedVirtualPartition
+	*** 000059	8d 46 f6 		lea	ax,WORD PTR [bp-10]	;dataUnitNo
+	*** 00005c	50 			push	ax
+	*** 00005d	e8 00 00 		call	??Z@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator-=
+	*** 000060	83 c4 04 		add	sp,4
+;|*** 		dataUnitNo += HiddenVolumeStartUnitNo;
+; Line 95
+	*** 000063	68 00 00 		push	OFFSET ?HiddenVolumeStartUnitNo@@3TUINT64_STRUCT@@A	;HiddenVolumeStartUnitNo
+	*** 000066	8d 46 f6 		lea	ax,WORD PTR [bp-10]	;dataUnitNo
+	*** 000069	50 			push	ax
+	*** 00006a	e8 00 00 		call	??Y@YAAATUINT64_STRUCT@@AAT0@ABT0@@Z	; operator+=
+	*** 00006d	83 c4 04 		add	sp,4
+					$L1446:
+	*** 000070	8b 76 06 		mov	si,WORD PTR [bp+6]	;sourceOffset
+	*** 000073	8b 7e 12 		mov	di,WORD PTR [bp+18]	;sectorCount
+;|*** 	}
+;|*** 
+;|*** 	while (sectorCount-- > 0)
+; Line 98
+	*** 000076	e9 8e 00 		jmp	$L1453
+					$FC1434:
+;|*** 	{
+;|*** 		CopyMemory (sourceSegment, sourceOffset, SectorBuffer, TC_LB_SIZE);
+; Line 100
+	*** 000079	68 00 02 		push	512	;0200H
+	*** 00007c	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 00007f	56 			push	si
+	*** 000080	ff 76 04 		push	WORD PTR [bp+4]	;sourceSegment
+	*** 000083	e8 00 00 		call	?CopyMemory@@YAXIIPAXI@Z	; CopyMemory
+	*** 000086	83 c4 08 		add	sp,8
+;|*** 
+;|*** 		if (drive == EncryptedVirtualPartition.Drive && sector >= EncryptedVirtualPartition.StartSector && sector <= EncryptedVirtualPartition.EndSector)
+; Line 102
+	*** 000089	a0 01 00 		mov	al,BYTE PTR ?EncryptedVirtualPartition@@3UPartition@@A+1	;EncryptedVirtualPartition
+	*** 00008c	38 46 08 		cmp	BYTE PTR [bp+8],al	;drive
+	*** 00008f	75 37 			jne	SHORT $I1436
+	*** 000091	68 16 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+22	;EncryptedVirtualPartition
+	*** 000094	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 000097	50 			push	ax
+	*** 000098	e8 00 00 		call	??P@YADABTUINT64_STRUCT@@0@Z	; operator>=
+	*** 00009b	83 c4 04 		add	sp,4
+	*** 00009e	0a c0 			or	al,al
+	*** 0000a0	74 26 			je	SHORT $I1436
+	*** 0000a2	68 04 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+4	;EncryptedVirtualPartition
+	*** 0000a5	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 0000a8	50 			push	ax
+	*** 0000a9	e8 00 00 		call	??N@YADABTUINT64_STRUCT@@0@Z	; operator<=
+	*** 0000ac	83 c4 04 		add	sp,4
+	*** 0000af	0a c0 			or	al,al
+	*** 0000b1	74 15 			je	SHORT $I1436
+;|*** 		{
+;|*** 			EncryptDataUnits (SectorBuffer, &dataUnitNo, 1, BootCryptoInfo);
+; Line 104
+	*** 0000b3	ff 36 00 00 		push	WORD PTR ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	;BootCryptoInfo
+	*** 0000b7	6a 00 			push	0
+	*** 0000b9	6a 01 			push	1
+	*** 0000bb	8d 46 f6 		lea	ax,WORD PTR [bp-10]	;dataUnitNo
+	*** 0000be	50 			push	ax
+	*** 0000bf	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 0000c2	e8 00 00 		call	_EncryptDataUnits
+	*** 0000c5	83 c4 0a 		add	sp,10	;000aH
+;|*** 		}
+;|*** 
+;|*** 		result = WriteSectors (SectorBuffer, drive, sector + writeOffset, 1);
+; Line 107
+					$I1436:
+;|*** 
+;|*** 		if (result != BiosResultSuccess)
+; Line 109
+	*** 0000c8	6a 00 			push	0
+	*** 0000ca	6a 01 			push	1
+	*** 0000cc	8d 46 ee 		lea	ax,WORD PTR [bp-18]	;writeOffset
+	*** 0000cf	50 			push	ax
+	*** 0000d0	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 0000d3	50 			push	ax
+	*** 0000d4	8d 46 e6 		lea	ax,WORD PTR [bp-26]
+	*** 0000d7	50 			push	ax
+	*** 0000d8	e8 00 00 		call	??H@YA?ATUINT64_STRUCT@@ABT0@0@Z	; operator+
+	*** 0000db	83 c4 06 		add	sp,6
+	*** 0000de	50 			push	ax
+	*** 0000df	8a 46 08 		mov	al,BYTE PTR [bp+8]	;drive
+	*** 0000e2	50 			push	ax
+	*** 0000e3	68 00 00 		push	OFFSET ?SectorBuffer@@3QAEA	;SectorBuffer
+	*** 0000e6	e8 00 00 		call	?WriteSectors@@YAEPAEEABTUINT64_STRUCT@@ID@Z	; WriteSectors
+	*** 0000e9	83 c4 0a 		add	sp,10	;000aH
+	*** 0000ec	88 46 ff 		mov	BYTE PTR [bp-1],al	;result
+	*** 0000ef	0a c0 			or	al,al
+	*** 0000f1	75 1d 			jne	SHORT $FB1435
+;|*** 			break;
+;|*** 
+;|*** 		++sector;
+; Line 112
+	*** 0000f3	8d 46 0a 		lea	ax,WORD PTR [bp+10]	;sector
+	*** 0000f6	50 			push	ax
+	*** 0000f7	e8 00 00 		call	??E@YAAATUINT64_STRUCT@@AAT0@@Z	; operator++
+	*** 0000fa	5b 			pop	bx
+;|*** 		++dataUnitNo;
+; Line 113
+	*** 0000fb	8d 46 f6 		lea	ax,WORD PTR [bp-10]	;dataUnitNo
+	*** 0000fe	50 			push	ax
+	*** 0000ff	e8 00 00 		call	??E@YAAATUINT64_STRUCT@@AAT0@@Z	; operator++
+	*** 000102	5b 			pop	bx
+;|*** 		sourceOffset += TC_LB_SIZE;
+; Line 114
+	*** 000103	81 c6 00 02 		add	si,512	;0200H
+;|*** 	}
+; Line 115
+					$L1453:
+	*** 000107	8b c7 			mov	ax,di
+	*** 000109	4f 			dec	di
+	*** 00010a	0b c0 			or	ax,ax
+	*** 00010c	0f 85 69 ff 		jne	$FC1434
+					$FB1435:
+;|*** 
+;|*** 	ReleaseSectorBuffer();
+;|*** 	return result;
+; Line 118
+	*** 000110	8a 46 ff 		mov	al,BYTE PTR [bp-1]	;result
+;|*** }
+; Line 119
+					$EX1427:
+	*** 000113	5e 			pop	si
+	*** 000114	5f 			pop	di
+	*** 000115	c9 			leave	
+	*** 000116	c3 			ret	
+
+?WriteEncryptedSectors@@YAEIIETUINT64_STRUCT@@I@Z	ENDP
+
+?ReadWritePartiallyCoversEncryptedArea@@YADABTUINT64_STRUCT@@I@Z	PROC NEAR	; ReadWritePartiallyCoversEncryptedArea COMDAT
+;|*** 
+;|*** 
+;|*** static bool ReadWritePartiallyCoversEncryptedArea (const uint64 &sector, uint16 sectorCount)
+;|*** {
+; Line 123
+	*** 000000	c8 10 00 00 		enter	16,0
+	*** 000004	57 			push	di
+	*** 000005	56 			push	si
+;	sector = 4
+;	sectorCount = 6
+;	readWriteEnd = -8
+;|*** 	uint64 readWriteEnd = sector + --sectorCount;
+; Line 124
+	*** 000006	ff 4e 06 		dec	WORD PTR [bp+6]	;sectorCount
+	*** 000009	6a 00 			push	0
+	*** 00000b	66 ff 76 04 		push	DWORD PTR [bp+4]	;sector
+	*** 00000f	8d 46 f0 		lea	ax,WORD PTR [bp-16]
+	*** 000012	50 			push	ax
+	*** 000013	e8 00 00 		call	??H@YA?ATUINT64_STRUCT@@ABT0@K@Z	; operator+
+	*** 000016	83 c4 08 		add	sp,8
+	*** 000019	8d 7e f8 		lea	di,WORD PTR [bp-8]	;readWriteEnd
+	*** 00001c	8b f0 			mov	si,ax
+	*** 00001e	16 			push	ss
+	*** 00001f	07 			pop	es
+	*** 000020	66 a5 			movsd
+	*** 000022	66 a5 			movsd
+;|*** 
+;|*** 	return ((sector < EncryptedVirtualPartition.StartSector && readWriteEnd >= EncryptedVirtualPartition.StartSector)
+;|*** 		|| (sector >= EncryptedVirtualPartition.StartSector && readWriteEnd > EncryptedVirtualPartition.EndSector));
+; Line 127
+	*** 000024	68 16 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+22	;EncryptedVirtualPartition
+	*** 000027	ff 76 04 		push	WORD PTR [bp+4]	;sector
+	*** 00002a	e8 00 00 		call	??M@YADABTUINT64_STRUCT@@0@Z	; operator<
+	*** 00002d	83 c4 04 		add	sp,4
+	*** 000030	0a c0 			or	al,al
+	*** 000032	74 11 			je	SHORT $L1451
+	*** 000034	68 16 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+22	;EncryptedVirtualPartition
+	*** 000037	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;readWriteEnd
+	*** 00003a	50 			push	ax
+	*** 00003b	e8 00 00 		call	??P@YADABTUINT64_STRUCT@@0@Z	; operator>=
+	*** 00003e	83 c4 04 		add	sp,4
+	*** 000041	0a c0 			or	al,al
+	*** 000043	75 21 			jne	SHORT $L1450
+					$L1451:
+	*** 000045	68 16 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+22	;EncryptedVirtualPartition
+	*** 000048	ff 76 04 		push	WORD PTR [bp+4]	;sector
+	*** 00004b	e8 00 00 		call	??P@YADABTUINT64_STRUCT@@0@Z	; operator>=
+	*** 00004e	83 c4 04 		add	sp,4
+	*** 000051	0a c0 			or	al,al
+	*** 000053	74 15 			je	SHORT $L1448
+	*** 000055	68 04 00 		push	OFFSET ?EncryptedVirtualPartition@@3UPartition@@A+4	;EncryptedVirtualPartition
+	*** 000058	8d 46 f8 		lea	ax,WORD PTR [bp-8]	;readWriteEnd
+	*** 00005b	50 			push	ax
+	*** 00005c	e8 00 00 		call	??O@YADABTUINT64_STRUCT@@0@Z	; operator>
+	*** 00005f	83 c4 04 		add	sp,4
+	*** 000062	0a c0 			or	al,al
+	*** 000064	74 04 			je	SHORT $L1448
+					$L1450:
+	*** 000066	b0 01 			mov	al,1
+	*** 000068	eb 02 			jmp	SHORT $EX1441
+					$L1448:
+	*** 00006a	32 c0 			xor	al,al
+;|*** }
+; Line 128
+					$EX1441:
+	*** 00006c	5e 			pop	si
+	*** 00006d	5f 			pop	di
+	*** 00006e	c9 			leave	
+	*** 00006f	c3 			ret	
+
+?ReadWritePartiallyCoversEncryptedArea@@YADABTUINT64_STRUCT@@I@Z	ENDP
+_TEXT	ENDS
+END
