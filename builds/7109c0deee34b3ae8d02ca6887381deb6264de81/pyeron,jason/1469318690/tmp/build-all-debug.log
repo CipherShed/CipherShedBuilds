@@ -1,0 +1,360 @@
+
+Microsoft (R) Visual Studio Version 9.0.30729.1.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: Boot, Configuration: Release Win32 ------
+2>------ Build started: Project: Crypto, Configuration: Debug Win32 ------
+1>Performing Makefile project actions
+2>Performing Custom Build Step
+2>Aes_hw_cpu.asm 
+2>Performing Custom Build Step
+2>Aes_x86.asm 
+2>Compiling...
+1>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\Boot\Windows\Release\BuildLog.htm"
+1>Boot - 0 error(s), 0 warning(s)
+2>Aeskey.c
+3>------ Build started: Project: Driver, Configuration: Debug Win32 ------
+3>Performing Makefile project actions
+3>------ Building truecrypt.sys: Debug x86 ------
+2>Aestab.c
+3>Starting dirs creation...Completed.
+2>Blowfish.c
+2>Cast.c
+3>cache.c
+2>Des.c
+3>crc.c
+3>crypto.c
+3>encryptionthreadpool.c
+2>Rmd160.c
+3>endian.c
+3>gfmul.c
+2>Serpent.c
+3>pkcs5.c
+3>volumes.c
+3>xts.c
+2>Sha1.c
+3>tests.c
+3>wipe.c
+3>Generating Code...
+2>Sha2.c
+2>Twofish.c
+2>Whirlpool.c
+2>Generating Code...
+2>Creating library...
+2>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\Crypto\Debug\BuildLog.htm"
+2>Crypto - 0 error(s), 0 warning(s)
+3>aeskey.c
+3>aestab.c
+3>blowfish.c
+4>------ Build started: Project: Mount, Configuration: Debug Win32 ------
+4>Compiling...
+3>cast.c
+3>des.c
+4>MainCom.cpp
+3>rmd160.c
+3>serpent.c
+3>sha1.c
+3>sha2.c
+3>twofish.c
+3>whirlpool.c
+3>Generating Code...
+3>drivefilter.c
+3>dumpfilter.c
+3>encryptedioqueue.c
+3>ntdriver.c
+3>ntvol.c
+3>volumefilter.c
+3>Generating Code...
+3>   Creating library c:\users\public\desktop\projects\ciphershed\src\driver\obj_driver_debug\i386\truecrypt.lib and object c:\users\public\desktop\projects\ciphershed\src\driver\obj_driver_debug\i386\truecrypt.exp
+3>------ Building truecrypt.sys: Debug x64 ------
+3>Starting dirs creation...Completed.
+3>cache.c
+3>crc.c
+3>crypto.c
+3>encryptionthreadpool.c
+3>endian.c
+3>gfmul.c
+3>pkcs5.c
+3>volumes.c
+3>xts.c
+3>tests.c
+3>wipe.c
+4>Mount.c
+3>aeskey.c
+3>aestab.c
+3>blowfish.c
+3>cast.c
+3>des.c
+3>rmd160.c
+3>serpent.c
+3>sha1.c
+3>sha2.c
+3>twofish.c
+3>whirlpool.c
+3>drivefilter.c
+3>dumpfilter.c
+3>encryptedioqueue.c
+3>ntdriver.c
+3>ntvol.c
+3>volumefilter.c
+3>Generating code
+3>Finished generating code
+3>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\Driver\Debug\BuildLog.htm"
+3>Driver - 0 error(s), 0 warning(s)
+5>------ Build started: Project: Format, Configuration: Debug Win32 ------
+5>Compiling...
+5>InPlace.c
+4>BaseCom.cpp
+5>Tcformat.c
+4>BootEncryption.cpp
+5>BaseCom.cpp
+4>Dictionary.c
+4>Dlgcode.cpp
+5>BootEncryption.cpp
+5>Dictionary.c
+4>Keyfiles.c
+5>Dlgcode.cpp
+4>Random.cpp
+4>SecurityToken.cpp
+5>Format.cpp
+4>csstringutil.cpp
+5>Keyfiles.c
+4>dll.cpp
+5>Random.cpp
+4>memory.cpp
+5>SecurityToken.cpp
+4>process.cpp
+5>csstringutil.cpp
+4>errors.cpp
+5>dll.cpp
+4>userperms.cpp
+5>memory.cpp
+5>process.cpp
+4>volutil.cpp
+4>diskutil.cpp
+5>errors.cpp
+4>fsutil.cpp
+5>userperms.cpp
+4>Favorites.cpp
+5>volutil.cpp
+4>Generating Code...
+4>Compiling...
+4>Hotkeys.c
+4>Cmdline.c
+5>diskutil.cpp
+4>Combo.c
+4>Crc.c
+5>fsutil.cpp
+4>Crypto.c
+4>EncryptionThreadPool.c
+4>Endian.c
+5>FormatCom.cpp
+4>GfMul.c
+4>Language.c
+4>Password.c
+4>Pkcs5.c
+4>Registry.c
+5>Generating Code...
+4>Tests.c
+5>Compiling...
+5>Cmdline.c
+4>Volumes.c
+5>Combo.c
+4>Xml.c
+5>Crc.c
+5>Crypto.c
+4>Xts.c
+5>EncryptionThreadPool.c
+4>ConvertUTF.c
+4>strcmpw.c
+5>Endian.c
+5>Fat.c
+4>cursor.c
+5>GfMul.c
+4>Generating Code...
+4>Compiling resources...
+4>Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+4>Copyright (C) Microsoft Corporation.  All rights reserved.
+4>Compiling manifest to resources...
+4>Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+4>Copyright (C) Microsoft Corporation.  All rights reserved.
+4>Linking...
+5>Language.c
+5>Password.c
+5>Pkcs5.c
+5>Progress.c
+4>Embedding manifest...
+5>Registry.c
+4>Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+4>Copyright (C) Microsoft Corporation.  All rights reserved.
+4>Performing Post-Build Event...
+5>Tests.c
+4>        1 file(s) copied.
+4>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\Mount\Debug\BuildLog.htm"
+4>Mount - 0 error(s), 0 warning(s)
+5>Volumes.c
+6>------ Build started: Project: unit-tests, Configuration: Debug Win32 ------
+6>Compiling...
+6>wip.cpp
+5>Wipe.c
+5>Xml.c
+5>Xts.c
+5>ConvertUTF.c
+5>strcmpw.c
+6>wcsncpy_s.cpp
+5>Generating Code...
+5>Compiling...
+5>cursor.c
+6>swprintf_s.cpp
+6>SetLastError.cpp
+5>Generating Code...
+5>Compiling resources...
+6>SetFileTime.cpp
+5>Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+5>Copyright (C) Microsoft Corporation.  All rights reserved.
+5>Compiling manifest to resources...
+5>Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+5>Copyright (C) Microsoft Corporation.  All rights reserved.
+5>Linking...
+6>SetFilePointer.cpp
+6>QueryDosDevice.cpp
+6>OutputDebugString.cpp
+6>LoadLibraryEx.cpp
+6>GetWindowTextLength.cpp
+6>GetWindowText.cpp
+5>Embedding manifest...
+6>GetSystemDirectory.cpp
+6>GetLastError.cpp
+5>Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+5>Copyright (C) Microsoft Corporation.  All rights reserved.
+6>GetFileTime.cpp
+5>Performing Post-Build Event...
+6>GetFileSize.cpp
+5>        1 file(s) copied.
+5>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\Format\Debug\BuildLog.htm"
+5>Format - 0 error(s), 0 warning(s)
+6>FlushFileBuffers.cpp
+6>EnableWindow.cpp
+6>DeviceIoControl.cpp
+6>CreateFile.cpp
+7>------ Build started: Project: Setup, Configuration: Debug Win32 ------
+7>Compiling...
+7>Setup.c
+6>CloseHandle.cpp
+6>Generating Code...
+6>Compiling...
+6>_wcsicmp.cpp
+6>unicodeTest.cpp
+6>stringUtilTest.cpp
+6>.\tests\lib\stringUtilTest.cpp(28) : warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\stdio.h(366) : see declaration of 'sprintf'
+6>headerTest.cpp
+6>passwordTest.cpp
+6>.\tests\algo\passwordTest.cpp(506) : warning C4101: 'res' : unreferenced local variable
+6>.\tests\algo\passwordTest.cpp(502) : warning C4101: 'oldPassword' : unreferenced local variable
+6>endianTest.cpp
+6>crcTest.cpp
+6>unittesting.cpp
+6>userperms.cpp
+7>Wizard.c
+7>BootEncryption.cpp
+6>errors.cpp
+6>..\Common\dialog\errors.cpp(95) : warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\string.h(245) : see declaration of 'wcscat'
+6>..\Common\dialog\errors.cpp(250) : warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\string.h(275) : see declaration of 'wcsncpy'
+6>..\Common\dialog\errors.cpp(251) : warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\string.h(275) : see declaration of 'wcsncpy'
+6>dll.cpp
+6>Generating Code...
+6>c:\users\public\desktop\projects\ciphershed\src\unit-tests\tests\algo\passwordtest.cpp(508) : warning C4700: uninitialized local variable 'hwndDlg' used
+6>c:\users\public\desktop\projects\ciphershed\src\unit-tests\tests\algo\passwordtest.cpp(508) : warning C4700: uninitialized local variable 'pkcs5' used
+6>c:\users\public\desktop\projects\ciphershed\src\unit-tests\tests\algo\passwordtest.cpp(508) : warning C4700: uninitialized local variable 'newPassword' used
+6>c:\users\public\desktop\projects\ciphershed\src\unit-tests\tests\algo\passwordtest.cpp(508) : warning C4700: uninitialized local variable 'lpszVolume' used
+6>Compiling...
+6>Aestab.c
+6>UnregisterClass.c
+6>ShowWindow.c
+6>ShellNotifyIcon.c
+6>SetLayeredWindowAttributes.c
+6>SetCursor.c
+6>RegOpenKeyEx.c
+6>RegisterClassEx.c
+6>OpenProcessToken.c
+6>MessageBox.c
+6>LocalFree.c
+6>LoadCursor.c
+6>IsWellKnownSid.c
+6>IsUserAnAdmin.c
+6>GetVersionEx.c
+6>GetTokenInformation.c
+6>GetSystemMetrics.c
+6>GetProcAddress.c
+6>GetModuleHandle.c
+6>GetCurrentProcess.c
+6>Generating Code...
+6>Compiling...
+6>FormatMessage.c
+7>Dictionary.c
+6>DestroyWindow.c
+6>DefWindowProc.c
+6>CreateWindowEx.c
+6>cursor.c
+6>strcmpw.c
+6>ConvertUTF.c
+6>Password.c
+6>Endian.c
+6>Crc.c
+6>Generating Code...
+6>Compiling...
+6>volutil.cpp
+7>Dlgcode.cpp
+6>..\Common\volume\volutil.cpp(31) : warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\string.h(74) : see declaration of 'strcpy'
+6>..\Common\volume\volutil.cpp(97) : warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\string.h(74) : see declaration of 'strcpy'
+6>..\Common\volume\volutil.cpp(130) : warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\string.h(74) : see declaration of 'strcpy'
+6>Linking...
+6>Embedding manifest...
+6>Performing Post-Build Event...
+6>Caching metadata information for c:\windows\assembly\gac_msil\microsoft.visualstudio.qualitytools.unittestframework\9.0.0.0__b03f5f7f11d50a3a\microsoft.visualstudio.qualitytools.unittestframework.dll...
+6>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\unit-tests\Debug\BuildLog.htm"
+6>unit-tests - 0 error(s), 13 warning(s)
+7>errors.cpp
+7>userperms.cpp
+7>csstringutil.cpp
+7>dll.cpp
+7>memory.cpp
+7>process.cpp
+7>volutil.cpp
+7>diskutil.cpp
+7>fsutil.cpp
+7>ComSetup.cpp
+7>Generating Code...
+7>Compiling...
+7>Dir.c
+7>SelfExtract.c
+7>Xml.c
+7>Crc.c
+7>Endian.c
+7>Inflate.c
+7>Language.c
+7>Registry.c
+7>cursor.c
+7>Generating Code...
+7>Compiling resources...
+7>Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+7>Copyright (C) Microsoft Corporation.  All rights reserved.
+7>Compiling manifest to resources...
+7>Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+7>Copyright (C) Microsoft Corporation.  All rights reserved.
+7>Linking...
+7>Embedding manifest...
+7>Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+7>Copyright (C) Microsoft Corporation.  All rights reserved.
+7>Performing Post-Build Event...
+7>        1 file(s) copied.
+7>        1 file(s) copied.
+7>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\Setup\Debug\BuildLog.htm"
+7>Setup - 0 error(s), 0 warning(s)
+========== Build: 7 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
