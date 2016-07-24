@@ -1,0 +1,561 @@
+
+Microsoft (R) Visual Studio Version 9.0.30729.1.
+Copyright (C) Microsoft Corp. All rights reserved.
+1>------ Build started: Project: Boot, Configuration: Release Win32 ------
+2>------ Build started: Project: Crypto, Configuration: Release Win32 ------
+1>Performing Makefile project actions
+2>Performing Custom Build Step
+2>Aes_hw_cpu.asm 
+1> Assembling: ..\BootSector.asm
+1> Assembling: ..\BootCrt.asm
+1>..\decompressor.c
+1>..\bootconfig.cpp
+1>..\bootconsoleio.cpp
+1>..\bootdebug.cpp
+1>..\bootdiskio.cpp
+1>..\bootencryptedio.cpp
+1>..\bootmain.cpp
+1>..\bootmemory.cpp
+1>..\intfilter.cpp
+1>..\platform.cpp
+1>..\..\..\common\crc.c
+1>..\..\..\common\crypto.c
+1>..\..\..\common\endian.c
+1>..\..\..\common\pkcs5.c
+1>..\..\..\common\volumes.c
+1>..\..\..\common\xts.c
+1>..\..\..\crypto\rmd160.c
+1>..\..\..\crypto\aessmall.c
+1>..\..\..\crypto\serpent.c
+1>..\..\..\crypto\twofish.c
+1>Linking...
+1> Assembling: ..\BootSector.asm
+1> Assembling: ..\BootCrt.asm
+1>..\decompressor.c
+1>..\bootconfig.cpp
+1>..\bootconsoleio.cpp
+1>..\bootdebug.cpp
+1>..\bootdiskio.cpp
+1>..\bootencryptedio.cpp
+1>..\bootmain.cpp
+1>..\bootmemory.cpp
+1>..\intfilter.cpp
+1>..\platform.cpp
+1>..\..\..\common\crc.c
+1>..\..\..\common\crypto.c
+1>..\..\..\common\endian.c
+1>..\..\..\common\pkcs5.c
+1>..\..\..\common\volumes.c
+1>..\..\..\common\xts.c
+1>..\..\..\crypto\rmd160.c
+1>Aes_hw_cpu.asm
+1>AesSmall_x86.asm
+1>..\..\..\crypto\aestab.c
+1>Linking...
+1>c:\Users\Public\Desktop\projects\ciphershed\src\Boot\Windows\Release_AES>if 11951 GTR 13312 (echo "Release_AES\BootLoader.com.gz" is too big   && exit /b 1 ) 
+1> Assembling: ..\BootSector.asm
+1> Assembling: ..\BootCrt.asm
+1>..\decompressor.c
+1>..\bootconfig.cpp
+1>..\bootconsoleio.cpp
+1>..\bootdebug.cpp
+1>..\bootdiskio.cpp
+1>..\bootencryptedio.cpp
+1>..\bootmain.cpp
+1>..\bootmemory.cpp
+1>..\intfilter.cpp
+1>..\platform.cpp
+1>..\..\..\common\crc.c
+1>..\..\..\common\crypto.c
+1>..\..\..\common\endian.c
+1>..\..\..\common\pkcs5.c
+1>..\..\..\common\volumes.c
+1>..\..\..\common\xts.c
+1>..\..\..\crypto\rmd160.c
+1>..\..\..\crypto\serpent.c
+1>Linking...
+1>c:\Users\Public\Desktop\projects\ciphershed\src\Boot\Windows\Release_SERPENT>if 13286 GTR 13312 (echo "Release_SERPENT\BootLoader.com.gz" is too big   && exit /b 1 ) 
+1> Assembling: ..\BootSector.asm
+1> Assembling: ..\BootCrt.asm
+1>..\decompressor.c
+1>..\bootconfig.cpp
+1>..\bootconsoleio.cpp
+1>..\bootdebug.cpp
+1>..\bootdiskio.cpp
+1>..\bootencryptedio.cpp
+1>..\bootmain.cpp
+1>..\bootmemory.cpp
+1>..\intfilter.cpp
+1>..\platform.cpp
+1>..\..\..\common\crc.c
+1>..\..\..\common\crypto.c
+1>..\..\..\common\endian.c
+1>..\..\..\common\pkcs5.c
+1>..\..\..\common\volumes.c
+1>..\..\..\common\xts.c
+1>..\..\..\crypto\rmd160.c
+1>..\..\..\crypto\twofish.c
+1>Linking...
+1>c:\Users\Public\Desktop\projects\ciphershed\src\Boot\Windows\Release_TWOFISH>if 12064 GTR 13312 (echo "Release_TWOFISH\BootLoader.com.gz" is too big   && exit /b 1 ) 
+1> Assembling: ..\BootSector.asm
+1> Assembling: ..\BootCrt.asm
+1>..\decompressor.c
+1>..\bootconfig.cpp
+1>..\bootconsoleio.cpp
+1>..\bootdebug.cpp
+1>..\bootdiskio.cpp
+1>..\bootencryptedio.cpp
+1>..\bootmain.cpp
+1>..\bootmemory.cpp
+1>..\intfilter.cpp
+1>..\platform.cpp
+1>..\..\..\common\crc.c
+1>..\..\..\common\crypto.c
+1>..\..\..\common\endian.c
+1>..\..\..\common\pkcs5.c
+1>..\..\..\common\volumes.c
+1>..\..\..\common\xts.c
+1>..\..\..\crypto\rmd160.c
+1>..\..\..\crypto\aessmall.c
+1>..\..\..\crypto\serpent.c
+1>..\..\..\crypto\twofish.c
+1>Linking...
+1> Assembling: ..\BootSector.asm
+1> Assembling: ..\BootCrt.asm
+1>..\decompressor.c
+1>..\bootconfig.cpp
+1>..\bootconsoleio.cpp
+1>..\bootdebug.cpp
+1>..\bootdiskio.cpp
+1>..\bootencryptedio.cpp
+1>..\bootmain.cpp
+1>..\bootmemory.cpp
+1>..\intfilter.cpp
+1>..\platform.cpp
+1>..\..\..\common\crc.c
+1>..\..\..\common\crypto.c
+1>..\..\..\common\endian.c
+1>..\..\..\common\pkcs5.c
+1>..\..\..\common\volumes.c
+1>..\..\..\common\xts.c
+1>..\..\..\crypto\rmd160.c
+1>Aes_hw_cpu.asm
+1>AesSmall_x86.asm
+1>..\..\..\crypto\aestab.c
+1>Linking...
+1> Assembling: ..\BootSector.asm
+1> Assembling: ..\BootCrt.asm
+1>..\decompressor.c
+1>..\bootconfig.cpp
+1>..\bootconsoleio.cpp
+1>..\bootdebug.cpp
+1>..\bootdiskio.cpp
+1>..\bootencryptedio.cpp
+1>..\bootmain.cpp
+1>..\bootmemory.cpp
+1>..\intfilter.cpp
+1>..\platform.cpp
+1>..\..\..\common\crc.c
+1>..\..\..\common\crypto.c
+1>..\..\..\common\endian.c
+1>..\..\..\common\pkcs5.c
+1>..\..\..\common\volumes.c
+1>..\..\..\common\xts.c
+1>..\..\..\crypto\rmd160.c
+1>..\..\..\crypto\serpent.c
+1>Linking...
+1> Assembling: ..\BootSector.asm
+1> Assembling: ..\BootCrt.asm
+1>..\decompressor.c
+1>..\bootconfig.cpp
+1>..\bootconsoleio.cpp
+1>..\bootdebug.cpp
+1>..\bootdiskio.cpp
+1>..\bootencryptedio.cpp
+1>..\bootmain.cpp
+1>..\bootmemory.cpp
+1>..\intfilter.cpp
+1>..\platform.cpp
+1>..\..\..\common\crc.c
+1>..\..\..\common\crypto.c
+1>..\..\..\common\endian.c
+1>..\..\..\common\pkcs5.c
+1>..\..\..\common\volumes.c
+1>..\..\..\common\xts.c
+1>..\..\..\crypto\rmd160.c
+1>..\..\..\crypto\twofish.c
+1>Linking...
+2>Performing Custom Build Step
+1>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\Boot\Windows\Release\BuildLog.htm"
+1>Boot - 0 error(s), 0 warning(s)
+2>Aes_x86.asm 
+2>Compiling...
+2>Whirlpool.c
+3>------ Build started: Project: Driver, Configuration: Release Win32 ------
+3>Performing Makefile project actions
+3>------ Building truecrypt.sys: Release x86 ------
+3>Starting dirs creation...Completed.
+2>Twofish.c
+2>Sha2.c
+3>cache.c
+3>crc.c
+3>crypto.c
+3>encryptionthreadpool.c
+3>endian.c
+3>gfmul.c
+3>pkcs5.c
+2>Sha1.c
+3>volumes.c
+3>xts.c
+3>tests.c
+3>wipe.c
+3>Generating Code...
+2>Serpent.c
+3>aeskey.c
+3>aestab.c
+3>blowfish.c
+2>Rmd160.c
+3>cast.c
+3>des.c
+3>rmd160.c
+3>serpent.c
+3>sha1.c
+3>sha2.c
+3>twofish.c
+3>whirlpool.c
+3>Generating Code...
+2>Des.c
+2>Cast.c
+3>drivefilter.c
+3>dumpfilter.c
+3>encryptedioqueue.c
+2>Blowfish.c
+3>ntdriver.c
+3>ntvol.c
+3>volumefilter.c
+3>Generating Code...
+2>Aestab.c
+3>   Creating library c:\users\public\desktop\projects\ciphershed\src\driver\obj_driver_release\i386\truecrypt.lib and object c:\users\public\desktop\projects\ciphershed\src\driver\obj_driver_release\i386\truecrypt.exp
+3>------ Building truecrypt.sys: Release x64 ------
+2>Aeskey.c
+3>Starting dirs creation...Completed.
+2>Generating Code...
+3>cache.c
+3>crc.c
+3>crypto.c
+3>encryptionthreadpool.c
+3>endian.c
+3>gfmul.c
+3>pkcs5.c
+3>volumes.c
+3>xts.c
+2>Creating library...
+3>tests.c
+3>wipe.c
+2>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\Crypto\Release\BuildLog.htm"
+2>Crypto - 0 error(s), 0 warning(s)
+4>------ Build started: Project: Mount, Configuration: Release Win32 ------
+4>Creating Type Library...
+4>Processing .\MainCom.idl
+4>MainCom.idl
+4>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\wtypes.idl
+4>wtypes.idl
+4>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\basetsd.h
+4>basetsd.h
+4>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\guiddef.h
+4>guiddef.h
+4>Processing ..\Common\Password.h
+4>Password.h
+4>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\oaidl.idl
+4>oaidl.idl
+4>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\objidl.idl
+4>objidl.idl
+4>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\unknwn.idl
+4>unknwn.idl
+4>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\oaidl.acf
+4>oaidl.acf
+4>Compiling...
+4>Favorites.cpp
+3>aeskey.c
+3>aestab.c
+3>blowfish.c
+3>cast.c
+3>des.c
+3>rmd160.c
+3>serpent.c
+3>sha1.c
+3>sha2.c
+4>fsutil.cpp
+3>twofish.c
+3>whirlpool.c
+4>diskutil.cpp
+4>volutil.cpp
+3>drivefilter.c
+4>userperms.cpp
+3>dumpfilter.c
+3>encryptedioqueue.c
+3>ntdriver.c
+3>ntvol.c
+3>volumefilter.c
+3>Generating code
+4>errors.cpp
+3>Finished generating code
+4>process.cpp
+3>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\Driver\Release\BuildLog.htm"
+3>Driver - 0 error(s), 0 warning(s)
+5>------ Build started: Project: Format, Configuration: Release Win32 ------
+5>Creating Type Library...
+5>Processing .\FormatCom.idl
+5>FormatCom.idl
+5>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\wtypes.idl
+5>wtypes.idl
+5>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\basetsd.h
+5>basetsd.h
+5>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\guiddef.h
+5>guiddef.h
+5>Processing ..\Common\Password.h
+5>Password.h
+5>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\oaidl.idl
+5>oaidl.idl
+5>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\objidl.idl
+5>objidl.idl
+5>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\unknwn.idl
+5>unknwn.idl
+5>Processing C:\Program Files\Microsoft SDKs\Windows\v7.0\\include\oaidl.acf
+5>oaidl.acf
+5>Compiling...
+5>FormatCom.cpp
+4>memory.cpp
+4>dll.cpp
+4>csstringutil.cpp
+5>fsutil.cpp
+4>SecurityToken.cpp
+5>diskutil.cpp
+5>volutil.cpp
+4>Random.cpp
+5>userperms.cpp
+4>Keyfiles.c
+4>Dlgcode.cpp
+5>errors.cpp
+5>process.cpp
+4>Dictionary.c
+4>BootEncryption.cpp
+5>memory.cpp
+5>dll.cpp
+5>csstringutil.cpp
+4>BaseCom.cpp
+5>SecurityToken.cpp
+4>Mount.c
+4>MainCom.cpp
+5>Random.cpp
+5>Keyfiles.c
+4>Generating Code...
+4>Compiling...
+4>cursor.c
+4>strcmpw.c
+4>ConvertUTF.c
+4>Xts.c
+4>Xml.c
+4>Volumes.c
+4>Tests.c
+4>Registry.c
+4>Pkcs5.c
+5>Format.cpp
+4>Password.c
+4>Language.c
+4>GfMul.c
+5>Dlgcode.cpp
+4>Endian.c
+4>EncryptionThreadPool.c
+4>Crypto.c
+4>Crc.c
+4>Combo.c
+4>Cmdline.c
+5>Dictionary.c
+4>Hotkeys.c
+4>Generating Code...
+4>Compiling resources...
+4>Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+4>Copyright (C) Microsoft Corporation.  All rights reserved.
+4>Linking...
+4>Embedding manifest...
+5>BootEncryption.cpp
+4>Performing Post-Build Event...
+4>        1 file(s) copied.
+4>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\Mount\Release\BuildLog.htm"
+4>Mount - 0 error(s), 0 warning(s)
+6>------ Build started: Project: unit-tests, Configuration: Release Win32 ------
+6>Compiling...
+6>wip.cpp
+6>wcsncpy_s.cpp
+6>swprintf_s.cpp
+6>SetLastError.cpp
+6>SetFileTime.cpp
+6>SetFilePointer.cpp
+6>QueryDosDevice.cpp
+6>OutputDebugString.cpp
+6>LoadLibraryEx.cpp
+6>GetWindowTextLength.cpp
+6>GetWindowText.cpp
+6>GetSystemDirectory.cpp
+6>GetLastError.cpp
+6>GetFileTime.cpp
+6>GetFileSize.cpp
+6>FlushFileBuffers.cpp
+6>EnableWindow.cpp
+5>BaseCom.cpp
+6>DeviceIoControl.cpp
+6>CreateFile.cpp
+6>CloseHandle.cpp
+6>Compiling...
+6>_wcsicmp.cpp
+6>unicodeTest.cpp
+6>stringUtilTest.cpp
+6>.\tests\lib\stringUtilTest.cpp(28) : warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\stdio.h(366) : see declaration of 'sprintf'
+6>headerTest.cpp
+6>passwordTest.cpp
+6>.\tests\algo\passwordTest.cpp(506) : warning C4101: 'res' : unreferenced local variable
+6>.\tests\algo\passwordTest.cpp(502) : warning C4101: 'oldPassword' : unreferenced local variable
+6>endianTest.cpp
+6>crcTest.cpp
+6>unittesting.cpp
+6>userperms.cpp
+5>Tcformat.c
+6>errors.cpp
+6>..\Common\dialog\errors.cpp(95) : warning C4996: 'wcscat': This function or variable may be unsafe. Consider using wcscat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\string.h(245) : see declaration of 'wcscat'
+6>..\Common\dialog\errors.cpp(250) : warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\string.h(275) : see declaration of 'wcsncpy'
+6>..\Common\dialog\errors.cpp(251) : warning C4996: 'wcsncpy': This function or variable may be unsafe. Consider using wcsncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\string.h(275) : see declaration of 'wcsncpy'
+6>dll.cpp
+6>Compiling...
+6>Aestab.c
+6>UnregisterClass.c
+6>ShowWindow.c
+6>ShellNotifyIcon.c
+6>SetLayeredWindowAttributes.c
+6>SetCursor.c
+6>RegOpenKeyEx.c
+6>RegisterClassEx.c
+6>OpenProcessToken.c
+6>MessageBox.c
+6>LocalFree.c
+6>LoadCursor.c
+6>IsWellKnownSid.c
+6>IsUserAnAdmin.c
+6>GetVersionEx.c
+6>GetTokenInformation.c
+6>GetSystemMetrics.c
+6>GetProcAddress.c
+6>GetModuleHandle.c
+6>GetCurrentProcess.c
+6>Compiling...
+6>FormatMessage.c
+6>DestroyWindow.c
+6>DefWindowProc.c
+6>CreateWindowEx.c
+6>cursor.c
+6>strcmpw.c
+6>ConvertUTF.c
+6>Password.c
+6>Endian.c
+6>Crc.c
+6>Compiling...
+5>InPlace.c
+6>volutil.cpp
+6>..\Common\volume\volutil.cpp(31) : warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\string.h(74) : see declaration of 'strcpy'
+6>..\Common\volume\volutil.cpp(97) : warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\string.h(74) : see declaration of 'strcpy'
+6>..\Common\volume\volutil.cpp(130) : warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+6>        C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\include\string.h(74) : see declaration of 'strcpy'
+6>Linking...
+6>Generating code
+6>c:\users\public\desktop\projects\ciphershed\src\unit-tests\tests\algo\passwordtest.cpp(508) : warning C4700: uninitialized local variable 'hwndDlg' used
+6>c:\users\public\desktop\projects\ciphershed\src\unit-tests\tests\algo\passwordtest.cpp(508) : warning C4700: uninitialized local variable 'pkcs5' used
+6>c:\users\public\desktop\projects\ciphershed\src\unit-tests\tests\algo\passwordtest.cpp(508) : warning C4700: uninitialized local variable 'newPassword' used
+6>c:\users\public\desktop\projects\ciphershed\src\unit-tests\tests\algo\passwordtest.cpp(508) : warning C4700: uninitialized local variable 'lpszVolume' used
+6>Finished generating code
+6>Embedding manifest...
+6>Performing Post-Build Event...
+6>Caching metadata information for c:\windows\assembly\gac_msil\microsoft.visualstudio.qualitytools.unittestframework\9.0.0.0__b03f5f7f11d50a3a\microsoft.visualstudio.qualitytools.unittestframework.dll...
+6>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\unit-tests\Release\BuildLog.htm"
+6>unit-tests - 0 error(s), 13 warning(s)
+5>Generating Code...
+5>Compiling...
+5>cursor.c
+5>strcmpw.c
+5>ConvertUTF.c
+5>Xts.c
+5>Xml.c
+5>Wipe.c
+5>Volumes.c
+5>Tests.c
+5>Registry.c
+5>Progress.c
+5>Pkcs5.c
+5>Password.c
+5>Language.c
+5>GfMul.c
+5>Fat.c
+5>Endian.c
+5>EncryptionThreadPool.c
+5>Crypto.c
+5>Crc.c
+5>Combo.c
+5>Generating Code...
+5>Compiling...
+5>Cmdline.c
+5>Generating Code...
+5>Compiling resources...
+5>Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+5>Copyright (C) Microsoft Corporation.  All rights reserved.
+5>Linking...
+5>Embedding manifest...
+5>Performing Post-Build Event...
+5>        1 file(s) copied.
+5>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\Format\Release\BuildLog.htm"
+5>Format - 0 error(s), 0 warning(s)
+7>------ Build started: Project: Setup, Configuration: Release Win32 ------
+7>Compiling...
+7>ComSetup.cpp
+7>fsutil.cpp
+7>diskutil.cpp
+7>volutil.cpp
+7>process.cpp
+7>memory.cpp
+7>dll.cpp
+7>csstringutil.cpp
+7>userperms.cpp
+7>errors.cpp
+7>Dlgcode.cpp
+7>Dictionary.c
+7>BootEncryption.cpp
+7>Wizard.c
+7>Setup.c
+7>Generating Code...
+7>Compiling...
+7>cursor.c
+7>Registry.c
+7>Language.c
+7>Inflate.c
+7>Endian.c
+7>Crc.c
+7>Xml.c
+7>SelfExtract.c
+7>Dir.c
+7>Generating Code...
+7>Compiling resources...
+7>Microsoft (R) Windows (R) Resource Compiler Version 6.1.7600.16385
+7>Copyright (C) Microsoft Corporation.  All rights reserved.
+7>Linking...
+7>Embedding manifest...
+7>Performing Post-Build Event...
+7>        1 file(s) copied.
+7>        1 file(s) copied.
+7>        1 file(s) copied.
+7>Build log was saved at "file://c:\Users\Public\Desktop\projects\ciphershed\src\Setup\Release\BuildLog.htm"
+7>Setup - 0 error(s), 0 warning(s)
+========== Build: 7 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========

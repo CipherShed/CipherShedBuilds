@@ -1,0 +1,255 @@
+;	Static Name Aliases
+;
+	TITLE   ..\bootconfig.cpp
+	.MODEL  SMALL
+	.386p
+	.387
+_TEXT	SEGMENT  WORD USE16 PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD USE16 PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD USE16 PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD USE16 PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME DS: DGROUP, SS: DGROUP
+PUBLIC  ?ExtraBootPartitionPresent@@3DA
+PUBLIC  ?BootDriveGeometryValid@@3DA
+PUBLIC  ?PreventNormalSystemBoot@@3DA
+PUBLIC  ?PreventBootMenu@@3DA
+PUBLIC  ?BootStarted@@3DA
+EXTRN	?DisableScreenOutput@@YAXXZ:NEAR
+EXTRN	?ReadWriteMBR@@YAEDED@Z:NEAR
+EXTRN	_memcpy:NEAR
+EXTRN	?InitVideoMode@@YAXXZ:NEAR
+EXTRN	?Print@@YAXPBD@Z:NEAR
+EXTRN	_EnableHwEncryption:NEAR
+EXTRN	?SectorBuffer@@3QAEA:BYTE
+_DATA      SEGMENT
+?BootDriveGeometryValid@@3DA	DB	00H
+?PreventNormalSystemBoot@@3DA	DB	00H
+?PreventBootMenu@@3DA	DB	00H
+?BootStarted@@3DA	DB	00H
+?ExtraBootPartitionPresent@@3DA	DB	00H
+_DATA      ENDS
+_BSS      SEGMENT
+	ORG	$+72
+PUBLIC  ?ActivePartition@@3UPartition@@A
+?ActivePartition@@3UPartition@@A	DW 010H DUP (?)
+PUBLIC  ?PartitionFollowingActive@@3UPartition@@A
+?PartitionFollowingActive@@3UPartition@@A	DW 010H DUP (?)
+PUBLIC  ?HiddenVolumeStartUnitNo@@3TUINT64_STRUCT@@A
+?HiddenVolumeStartUnitNo@@3TUINT64_STRUCT@@A	DW 04H DUP (?)
+PUBLIC  ?HiddenVolumeStartSector@@3TUINT64_STRUCT@@A
+?HiddenVolumeStartSector@@3TUINT64_STRUCT@@A	DW 04H DUP (?)
+	ORG	$-152
+PUBLIC  ?BootSectorFlags@@3EA
+?BootSectorFlags@@3EA	DB 01H DUP (?)
+PUBLIC  ?BootLoaderDrive@@3EA
+?BootLoaderDrive@@3EA	DB 01H DUP (?)
+PUBLIC  ?BootDrive@@3EA
+?BootDrive@@3EA	DB 01H DUP (?)
+	ORG	$+1
+PUBLIC  ?BootDriveGeometry@@3UDriveGeometry@@A
+?BootDriveGeometry@@3UDriveGeometry@@A	DW 02H DUP (?)
+PUBLIC  ?CustomUserMessage@@3QADA
+?CustomUserMessage@@3QADA	DB 019H DUP (?)
+	ORG	$+1
+PUBLIC  ?OuterVolumeBackupHeaderCrc@@3KA
+?OuterVolumeBackupHeaderCrc@@3KA	DW 02H DUP (?)
+PUBLIC  ?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A
+?BootCryptoInfo@@3PAUCRYPTO_INFO_t@@A	DW 01H DUP (?)
+PUBLIC  ?EncryptedVirtualPartition@@3UPartition@@A
+?EncryptedVirtualPartition@@3UPartition@@A	DW 010H DUP (?)
+_BSS      ENDS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+	PUBLIC	?ReadBootSectorUserConfiguration@@YAXXZ	; ReadBootSectorUserConfiguration
+?ReadBootSectorUserConfiguration@@YAXXZ	PROC NEAR	; ReadBootSectorUserConfiguration COMDAT
+;|*** /*
+;|***  Copyright (c) 2008-2012 TrueCrypt Developers Association. All rights reserved.
+;|*** 
+;|***  Governed by the TrueCrypt License 3.0 the full text of which is contained in
+;|***  the file License.txt included in TrueCrypt binary and source code distribution
+;|***  packages.
+;|*** */
+;|*** 
+;|*** #include "BootConfig.h"
+;|*** 
+;|*** byte BootSectorFlags;
+;|*** 
+;|*** byte BootLoaderDrive;
+;|*** byte BootDrive;
+;|*** bool BootDriveGeometryValid = false;
+;|*** bool PreventNormalSystemBoot = false;
+;|*** bool PreventBootMenu = false;
+;|*** char CustomUserMessage[TC_BOOT_SECTOR_USER_MESSAGE_MAX_LENGTH + 1];
+;|*** uint32 OuterVolumeBackupHeaderCrc;
+;|*** 
+;|*** bool BootStarted = false;
+;|*** 
+;|*** DriveGeometry BootDriveGeometry;
+;|*** 
+;|*** CRYPTO_INFO *BootCryptoInfo;
+;|*** Partition EncryptedVirtualPartition;
+;|*** 
+;|*** Partition ActivePartition;
+;|*** Partition PartitionFollowingActive;
+;|*** bool ExtraBootPartitionPresent = false;
+;|*** uint64 HiddenVolumeStartUnitNo;
+;|*** uint64 HiddenVolumeStartSector;
+;|*** 
+;|*** #ifndef TC_WINDOWS_BOOT_RESCUE_DISK_MODE
+;|*** 
+;|*** void ReadBootSectorUserConfiguration ()
+;|*** {
+; Line 37
+	*** 000000	c8 02 00 00 		enter	2,0
+;	userConfig = -1
+;|*** 	byte userConfig;
+;|*** 
+;|*** 	AcquireSectorBuffer();
+;|*** 
+;|*** 	if (ReadWriteMBR (false, BootLoaderDrive, true) != BiosResultSuccess)
+; Line 42
+	*** 000004	6a 01 			push	1
+	*** 000006	a0 00 00 		mov	al,BYTE PTR ?BootLoaderDrive@@3EA	;BootLoaderDrive
+	*** 000009	50 			push	ax
+	*** 00000a	6a 00 			push	0
+	*** 00000c	e8 00 00 		call	?ReadWriteMBR@@YAEDED@Z	; ReadWriteMBR
+	*** 00000f	83 c4 06 		add	sp,6
+	*** 000012	0a c0 			or	al,al
+	*** 000014	75 50 			jne	SHORT $EX1418
+;|*** 		goto ret;
+;|*** 
+;|*** 	userConfig = SectorBuffer[TC_BOOT_SECTOR_USER_CONFIG_OFFSET];
+;|*** 
+;|*** #ifdef TC_WINDOWS_BOOT_AES
+;|*** 	EnableHwEncryption (!(userConfig & TC_BOOT_USER_CFG_FLAG_DISABLE_HW_ENCRYPTION));
+; Line 48
+	*** 000016	a0 b6 01 		mov	al,BYTE PTR ?SectorBuffer@@3QAEA+438	;SectorBuffer
+	*** 000019	88 46 ff 		mov	BYTE PTR [bp-1],al	;userConfig
+	*** 00001c	24 04 			and	al,4
+	*** 00001e	3c 01 			cmp	al,1
+	*** 000020	1a c0 			sbb	al,al
+	*** 000022	f6 d8 			neg	al
+	*** 000024	50 			push	ax
+	*** 000025	e8 00 00 		call	_EnableHwEncryption
+	*** 000028	5b 			pop	bx
+;|*** #endif
+;|*** 
+;|*** 	PreventBootMenu = (userConfig & TC_BOOT_USER_CFG_FLAG_DISABLE_ESC);
+; Line 51
+	*** 000029	8a 46 ff 		mov	al,BYTE PTR [bp-1]	;userConfig
+	*** 00002c	24 02 			and	al,2
+	*** 00002e	a2 00 00 		mov	BYTE PTR ?PreventBootMenu@@3DA,al	;PreventBootMenu
+;|*** 
+;|*** 	memcpy (CustomUserMessage, SectorBuffer + TC_BOOT_SECTOR_USER_MESSAGE_OFFSET, TC_BOOT_SECTOR_USER_MESSAGE_MAX_LENGTH);
+; Line 53
+	*** 000031	6a 18 			push	24	;0018H
+	*** 000033	68 96 01 		push	OFFSET ?SectorBuffer@@3QAEA+406	;SectorBuffer
+	*** 000036	68 00 00 		push	OFFSET DGROUP:?CustomUserMessage@@3QADA	;CustomUserMessage
+	*** 000039	e8 00 00 		call	_memcpy
+	*** 00003c	83 c4 06 		add	sp,6
+;|*** 	CustomUserMessage[TC_BOOT_SECTOR_USER_MESSAGE_MAX_LENGTH] = 0;
+; Line 54
+	*** 00003f	c6 06 18 00 00 		mov	BYTE PTR ?CustomUserMessage@@3QADA+24,0	;CustomUserMessage
+;|*** 
+;|*** 	if (userConfig & TC_BOOT_USER_CFG_FLAG_SILENT_MODE)
+; Line 56
+	*** 000044	f6 46 ff 01 		test	BYTE PTR [bp-1],1	;userConfig
+	*** 000048	74 14 			je	SHORT $I1423
+;|*** 	{
+;|*** 		if (CustomUserMessage[0])
+; Line 58
+	*** 00004a	80 3e 00 00 00 		cmp	BYTE PTR ?CustomUserMessage@@3QADA,0	;CustomUserMessage
+	*** 00004f	74 0a 			je	SHORT $I1424
+;|*** 		{
+;|*** 			InitVideoMode();
+; Line 60
+	*** 000051	e8 00 00 		call	?InitVideoMode@@YAXXZ	; InitVideoMode
+;|*** 			Print (CustomUserMessage);
+; Line 61
+	*** 000054	68 00 00 		push	OFFSET DGROUP:?CustomUserMessage@@3QADA	;CustomUserMessage
+	*** 000057	e8 00 00 		call	?Print@@YAXPBD@Z	; Print
+	*** 00005a	5b 			pop	bx
+;|*** 		}
+;|*** 
+;|*** 		DisableScreenOutput();
+; Line 64
+					$I1424:
+	*** 00005b	e8 00 00 		call	?DisableScreenOutput@@YAXXZ	; DisableScreenOutput
+;|*** 	}
+;|*** 
+;|*** 	OuterVolumeBackupHeaderCrc = *(uint32 *) (SectorBuffer + TC_BOOT_SECTOR_OUTER_VOLUME_BAK_HEADER_CRC_OFFSET);
+; Line 67
+					$I1423:
+	*** 00005e	66 a1 92 01 		mov	eax,DWORD PTR ?SectorBuffer@@3QAEA+402	;SectorBuffer
+	*** 000062	66 a3 00 00 		mov	DWORD PTR ?OuterVolumeBackupHeaderCrc@@3KA,eax	;OuterVolumeBackupHeaderCrc
+;|*** 
+;|*** ret:
+;|*** 	ReleaseSectorBuffer();
+;|*** }
+; Line 71
+					$EX1418:
+	*** 000066	c9 			leave	
+	*** 000067	c3 			ret	
+
+?ReadBootSectorUserConfiguration@@YAXXZ	ENDP
+	PUBLIC	?UpdateBootSectorConfiguration@@YAEE@Z	; UpdateBootSectorConfiguration
+?UpdateBootSectorConfiguration@@YAEE@Z	PROC NEAR	; UpdateBootSectorConfiguration COMDAT
+;|*** 
+;|*** 
+;|*** BiosResult UpdateBootSectorConfiguration (byte drive)
+;|*** {
+; Line 75
+	*** 000000	c8 02 00 00 		enter	2,0
+;	drive = 4
+;	result = -1
+;|*** 	AcquireSectorBuffer();
+;|*** 
+;|*** 	BiosResult result = ReadWriteMBR (false, drive);
+;|*** 	if (result != BiosResultSuccess)
+; Line 79
+	*** 000004	6a 00 			push	0
+	*** 000006	8a 46 04 		mov	al,BYTE PTR [bp+4]	;drive
+	*** 000009	50 			push	ax
+	*** 00000a	6a 00 			push	0
+	*** 00000c	e8 00 00 		call	?ReadWriteMBR@@YAEDED@Z	; ReadWriteMBR
+	*** 00000f	83 c4 06 		add	sp,6
+	*** 000012	88 46 ff 		mov	BYTE PTR [bp-1],al	;result
+	*** 000015	0a c0 			or	al,al
+	*** 000017	75 14 			jne	SHORT $ret1430
+;|*** 		goto ret;
+;|*** 
+;|*** 	SectorBuffer[TC_BOOT_SECTOR_CONFIG_OFFSET] = BootSectorFlags;
+; Line 82
+	*** 000019	a0 00 00 		mov	al,BYTE PTR ?BootSectorFlags@@3EA	;BootSectorFlags
+	*** 00001c	a2 b7 01 		mov	BYTE PTR ?SectorBuffer@@3QAEA+439,al	;SectorBuffer
+;|*** 	result = ReadWriteMBR (true, drive);
+; Line 83
+	*** 00001f	6a 00 			push	0
+	*** 000021	8a 46 04 		mov	al,BYTE PTR [bp+4]	;drive
+	*** 000024	50 			push	ax
+	*** 000025	6a 01 			push	1
+	*** 000027	e8 00 00 		call	?ReadWriteMBR@@YAEDED@Z	; ReadWriteMBR
+	*** 00002a	88 46 ff 		mov	BYTE PTR [bp-1],al	;result
+;|*** 
+;|*** ret:
+; Line 85
+					$ret1430:
+;|*** 	ReleaseSectorBuffer();
+;|*** 	return result;
+; Line 87
+	*** 00002d	8a 46 ff 		mov	al,BYTE PTR [bp-1]	;result
+;|*** }
+; Line 88
+	*** 000030	c9 			leave	
+	*** 000031	c3 			ret	
+
+?UpdateBootSectorConfiguration@@YAEE@Z	ENDP
+_TEXT	ENDS
+END
+;|*** 
+;|*** #endif // !TC_WINDOWS_BOOT_RESCUE_DISK_MODE
